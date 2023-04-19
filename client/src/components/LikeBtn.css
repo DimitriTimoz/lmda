@@ -1,0 +1,10 @@
+.like-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    outline: none;
+}
+
+.heart-active {
+    color: red;
+}
