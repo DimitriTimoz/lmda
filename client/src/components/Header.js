@@ -1,7 +1,7 @@
 import './Header.css';
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Dropdown from './Dropdown';
+import Dropdown from './DropdownNav';
 
 
 export default function Header({ }) {
@@ -20,7 +20,11 @@ export default function Header({ }) {
             <Link to="/cart"><img alt="cart" src='/icons/basket.svg'/></Link>
         </div>
       </header>
-      <Dropdown isOpen={false} elements={elements} placeholder={"femmes"} />
+      <nav>
+        <Dropdown elements={elements} placeholder={"femmes"} />
+        <Dropdown elements={elements} placeholder={"hommes"} />
+        <Dropdown elements={elements} placeholder={"enfants"} />
+      </nav>
     </div>
     );
 }

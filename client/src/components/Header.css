@@ -17,3 +17,10 @@ header {
     align-self: center;
     margin: auto 1rem;
 }
+
+nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
