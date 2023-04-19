@@ -1,0 +1,17 @@
+header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.personnal-nav {
+    /* Vertical align */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.personnal-nav a {
+    align-self: center;
+    margin: auto 1rem;
+}
