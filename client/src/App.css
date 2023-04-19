@@ -1,14 +1,31 @@
 @import url('https://fonts.googleapis.com/css2?family=Ruthie&display=swap');
 
-/* Colors */
+* {
+  margin: 0px;
+  padding: 0px;
+}
 
+/* Colors */
+:root {
+  --dark-green: #002C04;
+}
 
 h1 {
   font-family: 'Ruthie', cursive;
   font-weight: 400;
-  font-size: 3rem;
+  font-size: 4.0rem;
+  margin: 0.5rem;
+  color: var(--dark-green);
 }
 
 a {
   text-decoration: none;
+}
+
+.hide {
+  display: none;
+}
+
+.rotate {
+  transform: rotate(180deg);
 }

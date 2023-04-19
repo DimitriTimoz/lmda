@@ -1,0 +1,13 @@
+.selected-item-dp {
+    color: var(--dark-green);
+    font-size: 1.5rem;
+    text-transform: uppercase;
+}
+
+.dopdown-selector {
+    cursor: pointer;
+}
+
+.dropdown-menu {
+
+}

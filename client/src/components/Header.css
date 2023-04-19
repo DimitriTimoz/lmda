@@ -1,6 +1,8 @@
 header {
     display: flex;
     justify-content: space-between;
+    margin: 0.5rem 0px;
+    border-bottom: 2px solid var(--dark-green);
 }
 
 .personnal-nav {
