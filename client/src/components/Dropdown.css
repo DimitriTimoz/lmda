@@ -8,6 +8,22 @@
     cursor: pointer;
 }
 
+.arrow {
+    margin-left: 0.5rem;
+}
+
 .dropdown-menu {
 
+}
+
+.dp-elements {
+    position: fixed;
+    background-color: var(--light-gray);
+    width: 100%;
+}
+
+.dp-element {
+    color: var(--dark-green);
+    font-size: 1.5rem;
+    cursor: pointer;
 }

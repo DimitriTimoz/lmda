@@ -8,6 +8,8 @@
 /* Colors */
 :root {
   --dark-green: #002C04;
+  --background-color: #FFFFFF;
+  --light-gray: #F9F9F9;
 }
 
 h1 {
@@ -20,6 +22,7 @@ h1 {
 
 a {
   text-decoration: none;
+  color: var(--dark-green);
 }
 
 .hide {

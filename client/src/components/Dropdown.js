@@ -2,11 +2,11 @@ import './Dropdown.css';
 import React from 'react';
 import { Link } from 'react-router-dom';
 
+
 export default class Dropdown extends React.Component {
     constructor() {
         super();
         this.state = {active: false};
-        console.log(this.state);
     }
 
     trigger() {
@@ -20,9 +20,9 @@ export default class Dropdown extends React.Component {
                     <span className='selected-item-dp'>{this.props.placeholder}</span>
                     <img alt="arrow" className={this.state.active ? 'arrow rotate' : 'arrow'} src='/icons/arrow.svg'/>
                 </div>
-                <ul className={this.state.active ? '' : 'hide'}>
+                <ul className={ this.state.active ? 'dp-elements' : 'dp-elements hide'}>
                     {this.props.elements.map((element) => (
-                        <li key={element.id}>
+                        <li key={element.id} className='dp-eleemnt'>
                             <Link to={element.path} className="dropdown-link">
                                 {element.title}
                             </Link>
