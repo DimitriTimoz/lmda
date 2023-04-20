@@ -7,6 +7,7 @@ function Home() {
     name: "T-shirt",
     size: "M",
     price: 20,
+    id: 1
   }
   return (
     <div>

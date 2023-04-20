@@ -4,6 +4,7 @@ import Header from './components/Header';
 import Favorites from './pages/Favorites';
 import Home from './pages/Home'
 import Cart from './pages/Cart'
+import Product from './pages/Product'
 import './App.css';
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
           <Route exact path="/" element={<Home />} />
           <Route path="/favorites" element={<Favorites />} />
           <Route path="/cart" element={<Cart />} />
+          <Route path="/product/:id" element={<Product/>} />
         </Routes>
       </div>
     </BrowserRouter>
