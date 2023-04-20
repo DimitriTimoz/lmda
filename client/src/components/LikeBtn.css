@@ -1,10 +1,13 @@
 .like-btn {
-    background: none;
-    border: none;
+    background: transparent;
+    border: transparent;
     cursor: pointer;
-    outline: none;
+    outline: transparent;
+    padding: 0px;
 }
 
-.heart-active {
-    color: red;
+.heart-img {
+    width: 1rem;
+    height: 1rem;
+    margin: auto;
 }

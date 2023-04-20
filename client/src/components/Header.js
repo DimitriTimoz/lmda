@@ -3,12 +3,39 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import Dropdown from './DropdownNav';
 
-
 export default function Header({ }) {
     let elements = [
-        {id: 1, title: 'Accueil', path: '/'},
-        {id: 2, title: 'Favoris', path: '/favorites'},
-    ]
+          {
+            filter: "Vêtements",
+            sub: [
+              "Jean",
+              "Chemises",
+              "T-Shirt",
+              "Pull",
+              "Short"
+            ]
+          },
+          {
+            filter: "Chaussures",
+            sub: [
+              "Baskets",
+              "Sandales",
+              "Bottes",
+              "Escarpins",
+              "Mocassins"
+            ]
+          },
+          {
+            filter: "Accessoires",
+            sub: [
+              "Sacs",
+              "Ceintures",
+              "Chapeaux",
+              "Montres",
+              "Portefeuilles"
+            ]
+          }
+    ];
     
     return (
      <div>

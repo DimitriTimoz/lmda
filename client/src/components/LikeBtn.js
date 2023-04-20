@@ -1,8 +1,6 @@
 import "./LikeBtn.css";
 import React from "react";
 
-
-
 export default class LikeBtn extends React.Component {
     constructor() {
         super();
@@ -16,10 +14,10 @@ export default class LikeBtn extends React.Component {
     render() {
         return (
             <button
-                className={`like-btn'`}
+                className="like-btn"
                 onClick={() => this.trigger()}
             >
-                <img src="/icons/heart.svg" alt="heart" className={this.state.active ? "heart-active" : ""} />
+                <img src={this.state.active ? "/icons/heart-filled.svg" : "/icons/heart.svg"} alt="like btn" className={`heart-img ${this.state.active ? "heart-active" : ""}`} />
             </button>
         );
     }
