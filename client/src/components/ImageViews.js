@@ -8,7 +8,6 @@ export default class ImageViews extends React.Component {
 
     render() {
         this.photos = this.props.photos || [];
-        console.log(this.props);
 
         return (
             <div className="image-views">
