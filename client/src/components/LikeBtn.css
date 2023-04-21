@@ -4,6 +4,8 @@
     cursor: pointer;
     outline: transparent;
     padding: 0px;
+    width: 1rem;
+    height: 1rem;
 }
 
 .heart-img {
