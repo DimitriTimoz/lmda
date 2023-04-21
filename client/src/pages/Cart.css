@@ -3,8 +3,12 @@
     justify-content: space-between;
 }
 
-.cart-details {
+.cart > * {
+    margin: 1.5rem;
+}
 
+.cart-details {
+    width: 60%;
 }
 
 .cart-details h3 {
@@ -21,7 +25,6 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 1.5rem;
 }
 
 .cart-products {
@@ -34,6 +37,8 @@
 .delivery-kinds {
     display: flex;
     flex-direction: column;
+    width: 40%;
+    max-width: 15rem;
 }
 
 .delivery-kind {

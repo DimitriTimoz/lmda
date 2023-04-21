@@ -41,11 +41,12 @@ function Cart() {
                 </div>
                 <div className='cart-adress'>
                     <h3>Adresse</h3>
+                    <Button title="Ajouter" className={""} />
 
                 </div>
                 <div className='cart-payment'>
                     <h3>Paiement</h3>
-
+                    <Button title="Ajouter une méthode de paiment" className={""} />
                 </div>
             </div>
             <div className='cart-summary'>
