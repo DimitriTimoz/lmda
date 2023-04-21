@@ -19,6 +19,10 @@ header {
     margin: auto 1rem;
 }
 
+.personnal-nav img {
+    height: 2.5rem;
+}
+
 nav {
     display: flex;
     justify-content: center;
