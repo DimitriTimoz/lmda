@@ -25,6 +25,7 @@ export default class Dropdown extends React.Component {
         super();
         this.state = {active: false};
         this.filters = "";
+        this.filter_level = 0;
     }
 
     getList() {
@@ -33,19 +34,21 @@ export default class Dropdown extends React.Component {
 
     incrementFilter(filter) {
         this.filter += ":" + filter;
+        this.filter_level++;
     }
 
     decrementFilter() {
         this.filter = this.filter.split(":").slice(0, -1).join(":");
+        this.filter_level--;
     }
 
-    trigger() {
-        this.setState({active: !this.state.active});
+    getListAtLevel(level) {
+        
     }
 
-    render() {
-        let list = this.getList();
+    getAllMatchingFilters() {
         let items = [];
+        let list = this.getList();
         // Extract all filters from elements
         for (let i = 0; i < list.length; i++) {
             // femmes:vêtements:jean
@@ -57,6 +60,17 @@ export default class Dropdown extends React.Component {
                 items.push(list[i]);
             }
         }
+        return items;
+    }
+
+    trigger() {
+        this.setState({active: !this.state.active});
+        this.filters = "";
+        this.filter_level = 0;
+    }
+
+    render() {
+        let items = this.getAllMatchingFilters();
         return (
             <div className={this.state.active ? 'dropdown-menu active' : 'dropdown-menu'}>
                 <div className='dopdown-selector' onClick={() => this.trigger()}>
@@ -69,9 +83,9 @@ export default class Dropdown extends React.Component {
                     </li>
                     {items.map((element) => (
                         <li key={element} className='dp-eleemnt'>
-                            <Link to={element} className="dropdown-link">
+                            <div onClick={this.incrementFilter(element)} className="dropdown-link">
                                 {element}
-                            </Link>
+                            </div>
                         </li>
                     ))}
                 </ul>

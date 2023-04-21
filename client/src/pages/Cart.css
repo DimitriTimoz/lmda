@@ -1,0 +1,54 @@
+.cart {
+    display: flex;
+    justify-content: space-between;
+}
+
+.cart-details {
+
+}
+
+.cart-details h3 {
+    color: var(--dark-green);
+    font-size: 2.0rem;
+    font-family: 'Roboto' sans-serif;
+    font-weight: 400;
+}
+
+.cart-summary {
+    background-color: var(--light-gray);
+    padding: 2rem;
+    border-radius: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.cart-products {
+
+}
+
+.cart-delivery {
+}
+
+.delivery-kinds {
+    display: flex;
+    flex-direction: column;
+}
+
+.delivery-kind {
+    display: flex;
+    align-items: center;
+    margin: 0.5rem 0px;
+}
+
+.delivery-kind > * {
+    margin: 0px 0.5rem;
+}
+
+.cart-adress {
+
+}
+
+.cart-payment {
+
+}

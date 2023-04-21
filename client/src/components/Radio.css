@@ -1,0 +1,9 @@
+.radio {
+    cursor: pointer;
+    background-color: var(--dark-green);
+
+}
+
+.radio:checked {
+    background-color: var(--dark-green);
+}
