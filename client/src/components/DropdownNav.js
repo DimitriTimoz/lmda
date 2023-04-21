@@ -24,8 +24,8 @@ export default class Dropdown extends React.Component {
     constructor() {
         super();
         this.state = {active: false};
-        this.filters = "Vêtements:";
-        this.filter_level = 2;
+        this.filters = "";
+        this.filter_level = 1;
         this.dropdownRef = React.createRef(); 
     }
 
@@ -48,10 +48,18 @@ export default class Dropdown extends React.Component {
         return get_filters(this.props.elements);
     }
 
-    incrementFilter(filter) {
-       // console.log("Incrementing filter to " + filter);
-      //  this.filter += ":" + filter;
-       // this.filter_level++;
+    incrementFilter = (e) => {
+        e.preventDefault();
+        let level = parseInt(e.target.getAttribute("level"));
+        let filter = e.target.innerText;
+        this.filter_level = level+1;
+        this.filters = this.filters.split(":").slice(0, level-1).join(":");
+        if (this.filters !== "") {
+            this.filters += ":" + filter;
+        } else {
+            this.filters = filter;
+        }
+        this.forceUpdate();
     }
 
     decrementFilter() {
@@ -61,7 +69,7 @@ export default class Dropdown extends React.Component {
 
     getListAtLevel(level) {
         let filters = this.filters.split(":");
-        if (level > filters.length) {
+        if (level > filters.length + 1) {
             console.error("Dropdown: Cannot get list at level " + level + " when filter level is " + this.filter_level);
             return [];
         }
@@ -104,21 +112,23 @@ export default class Dropdown extends React.Component {
     }
     
 
-    trigger() {
+    trigger = () => {
         this.setState({active: !this.state.active});
-        //this.filters = "";
-        //this.filter_level = 0;
+        
+        if (!this.state.active) {
+            this.filters = "";
+            this.filter_level = 1;
+        }
     }
 
     render() {
         // Get all filters from level 0 to this.filter_level
         let range = [...Array(this.filter_level).keys()]
-        let filters = range.map((i) => this.getListAtLevel(i+1));
-        console.log(filters);
+        let filters = range.map((i) => [i+1, this.getListAtLevel(i+1)]);
         return (
-            <div ref={this.dropdownRef} className={this.state.active ? 'dropdown-menu active' : 'dropdown-menu'}>
+            <div ref={this.dropdownRef} className="dropdown-menu">
                 <div className='dopdown-selector' onClick={() => this.trigger()}>
-                    <span className='selected-item-dp'>{this.props.placeholder}</span>
+                    <span className={this.state.active ? 'selected-item-dp active' : 'selected-item-dp'}>{this.props.placeholder}</span>
                     <img alt="arrow" className={this.state.active ? 'arrow rotate' : 'arrow'} src='/icons/arrow.svg'/>
                 </div>
                 <div className={ this.state.active ? 'dp-category' : 'dp-category hide' }>
@@ -127,9 +137,9 @@ export default class Dropdown extends React.Component {
                         <li>
                             Tout
                         </li>
-                        {items.map((element) => (
+                        {items[1].map((element) => (
                             <li key={element} className='dp-eleemnt'>
-                                <div onClick={this.incrementFilter(element)} className="dropdown-link">
+                                <div level={items[0]} onClick={this.incrementFilter} className="dropdown-link">
                                     {element}
                                 </div>
                             </li>
