@@ -1,0 +1,31 @@
+.product {
+    display: flex;
+}
+
+.product-block {
+    width: 50%;
+}
+
+.product > * {
+    margin: 1rem;
+}
+
+.product .price {
+    display: block;
+}
+
+.product h2 {
+    font-family: 'Roboto' sans-serif;
+    font-weight: bold;
+    font-size: 3.0rem;
+    margin: 0.5rem;
+    color: var(--dark-green);
+}
+
+.product-description {
+    font-family: 'Roboto' sans-serif;
+    font-weight: bold;
+    display: block;
+    font-size: 1.3rem;
+    color: var(--dark-green);
+}
