@@ -38,9 +38,14 @@
     color: var(--dark-green);
 }
 
-.product-details table {
-
+.product-details {
+    margin-top: 0.6rem;
 }
+
+.product-like {
+    margin-left: 1.0rem;
+}
+
 .product-details td {
     color: var(--dark-green);
     text-transform: uppercase;

@@ -32,23 +32,21 @@ export default function Product() {
                     </div>
                     <div>
                         <Button title="Acheter" className="" onClick="alert(1)" />
-                        <LikeBtn product={product} isFavorite={false} onToggleFavorite={()=>{}} />
-                        <div className="product-details">
-                            <table>
-                                <tr>
-                                    <td>TAILLE</td>
-                                    <td>XL</td>
-                                </tr>
-                                <tr>
-                                    <td>ÉTAT</td>
-                                    <td>Très bon</td>
-                                </tr>
-                                <tr>
-                                    <td>Date d'ajout</td>
-                                    <td>13/03/2023</td>
-                                </tr>
-                            </table>
-                        </div>
+                        <LikeBtn product={product} className="product-like" isFavorite={false} onToggleFavorite={()=>{}} />
+                        <table className="product-details">
+                            <tr>
+                                <td>TAILLE</td>
+                                <td>XL</td>
+                            </tr>
+                            <tr>
+                                <td>ÉTAT</td>
+                                <td>Très bon</td>
+                            </tr>
+                            <tr>
+                                <td>Date d'ajout</td>
+                                <td>13/03/2023</td>
+                            </tr>
+                        </table>
                     </div>
                 </div>
             </div>
