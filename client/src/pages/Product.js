@@ -23,14 +23,32 @@ export default function Product() {
             <div className="product">
                 <ImageViews photos={product.photos}/>
                 <div className="product-block">
-                    <h2>{product.name}</h2>
-                    <span className="price">{product.price} €</span>
-                    <span className="product-description">
-                        {product.description}
-                    </span>
-                    <Button title="Acheter" className="" onClick="alert(1)" />
-                    <LikeBtn product={product} isFavorite={false} onToggleFavorite={()=>{}} />
-                    <div className="product-details">
+                    <div>
+                        <h2>{product.name}</h2>
+                        <span className="price">{product.price} €</span>
+                        <span className="product-description">
+                            {product.description}
+                        </span>
+                    </div>
+                    <div>
+                        <Button title="Acheter" className="" onClick="alert(1)" />
+                        <LikeBtn product={product} isFavorite={false} onToggleFavorite={()=>{}} />
+                        <div className="product-details">
+                            <table>
+                                <tr>
+                                    <td>TAILLE</td>
+                                    <td>XL</td>
+                                </tr>
+                                <tr>
+                                    <td>ÉTAT</td>
+                                    <td>Très bon</td>
+                                </tr>
+                                <tr>
+                                    <td>Date d'ajout</td>
+                                    <td>13/03/2023</td>
+                                </tr>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
