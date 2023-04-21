@@ -1,7 +1,7 @@
 import './Header.css';
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Dropdown from './DropdownNav';
+import Dropdown from '../DropdownNav';
 
 export default function Header({ }) {
     let elements = [

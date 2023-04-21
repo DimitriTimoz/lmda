@@ -15,6 +15,10 @@
   --light-green: #39D047;
 }
 
+html, body, #root, .App {
+  height: 100%;
+}
+
 h1 {
   font-family: 'Ruthie', cursive;
   font-weight: 400;

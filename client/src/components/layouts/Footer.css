@@ -1,0 +1,15 @@
+.footer {
+    display: flex;
+    justify-content: center;
+    border-top: solid 2px var(--dark-green);
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;  
+}
+
+.footer > * {
+    margin: 0.3rem 1.5rem;
+    color: var(--dark-green);
+    text-decoration: underline;
+}

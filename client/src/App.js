@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import Header from './components/Header';
+import Header from './components/layouts/Header';
+import Footer from './components/layouts/Footer';
 import Favorites from './pages/Favorites';
 import Home from './pages/Home'
 import Cart from './pages/Cart'
@@ -18,6 +19,7 @@ function App() {
           <Route path="/cart" element={<Cart />} />
           <Route path="/product/:id" element={<Product/>} />
         </Routes>
+        <Footer />
       </div>
     </BrowserRouter>
   );
