@@ -1,0 +1,14 @@
+.button {
+    cursor: pointer;
+    background-color: var(--light-green);
+    outline: transparent;
+    border: transparent;
+    color: var(--dark-green);
+    padding: 0.5rem 1.3rem;
+    border-radius: 0.2rem;
+}
+
+.button:hover {
+    background-color: var(--light-green);
+    filter: brightness(1.1);
+}
