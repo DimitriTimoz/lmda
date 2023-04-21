@@ -1,5 +1,5 @@
 import React from 'react';
-import Preview from '../components/Preview';
+import Preview from '../components/products/Preview';
 
 function Home() {
   let products = {

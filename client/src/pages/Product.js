@@ -1,5 +1,5 @@
 import React from "react";
-import ImageViews from "../components/ImageViews";
+import ImageViews from "../components/products/ImageViews";
 import Button from "../components/Button";
 import LikeBtn from "../components/LikeBtn";
 

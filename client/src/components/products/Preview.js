@@ -1,7 +1,7 @@
 import "./Preview.css";
 import React from "react";
 import { Link } from "react-router-dom";
-import LikeBtn from "./LikeBtn";
+import LikeBtn from "../LikeBtn";
 
 export default function Preview({ product }) {
     return (

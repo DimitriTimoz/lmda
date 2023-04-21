@@ -1,16 +1,29 @@
 import React from 'react';
 import Button from '../components/Button';
+import Radio from '../components/Radio';
+import RawPreview from '../components/products/RawPreview';
 
 import "./Cart.css"
-import Radio from '../components/Radio';
 
 function Cart() {
+    let products = [{
+        image: "/previews/preview.png",
+        name: "T-shirt",
+        size: "M",
+        state: "Très bon",
+        price: 20,
+        id: 1
+    }];
+
     return (
         <div className="cart">
             <div className='cart-details'>
                 <div className='cart-products'>
-                    <h3>Commande</h3>
- 
+                    <h3>Commande</h3> 
+                    {products.map((product) => (
+                        <RawPreview product={product}/>
+                    ))}
+
                 </div>
                 <div className='cart-delivery'>
                     <h3>Livraison</h3>
