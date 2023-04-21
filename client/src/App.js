@@ -9,6 +9,17 @@ import Product from './pages/Product'
 import './App.css';
 
 function App() {
+  let products = [
+    {
+      pid : 1,
+      name : "T-shirt",
+      price : 20,
+      size : "M",
+      state : "Très bon",
+      image : "/previews/preview.png"
+    }
+  ];
+  
   return (
     <BrowserRouter>
       <div className="App">

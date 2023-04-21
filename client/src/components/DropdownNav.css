@@ -12,12 +12,18 @@
     margin: 0px 0.5rem;
 }
 
+.dp-category {
+    position: fixed;
+    text-transform: uppercase;
+    cursor: pointer;
+    display: flex;
+}
+
 .dropdown-menu {
 
 }
 
 .dp-elements {
-    position: fixed;
     background-color: var(--light-gray);
     width: 100%;
     list-style: none;
