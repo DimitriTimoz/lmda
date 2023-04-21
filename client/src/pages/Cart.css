@@ -52,3 +52,31 @@
 .cart-payment {
 
 }
+
+/* Summary */
+.cart-summary h4 {
+    color: var(--dark-green);
+    font-size: 1.4rem;
+    font-family: 'Roboto' sans-serif;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+.summary {
+    width: 100%;
+}
+
+.summary td {
+    padding-bottom: 0.5rem;
+    font-size: 1.2rem;
+}
+
+.summary td:last-child {
+    padding-left: 4rem;
+    text-align: right;
+}
+
+.valid-button {
+    width: 100%;
+    margin-top: 1rem;
+}

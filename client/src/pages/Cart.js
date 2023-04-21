@@ -49,7 +49,7 @@ function Cart() {
                 </div>
             </div>
             <div className='cart-summary'>
-                <h4>Récapitulatif</h4>
+                <h4>Résumé de votre commande</h4>
                 <table className='summary'>
                     <tr>
                         <td>Commande</td>
@@ -64,7 +64,7 @@ function Cart() {
                         <td>0 €</td>
                     </tr>
                 </table>
-                <Button title="Valider" />
+                <Button title="Valider" className={"valid-button"} />
             </div>
         </div>
     );
