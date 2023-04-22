@@ -62,11 +62,6 @@ export default class Dropdown extends React.Component {
         this.forceUpdate();
     }
 
-    decrementFilter() {
-       // this.filter = this.filter.split(":").slice(0, -1).join(":");
-       // this.filter_level--;
-    }
-
     getListAtLevel(level) {
         let filters = this.filters.split(":");
         if (level > filters.length + 1) {
