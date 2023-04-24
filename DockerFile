@@ -1,0 +1,51 @@
+# Installer la dernière version de Node.js
+FROM node:latest AS builder
+
+# Définir le répertoire de travail
+WORKDIR /app
+
+# Copier les fichiers package.json et package-lock.json
+COPY package*.json ./
+
+# Installer les dépendances
+RUN npm install
+
+# Copier les fichiers de l'application
+COPY . .
+
+# Exécuter la construction de l'application
+RUN npm run build
+
+# Définir l'image de base
+FROM node:latest
+
+# Définir le répertoire de travail
+WORKDIR /app
+
+# Copier les fichiers package.json et package-lock.json
+COPY package*.json ./
+
+# Installer les dépendances
+RUN npm install --only=production
+
+# Copier les fichiers de l'application
+COPY --from=builder /app/build /app/public
+COPY --from=builder /app/server /app/server
+
+# Installer PostgreSQL
+RUN apt-get update && apt-get install -y postgresql postgresql-contrib
+
+# Copier le fichier de configuration PostgreSQL
+COPY pg_hba.conf /etc/postgresql/13/main/pg_hba.conf
+
+# Exposer le port PostgreSQL
+# EXPOSE 5432
+
+# Exposer le port de l'application
+EXPOSE 5001
+
+# Ajouter un volume pour la base de données
+VOLUME ["/var/lib/postgresql/data"]
+
+# Démarrer le serveur PostgreSQL
+CMD service postgresql start && su postgres -c "createdb my_database && psql my_database < schema.sql" && npm start

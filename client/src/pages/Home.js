@@ -11,8 +11,6 @@ function Home() {
   }
   return (
     <div>
-        <p>Home</p>
-        <p>Home</p>
         <Preview product={products}/>
     </div>
   );
