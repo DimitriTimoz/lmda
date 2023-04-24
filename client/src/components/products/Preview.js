@@ -12,8 +12,8 @@ export default function Preview({ product }) {
             <div className="preview-details">
                 <span>{product.price} €</span>
                 <div className="preview-like-size">
-                    <span>{product.size}</span>
-                    <LikeBtn pid={product.id} isFavorite={false} onToggleFavorite={()=>{}} />
+                    <span className="product-size">{product.size}</span>
+                    <LikeBtn pid={product.id} className="product-like" isFavorite={false} onToggleFavorite={()=>{}} />
                 </div>
             </div>
         </div>

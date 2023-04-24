@@ -19,3 +19,14 @@
     margin: auto 0px;
 }
 
+.preview-like-size {
+    display: flex;
+}
+
+.preview .product-size {
+    line-height: 1rem;
+}
+
+.product-like {
+    height: 1rem;
+}

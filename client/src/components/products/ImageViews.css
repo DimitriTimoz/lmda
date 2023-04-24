@@ -4,8 +4,6 @@
     grid-template-rows: repeat(2, 1fr);
     overflow: hidden;
     grid-gap: 0.5rem;
-    width: 50%;
-
 }
 
 .image-views-image {
