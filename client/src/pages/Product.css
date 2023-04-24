@@ -42,14 +42,19 @@
     margin-top: 0.6rem;
 }
 
-.product-like {
-    margin-left: 1.0rem;
-}
-
 .product-details td {
     color: var(--dark-green);
     text-transform: uppercase;
     font-family: 'Roboto' sans-serif;
     font-weight: 500;
     padding-right: 1.0rem;
+}
+
+@media screen and (max-width: 700px) {
+    .product {
+        flex-direction: column;
+    }
+    .product-block {
+        width: 100%;
+    }
 }
