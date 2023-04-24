@@ -25,3 +25,19 @@ const port = process.env.PORT || 5001;
 app.listen(port);
 
 console.log(`App is listening on port ${port}`);
+
+/*const { Pool } = require('pg');
+
+const pool = new Pool({
+  user: 'utilisateur',
+  host: 'localhost',
+  database: 'ma_base_de_donnees',
+  password: 'mon_mot_de_passe',
+  port: 5432,
+});
+
+pool.query('SELECT NOW()', (err, res) => {
+  console.log(err, res);
+  pool.end();
+});*/
+
