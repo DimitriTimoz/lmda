@@ -3,7 +3,6 @@ const pool = require('../db');
 const selectAll = async () => {
     try {
       const result = await pool.query("SELECT * FROM products");
-      console.log("print: ", result.rows);
       return result.rows;
     } catch (err) {
       console.error("error", err);
