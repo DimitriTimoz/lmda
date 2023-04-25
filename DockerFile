@@ -1,51 +1,23 @@
-# Installer la dernière version de Node.js
-FROM node:latest AS builder
-
-# Définir le répertoire de travail
-WORKDIR /app
-
-# Copier les fichiers package.json et package-lock.json
-COPY package*.json ./
-
-# Installer les dépendances
-RUN npm install
-
-# Copier les fichiers de l'application
-COPY . .
-
-# Exécuter la construction de l'application
-RUN npm run build
-
-# Définir l'image de base
+# Base image
 FROM node:latest
 
-# Définir le répertoire de travail
+# Create app directory
 WORKDIR /app
 
-# Copier les fichiers package.json et package-lock.json
-COPY package*.json ./
+# Copy package.json and package-lock.json for both client and server
+COPY client/package*.json ./client/
+COPY server/package*.json ./server/
 
-# Installer les dépendances
-RUN npm install --only=production
+# Install dependencies for both client and server
+RUN cd client && npm install
+RUN cd server && npm install
 
-# Copier les fichiers de l'application
-COPY --from=builder /app/build /app/public
-COPY --from=builder /app/server /app/server
+# Copy the source code for both client and server
+COPY client/ ./client/
+COPY server/ ./server/
 
-# Installer PostgreSQL
-RUN apt-get update && apt-get install -y postgresql postgresql-contrib
-
-# Copier le fichier de configuration PostgreSQL
-COPY pg_hba.conf /etc/postgresql/13/main/pg_hba.conf
-
-# Exposer le port PostgreSQL
-# EXPOSE 5432
-
-# Exposer le port de l'application
+# Expose the server port
 EXPOSE 5001
 
-# Ajouter un volume pour la base de données
-VOLUME ["/var/lib/postgresql/data"]
-
-# Démarrer le serveur PostgreSQL
-CMD service postgresql start && su postgres -c "createdb my_database && psql my_database < schema.sql" && npm start
+# Start the React development server and the ExpressJS server
+CMD cd client && npm run start & cd server && node index.js

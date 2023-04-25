@@ -28,18 +28,30 @@ app.listen(port);
 
 console.log(`App is listening on port ${port}`);
 
-/*const { Pool } = require('pg');
+const { Pool } = require('pg');
 
 const pool = new Pool({
-  user: 'utilisateur',
-  host: 'localhost',
-  database: 'ma_base_de_donnees',
-  password: 'mon_mot_de_passe',
+  user: 'user',
+  host: 'db',
+  database: 'dbname',
+  password: 'password',
   port: 5432,
 });
 
-pool.query('SELECT NOW()', (err, res) => {
-  console.log(err, res);
-  pool.end();
-});*/
+pool.connect((connectErr, client, release) => {
+  if (connectErr) {
+    console.error('Error connecting to the database:', connectErr);
+    return;
+  }
 
+  client.query('SELECT NOW()', (queryErr, res) => {
+    release();
+    
+    if (queryErr) {
+      console.error('Error executing query:', queryErr);
+      return;
+    }
+
+    console.log('Current timestamp:', res.rows[0].now);
+  });
+});

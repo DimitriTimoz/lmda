@@ -46,4 +46,8 @@ export class Product {
     getPhotos() {
         return this.photos;
     }
+
+    getShortProduct() {
+        return new ShortProduct(this.pid, this.name, this.price, this.size, this.photos[0]);
+    }
 }
