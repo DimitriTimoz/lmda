@@ -1,5 +1,18 @@
+const pool = require('../db');
 
-export class ShortProduct {
+const selectAll = async () => {
+    try {
+      const result = await pool.query("SELECT * FROM products");
+      console.log("print: ", result.rows);
+      return result.rows;
+    } catch (err) {
+      console.error("error", err);
+      return [];
+    }
+};
+  
+
+class ShortProduct {
     constructor(pid, name, price, size, preview_photo) {
         this.pid = pid;
         this.name = name;
@@ -11,7 +24,7 @@ export class ShortProduct {
 }
 
 
-export class Product {
+class Product {
     constructor(pid, name, description, price, size, state, photos, date) {
         this.pid = pid;
         this.name = name;
@@ -21,6 +34,10 @@ export class Product {
         this.photos = photos;
         this.date = date;
         this.description = description;
+
+        if (photos && photos.length > 0) {
+            this.preview_photo = photos[0];
+        }
     }
 
     getPid() {
@@ -51,3 +68,5 @@ export class Product {
         return new ShortProduct(this.pid, this.name, this.price, this.size, this.photos[0]);
     }
 }
+
+module.exports = { ShortProduct, Product };
