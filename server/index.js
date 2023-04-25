@@ -28,15 +28,7 @@ app.listen(port);
 
 console.log(`App is listening on port ${port}`);
 
-const { Pool } = require('pg');
-
-const pool = new Pool({
-  user: 'user',
-  host: 'db',
-  database: 'dbname',
-  password: 'password',
-  port: 5432,
-});
+const pool = require('./db');
 
 pool.connect((connectErr, client, release) => {
   if (connectErr) {

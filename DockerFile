@@ -1,5 +1,5 @@
 # Base image
-FROM node:latest
+FROM node:lts
 
 # Create app directory
 WORKDIR /app
@@ -20,4 +20,4 @@ COPY server/ ./server/
 EXPOSE 5001
 
 # Start the React development server and the ExpressJS server
-CMD cd client && npm run start & cd server && node index.js
+CMD cd client && npm run start & cd server && npm run migrate up && node index.js
