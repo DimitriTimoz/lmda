@@ -14,26 +14,15 @@ const selectAll = async () => {
 };
   
   
-const insertOne = async () => {
-    try {
-      const result = await pool.query("INSERT INTO products (name, description, price, size, kind, state, photos, date) VALUES ('test', 'test', 1, 1, 'test', 1, '{test}', '2020-01-01')")
-      console.log(result.rows);
-      return result.rows;
-    } catch (err) {
-      console.error(err);
-      return [];
-    }
-};
-  
-insertOne();
 
 
-router.get('/:filter', function(req, res, next){
-    console.log(req.pid);
+router.get('/:filter', async (req, res, next) => {
+    result = await selectAll();
+    console.log(result);
     if(req.params){
-        return res.json({filter: selectAll()});
+        return res.json({products: result});
     } else {
-        return res.json({products: selectAll()});
+        return res.json({products: result});
     }
 });
 
