@@ -1,34 +1,18 @@
 import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import Header from './components/layouts/Header';
 import Footer from './components/layouts/Footer';
-import Favorites from './pages/Favorites';
-import Home from './pages/Home'
-import Cart from './pages/Cart'
-import Product from './pages/Product'
+import Admin from './pages/admin'
+import Index from './pages/Index';
+
 import './App.css';
 
 function App() {
-  let products = [
-    {
-      pid : 1,
-      name : "T-shirt",
-      price : 20,
-      size : "M",
-      state : "Très bon",
-      image : "/previews/preview.png"
-    }
-  ];
-  
   return (
     <BrowserRouter>
       <div className="App">
-        <Header />
         <Routes>
-          <Route exact path="/" element={<Home />} />
-          <Route path="/favorites" element={<Favorites />} />
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/product/:id" element={<Product/>} />
+          <Route path="/*" element={<Index />} />
+          <Route path="/admin/*" element={<Admin />} />
         </Routes>
         <Footer />
       </div>

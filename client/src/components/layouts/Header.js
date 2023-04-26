@@ -3,7 +3,12 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import Dropdown from '../DropdownNav';
 
-export default function Header({ }) {
+export default class Header extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
     let elements = [
           {
             filter: "Vêtements",
@@ -36,7 +41,16 @@ export default function Header({ }) {
             ]
           }
     ];
-    
+    let nav;
+    if (this.props.isAdmin) {
+      nav = <nav></nav>
+    } else {
+      nav = <nav>
+              <Dropdown elements={elements} placeholder={"femmes"} />
+              <Dropdown elements={elements} placeholder={"hommes"} />
+              <Dropdown elements={elements} placeholder={"enfants"} />
+            </nav>
+    }
     return (
      <div>
       <header>
@@ -47,11 +61,8 @@ export default function Header({ }) {
             <Link to="/cart"><img alt="cart" src='/icons/basket.svg'/></Link>
         </div>
       </header>
-      <nav>
-        <Dropdown elements={elements} placeholder={"femmes"} />
-        <Dropdown elements={elements} placeholder={"hommes"} />
-        <Dropdown elements={elements} placeholder={"enfants"} />
-      </nav>
+      {nav}
     </div>
     );
+  }
 }

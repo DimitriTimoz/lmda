@@ -1,7 +1,5 @@
 import './DropdownNav.css';
 import React from 'react';
-import { Link } from 'react-router-dom';
-
 
 function get_filters(elements, prefilter = "") {
     let filters = [];

@@ -16,8 +16,6 @@ export default function Product() {
         id: 1
     }
 
-
-
     return (
         <div>
             <div className="product">
