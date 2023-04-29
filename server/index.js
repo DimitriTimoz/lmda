@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const session = require('express-session');
 
 // Serve the static files from the React app
 const path = require('path');
@@ -10,12 +11,18 @@ const cors = require('cors');
 app.use(bodyParser.json());
 app.use(cors());
 
-app.use(require('./routes'));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-// Endpoint for handling API requests
-app.get('/api', (req, res) => {
-    res.send('API endpoint');
-});
+
+app.use(session({
+  secret : 'webslesson',
+  resave : true,
+  saveUninitialized : true
+}));
+
+
+app.use(require('./routes'));
   
 // Handles any requests that don't match the API endpoint
 app.get('*', (req, res) => {

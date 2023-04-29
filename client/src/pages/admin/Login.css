@@ -12,3 +12,10 @@
     margin: 1.0rem 0px;
     width: 100%;
 }
+
+.login h3 {
+    font-family: 'Roboto' sans-serif;
+    font-weight: 500;
+    font-size: 1.5rem;
+    color: var(--dark-green);
+}
