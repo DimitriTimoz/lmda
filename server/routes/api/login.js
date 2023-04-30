@@ -6,6 +6,9 @@ const bcrypt = require("bcrypt")
 router.post('/', async function(req, res, next){
     const INVALID_IDs = { error: 'Veuillez spécifier un mot de passe et/ou une adresse email.' };
 
+    if (req.session.loggedin) {
+        return res.json({success: 'Vous êtes déjà connecté.'});
+    }
     // Check if pid is valid
     var email = req.body.email;
 
@@ -42,6 +45,14 @@ router.post('/', async function(req, res, next){
         });
     } else {
         return res.json(INVALID_IDs);
+    }
+});
+
+router.get('/', async function(req, res, next){
+    if (req.session.loggedin) {
+        return res.json({success: 'Vous êtes déjà connecté.'});
+    } else {
+        return res.json({error: 'Vous n\'êtes pas connecté.'});
     }
 });
 
