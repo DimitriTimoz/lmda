@@ -8,9 +8,9 @@ function get_filters(elements, prefilter = "") {
       if (prefilter !== "") {
         currentFilter = prefilter + ":" + currentFilter;
       }
-      if (Array.isArray(elements[i].sub)) {
-        let subFilters = get_filters(elements[i].sub, currentFilter);
-        filters = filters.concat(subFilters);
+      if (Array.isArray(elements[i].subs)) {
+        let subsFilters = get_filters(elements[i].subs, currentFilter);
+        filters = filters.concat(subsFilters);
       } else {
         filters.push(prefilter + ":" + elements[i]);
       }
@@ -18,11 +18,11 @@ function get_filters(elements, prefilter = "") {
     return filters;
 }
 
-export default class Dropdown extends React.Component {
-    constructor() {
-        super();
+export default class DropdownNav extends React.Component {
+    constructor(props) {
+        super(props);
         this.state = {active: false};
-        this.filters = "";
+        this.props.filters = "";
         this.filter_level = 1;
         this.dropdownRef = React.createRef(); 
     }
@@ -51,17 +51,17 @@ export default class Dropdown extends React.Component {
         let level = parseInt(e.target.getAttribute("level"));
         let filter = e.target.innerText;
         this.filter_level = level+1;
-        this.filters = this.filters.split(":").slice(0, level-1).join(":");
-        if (this.filters !== "") {
-            this.filters += ":" + filter;
+        this.props.filters = this.props.filters.split(":").slice(0, level-1).join(":");
+        if (this.props.filters !== "") {
+            this.props.filters += ":" + filter;
         } else {
-            this.filters = filter;
+            this.props.filters = filter;
         }
         this.forceUpdate();
     }
 
     getListAtLevel(level) {
-        let filters = this.filters.split(":");
+        let filters = this.props.filters.split(":");
         if (level > filters.length + 1) {
             console.error("Dropdown: Cannot get list at level " + level + " when filter level is " + this.filter_level);
             return [];
@@ -95,9 +95,9 @@ export default class Dropdown extends React.Component {
             // femmes:vêtements:jean
             // -> vêtements:jean if filter is "femmes"
 
-            if (list[i].startsWith(this.filters + ":")) {
-                items.push(list[i].slice(this.filters.length + 1));
-            } else if (this.filters === "") {
+            if (list[i].startsWith(this.props.filters + ":")) {
+                items.push(list[i].slice(this.props.filters.length + 1));
+            } else if (this.props.filters === "") {
                 items.push(list[i]);
             }
         }
@@ -109,7 +109,7 @@ export default class Dropdown extends React.Component {
         this.setState({active: !this.state.active});
         
         if (!this.state.active) {
-            this.filters = "";
+            this.props.filters = "";
             this.filter_level = 1;
         }
     }
@@ -120,7 +120,7 @@ export default class Dropdown extends React.Component {
         let filters = range.map((i) => [i+1, this.getListAtLevel(i+1)]);
         return (
             <div ref={this.dropdownRef} className="dropdown-menu">
-                <div className='dopdown-selector' onClick={() => this.trigger()}>
+                <div className='dropdown-selector' onClick={() => this.trigger()}>
                     <span className={this.state.active ? 'selected-item-dp active' : 'selected-item-dp'}>{this.props.placeholder}</span>
                     <img alt="arrow" className={this.state.active ? 'arrow rotate' : 'arrow'} src='/icons/arrow.svg'/>
                 </div>
@@ -131,7 +131,7 @@ export default class Dropdown extends React.Component {
                             Tout
                         </li>
                         {items[1].map((element) => (
-                            <li key={element} className='dp-eleemnt'>
+                            <li key={element} className='dp-elemnt'>
                                 <div level={items[0]} onClick={this.incrementFilter} className="dropdown-link">
                                     {element}
                                 </div>

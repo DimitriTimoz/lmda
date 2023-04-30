@@ -25,22 +25,14 @@ function Admin() {
         });
 
 
-    let routes = <Routes>
-                        <Route path='/login' element={<Login />} />
-                        <Route path="/" element={<Dashboard />} />
-                        <Route path='/add' element={<Add/>}/>
-                </Routes>
-
-    if (!isAdmin) {
-        routes = <Routes>
-                    <Route path='/login' element={<Login />} />
-                </Routes>
-    }
-
     return (
         <div className="Admin">
             <Header isAdmin={true} />
-            {routes}
+            <Routes>
+                <Route path='/login' element={<Login />} />
+                <Route path="/" element={<Dashboard />} />
+                <Route path='/add' element={<Add/>}/>
+            </Routes>
         </div>
     );
 }

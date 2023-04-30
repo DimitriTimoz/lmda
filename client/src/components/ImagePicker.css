@@ -1,0 +1,19 @@
+.image-picker {
+    width: 10rem;
+    height: 14rem;
+    position: relative;
+    border-radius: 0.3rem;
+    border: 1px solid var(--dark-green);
+}
+
+.image-picker > * {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background-color: transparent;
+}   
+
+.image-picker > input {
+    opacity: 0;
+    cursor: pointer;
+}

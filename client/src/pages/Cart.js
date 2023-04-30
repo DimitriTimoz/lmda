@@ -5,6 +5,7 @@ import RawPreview from '../components/products/RawPreview';
 import { ReactComponentElement } from 'react';
 
 import "./Cart.css"
+import ImagePicker from '../components/ImagePicker';
 
 class Cart extends React.Component {
     constructor(props) {
@@ -23,6 +24,7 @@ class Cart extends React.Component {
 
         return (
             <div className="cart">
+                <ImagePicker/>
                 <div className='cart-details'>
                     <div className='cart-products'>
                         <h3>Commande</h3> 

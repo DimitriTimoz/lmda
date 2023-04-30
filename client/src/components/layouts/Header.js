@@ -1,7 +1,7 @@
 import './Header.css';
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Dropdown from '../DropdownNav';
+import DropdownNav from '../DropdownNav';
 
 export default class Header extends React.Component {
   constructor(props) {
@@ -12,7 +12,7 @@ export default class Header extends React.Component {
     let elements = [
           {
             filter: "Vêtements",
-            sub: [
+            subs: [
               "Jean",
               "Chemises",
               "T-Shirt",
@@ -22,7 +22,7 @@ export default class Header extends React.Component {
           },
           {
             filter: "Chaussures",
-            sub: [
+            subs: [
               "Baskets",
               "Sandales",
               "Bottes",
@@ -32,7 +32,7 @@ export default class Header extends React.Component {
           },
           {
             filter: "Accessoires",
-            sub: [
+            subs: [
               "Sacs",
               "Ceintures",
               "Chapeaux",
@@ -46,9 +46,9 @@ export default class Header extends React.Component {
       nav = <nav></nav>
     } else {
       nav = <nav>
-              <Dropdown elements={elements} placeholder={"femmes"} />
-              <Dropdown elements={elements} placeholder={"hommes"} />
-              <Dropdown elements={elements} placeholder={"enfants"} />
+              <DropdownNav elements={elements} placeholder={"femmes"} />
+              <DropdownNav elements={elements} placeholder={"hommes"} />
+              <DropdownNav elements={elements} placeholder={"enfants"} />
             </nav>
     }
     return (

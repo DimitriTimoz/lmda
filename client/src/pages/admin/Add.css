@@ -1,0 +1,9 @@
+.add {
+    display: flex;
+    flex-direction: column;
+}
+
+.selectors {
+    display: flex;
+    flex-direction: row;
+}
