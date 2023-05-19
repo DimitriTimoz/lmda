@@ -3,7 +3,7 @@ import "./Add.css";
 import Input from "../../components/Input";
 import Button from "../../components/Button";
 import Dropdown from "../../components/Dropdown";
-
+import ImagePicker from "../../components/ImagePicker";
 export default class Add extends React.Component {
     constructor(props) {
         super(props);
@@ -25,6 +25,9 @@ export default class Add extends React.Component {
                     <Dropdown placeholder="etat" elements={sexes}/>
                     <Dropdown placeholder="idk" elements={sexes}/>
                 </div>
+                <ImagePicker utility="preview"/>
+                <ImagePicker utility="view"/>
+                <ImagePicker utility="view"/>
                 <Button title={"Ajouter"}/>
             </div>
         )

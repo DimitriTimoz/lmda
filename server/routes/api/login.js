@@ -1,7 +1,8 @@
 var router = require('express').Router();
-//const { addAdmin } = require('../../database/users');
+const { addAdmin } = require('../../database/users');
 const pool = require('../../db');
 const bcrypt = require('bcryptjs');
+
 router.post('/', async function(req, res, next){
     const INVALID_IDs = { error: 'Veuillez spécifier un mot de passe et/ou une adresse email.' };
 

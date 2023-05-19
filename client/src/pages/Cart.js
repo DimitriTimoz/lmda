@@ -24,7 +24,6 @@ class Cart extends React.Component {
 
         return (
             <div className="cart">
-                <ImagePicker/>
                 <div className='cart-details'>
                     <div className='cart-products'>
                         <h3>Commande</h3> 
