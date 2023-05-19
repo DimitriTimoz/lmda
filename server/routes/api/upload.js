@@ -1,17 +1,16 @@
-const express = require('express');
 const multer = require('multer');
 const sharp = require('sharp');
 const fs = require('fs');
 const path = require('path');
+var router = require('express').Router();
 
-const app = express();
 const upload = multer({ dest: 'uploads/' });
 
 // Redéfinition des dimensions de l'image
 const targetWidth = 300;
 const targetHeight = 200;
 
-app.post('/', upload.single('image'), async (req, res) => {
+router.post('/', upload.single('image'), async (req, res) => {
   try {
     const inputFilePath = req.file.path;
     const outputFileName = `compressed_${req.file.filename}.jpeg`;
@@ -33,3 +32,5 @@ app.post('/', upload.single('image'), async (req, res) => {
     res.status(500).json({ error: 'An error occurred while processing the image' });
   }
 });
+
+module.exports = router;
