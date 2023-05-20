@@ -34,7 +34,6 @@ export default class ImagePicker extends React.Component {
 
       this.setState({ message: res.data.message });
       this.props.value = res.data.id;
-      console.log(res.data.id);
     } catch (err) {
       this.setState({ message: 'An error occurred while uploading the image.' });
     }
