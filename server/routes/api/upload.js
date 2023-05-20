@@ -9,15 +9,15 @@ const upload = multer({ dest: 'uploads/' });
 // Redéfinition des dimensions de l'image
 
 async function addImage(admin_id, filename) {
-  const query = 'INSERT INTO images (author, filename) VALUES ($1, $2)';
+  const query = 'INSERT INTO images (author, filename) VALUES ($1, $2) RETURNING id';
   const values = [admin_id, filename];
 
   try {
-    await pool.query(query, values);
-    return true;
+    let result = await pool.query(query, values);
+    return result.rows[0].id;
   } catch (error) {
     console.error('Error:', error);
-    return false;
+    return 0;
   }
 }
 
@@ -65,14 +65,14 @@ router.post('/', upload.single('image'), async (req, res) => {
       return res.status(500).json({ error: "Une erreur est apparue lors de l'ajout de l'image." });
     }
 
-    let success = await addImage(req.session.id, outputFileName);
-    if (!success) {
+    let id = await addImage(req.session.id, outputFileName);
+    if (id == 0) {
       fs.unlinkSync(outputFilePath); 
       return res.status(500).json({ error: "Une erreur est apparue lors de l'ajout de l'image dans la base de donnée." });
     }
-
     res.status(200).json({
       message: 'Image uploaded, compressed, and resized successfully',
+      id: id,
       compressedImageFile: outputFileName,
     });
   } catch (error) {
