@@ -9,11 +9,12 @@ export default class ImagePicker extends React.Component {
       file: null,
       message: '',
     };
-    this.props.value = '';
+    this.props.src = '';
   }
 
   onFileChange = (e) => {
     this.setState({ file: e.target.files[0] });
+    this.props.src = URL.createObjectURL(e.target.files[0]);
     this.upload(e);
   };
 
@@ -32,6 +33,8 @@ export default class ImagePicker extends React.Component {
       });
 
       this.setState({ message: res.data.message });
+      this.props.value = res.data.id;
+      console.log(res.data.id);
     } catch (err) {
       this.setState({ message: 'An error occurred while uploading the image.' });
     }
@@ -40,7 +43,7 @@ export default class ImagePicker extends React.Component {
   render() {
     return (
       <div className="image-picker">
-        <img src={this.props.value || '/icons/image.svg'} alt="image" />
+        <img src={this.props.src || '/icons/image.svg'} alt="image" />
         <input
           type="file"
           accept="image/*"
