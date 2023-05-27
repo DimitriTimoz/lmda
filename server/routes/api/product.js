@@ -17,5 +17,16 @@ router.get('/:pid', async function(req, res, next){
     }    
 });
 
+router.post('/', async function(req, res, next){
+    // Check if the user is logged in
+    if (!req.session.loggedin) {
+        return res.status(401).json({ error: 'Vous devez être connecté pour ajouter un produit.' });
+    }
+
+    let id = req.session.id;
+    
+
+});
+
 
 module.exports = router;

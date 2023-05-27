@@ -23,7 +23,7 @@ export default class Add extends React.Component {
 
     handleInputChange = (event) => {
         const { name, value } = event.target;
-        console.log(name, value);
+        console.log("name:", name, ", value:", value);
         this.setState({
             [name]: value
         });

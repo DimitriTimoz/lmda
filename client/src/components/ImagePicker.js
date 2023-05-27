@@ -8,15 +8,19 @@ export default class ImagePicker extends React.Component {
       active: false,
       file: null,
       message: '',
+      src: '',
+      value: '',
     };
     this.props.src = '';
   }
 
   onFileChange = (e) => {
-    this.state.file = e.target.files[0];
-    this.setState({ file: e.target.files[0] });
-    this.props.src = URL.createObjectURL(e.target.files[0]);
-    this.upload(e);
+    this.setState({ 
+      file: e.target.files[0],
+      src: URL.createObjectURL(e.target.files[0]),
+    }, () => {
+      this.upload(e);  
+    });
   };
 
   upload = async (e) => {
@@ -31,27 +35,33 @@ export default class ImagePicker extends React.Component {
         },
       });
 
-      if (res.data.success) {
-        this.setState({ message: 'Image uploaded successfully.' });
-      }
+      this.setState({ 
+        message: res.data.message,
+        src: "/uploads/" +  res.data.compressedImageFile,
+        value: res.data.id
+      }, () => {
+        let event = {
+          target: {
+            name: this.props.name,
+            value: this.state.value,
+          },
+        };
+        this.props.onChange(event);  
+      });
 
-      this.setState({ message: res.data.message });
-      this.props.value = res.data.id;
-      this.props.src = "/uploads/" +  res.data.compressedImageFile;
     } catch (err) {
       this.setState({ message: 'An error occurred while uploading the image.' });
     }
   };
 
   render() {
-    let src = this.props.src || '/icons/image.svg';
+    let src = this.state.src || '/icons/image.svg';
     return (
       <div className="image-picker">
         <img src={src} alt="image" />
         <input
           type="file"
           accept="image/*"
-          name={this.props.name}
           onChange={this.onFileChange}
         />
       </div>
