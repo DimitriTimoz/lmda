@@ -78,8 +78,9 @@ export default class DropdownNav extends React.Component {
             this.filters += ":" + filter;
         } else {
             this.filters = filter;
-            this.returnFilters();
         }
+        this.returnFilters();
+
         this.setState({
             selection: this.filters,
         });

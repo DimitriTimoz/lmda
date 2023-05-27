@@ -11,7 +11,9 @@ export default class Add extends React.Component {
         this.state = {
             productName: "",
             description: "",
-            price: "",
+            price: 0,
+            homeDeliveryPrice: 0,
+            relayDeliveryPrice: 0,
             specificCategory: "",
             previewImage: "",
             viewImage1: "",
@@ -49,11 +51,11 @@ export default class Add extends React.Component {
             <div className="add">
                 <form className="form" onSubmit={this.submit}>
                     <h3>Nouveau</h3>
-                    <Input placeholder="Nom du produit" name="productName" onChange={this.handleInputChange} value={this.state.productName}/>
-                    <Input type="textarea" placeholder="Description" name="description" onChange={this.handleInputChange} value={this.state.description}/>
-                    <Input type="number" placeholder="Prix" name="price" onChange={this.handleInputChange} value={this.state.price}/>
-                    <Input type="number" placeholder="Frais de port à domicile" name="price" onChange={this.handleInputChange} value={this.state.price}/>
-                    <Input type="number" placeholder="Frais de port en point relais" name="price" onChange={this.handleInputChange} value={this.state.price}/>
+                    <Input placeholder="Nom du produit" name="productName" onChange={this.handleInputChange} />
+                    <Input type="textarea" placeholder="Description" name="description" onChange={this.handleInputChange} />
+                    <Input type="number" placeholder="Prix" name="price" onChange={this.handleInputChange} />
+                    <Input type="number" placeholder="Frais de port à domicile" name="homeDeliveryPrice" onChange={this.handleInputChange} />
+                    <Input type="number" placeholder="Frais de port en point relais" name="relayDeliveryPrice" onChange={this.handleInputChange} />
 
                     <div className="selectors">
                         <DropdownNav placeholder="Categorie" classicDpd={true} name="categorie" onChange={this.onCategoryChange} elements={categories} />
