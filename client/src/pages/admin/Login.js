@@ -35,8 +35,11 @@ export default class Login extends React.Component {
 
         axios.post('/api/login', { email, password })
             .then(response => {
-                // Code à exécuter en cas de succès
-                console.log(response.data);
+                if (response.status === 200) {
+                    // Redirect to admin page
+                    window.location.href = "/admin/add";
+                }
+                
             })
             .catch(error => {
                 // Code à exécuter en cas d'erreur

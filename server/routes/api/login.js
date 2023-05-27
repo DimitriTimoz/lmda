@@ -4,7 +4,7 @@ const pool = require('../../db');
 const bcrypt = require('bcryptjs');
 
 router.post('/', async function(req, res, next){
-    const INVALID_IDs = { error: 'Veuillez spécifier un mot de passe et/ou une adresse email.' };
+    const INVALID_IDs = { error: 'Veuillez spécifier un mot de passe et une adresse email corrects.' };
 
     if (req.session.loggedin) {
         return res.json({success: 'Vous êtes déjà connecté.'});
@@ -13,7 +13,6 @@ router.post('/', async function(req, res, next){
     var email = req.body.email;
 
     var password = req.body.password;
-
     if (email && password) {
         // Check if the user exists
         pool.query('SELECT * FROM admins WHERE email = $1', [email], function(error, results, fields) {

@@ -13,14 +13,13 @@ export default class ImagePicker extends React.Component {
   }
 
   onFileChange = (e) => {
+    this.state.file = e.target.files[0];
     this.setState({ file: e.target.files[0] });
     this.props.src = URL.createObjectURL(e.target.files[0]);
     this.upload(e);
   };
 
   upload = async (e) => {
-    e.preventDefault();
-
     const formData = new FormData();
     formData.append('image', this.state.file);
     formData.append('utility', this.props.type || 'preview');
@@ -32,21 +31,28 @@ export default class ImagePicker extends React.Component {
         },
       });
 
+      if (res.data.success) {
+        this.setState({ message: 'Image uploaded successfully.' });
+      }
+
       this.setState({ message: res.data.message });
       this.props.value = res.data.id;
+      this.props.src = "/uploads/" +  res.data.compressedImageFile;
     } catch (err) {
       this.setState({ message: 'An error occurred while uploading the image.' });
     }
   };
 
   render() {
+    let src = this.props.src || '/icons/image.svg';
     return (
       <div className="image-picker">
-        <img src={this.props.src || '/icons/image.svg'} alt="image" />
+        <img src={src} alt="image" />
         <input
           type="file"
           accept="image/*"
-          onChange={this.props.onChange ? this.props.onChange : this.onFileChange}
+          name={this.props.name}
+          onChange={this.onFileChange}
         />
       </div>
     );

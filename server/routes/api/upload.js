@@ -34,8 +34,8 @@ router.post('/', upload.single('image'), async (req, res) => {
     const inputFilePath = req.file.path;
     const outputFileName = `compressed_${req.file.filename}.jpeg`;
 
-    let targetWidth = 300;
-    let targetHeight = 200;
+    let targetWidth = 0;
+    let targetHeight = 0;
 
     // Get the utility of the image
     switch (req.body.utility) {
@@ -51,13 +51,12 @@ router.post('/', upload.single('image'), async (req, res) => {
     const outputFilePath = path.join(req.file.destination, outputFileName);
 
     await sharp(inputFilePath)
-      .resize(targetWidth, targetHeight, { fit: 'fill' })
-      .jpeg({ quality: 80 })
+      .rotate()
+      .resize(targetWidth, targetHeight, { fit: 'cover' })
+      .jpeg({ quality: 90 })
       .toFile(outputFilePath);
 
     fs.unlinkSync(inputFilePath); 
-
-    
       
     // Check if the file exists
     if (!fs.existsSync(outputFilePath)) {
@@ -74,6 +73,7 @@ router.post('/', upload.single('image'), async (req, res) => {
       message: 'Image uploaded, compressed, and resized successfully',
       id: id,
       compressedImageFile: outputFileName,
+      success: true,
     });
   } catch (error) {
     console.error('Error:', error);

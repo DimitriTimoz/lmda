@@ -5,6 +5,7 @@ const session = require('express-session');
 // Serve the static files from the React app
 const path = require('path');
 app.use(express.static(path.join(__dirname, '../client/build')));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 const bodyParser = require('body-parser');
 const cors = require('cors');
@@ -28,7 +29,18 @@ app.use(require('./routes'));
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '../client/build/index.html'));
 });
-  
+
+app.get('/uploads/:filename', (req, res) => {
+  const filename = req.params.filename;
+  const filePath = path.join(__dirname, 'uploads', filename);
+
+  res.sendFile(filePath, (err) => {
+    if (err) {
+      console.error('Error sending file:', err);
+      res.status(500).send('Internal Server Error');
+    }
+  });
+});  
   
 const port = process.env.PORT || 5001;
 app.listen(port);

@@ -1,5 +1,5 @@
 module.exports = {
-    database: 'dbname',
+    database: 'lmda',
     user: 'user',
     password: 'password',
     host: 'db',
