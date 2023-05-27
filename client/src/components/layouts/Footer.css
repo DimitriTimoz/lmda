@@ -13,3 +13,8 @@
     color: var(--dark-green);
     text-decoration: underline;
 }
+.footer-bottom {
+    /* fixed bottom */
+    height: 3rem;
+    width: 100%;
+}

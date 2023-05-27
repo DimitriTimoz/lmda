@@ -9,7 +9,8 @@ export default class Login extends React.Component {
         super(props);
         this.state = {
             email: "",
-            password: ""
+            password: "",
+            message: ""
         };
         this.updateEmail = this.updateEmail.bind(this);
         this.updatePassword = this.updatePassword.bind(this);
@@ -38,6 +39,9 @@ export default class Login extends React.Component {
                 if (response.status === 200) {
                     // Redirect to admin page
                     window.location.href = "/admin/add";
+                } else {
+                    // Display error message
+                    this.setState({message: response.data.message});
                 }
                 
             })
@@ -56,6 +60,7 @@ export default class Login extends React.Component {
                     <Input type="email" placeholder={"prenom.nom@example.com"} value={this.state.email} onChange={this.updateEmail.bind(this)}/>
                     <label>Password</label>
                     <Input type="password" placeholder={"Mot de passe"} value={this.state.password} onChange={this.updatePassword.bind(this)}/>
+                    <p className="error-message">{this.state.message}</p>
                     <Button title={"Se connecter"} onClick={this.submit.bind(this)}/>
                 </form>
             </div>

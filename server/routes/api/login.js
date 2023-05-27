@@ -11,7 +11,6 @@ router.post('/', async function(req, res, next){
     }
     // Check if pid is valid
     var email = req.body.email;
-
     var password = req.body.password;
     if (email && password) {
         // Check if the user exists
@@ -35,15 +34,15 @@ router.post('/', async function(req, res, next){
                         req.session.id = user.id;
                         return res.json({success: 'Vous êtes maintenant connecté.'});
                     } else {
-                        return res.json(INVALID_IDs);
+                        return res.status(400).json(INVALID_IDs);
                     }
                 });
             } else {
-                return res.json(INVALID_IDs);
+                return res.status(400).json(INVALID_IDs);
             }
         });
     } else {
-        return res.json(INVALID_IDs);
+        return res.status(400).json(INVALID_IDs);
     }
 });
 
@@ -51,7 +50,7 @@ router.get('/', async function(req, res, next){
     if (req.session.loggedin) {
         return res.json({success: 'Vous êtes déjà connecté.'});
     } else {
-        return res.json({error: 'Vous n\'êtes pas connecté.'});
+        return res.status(400).json({error: 'Vous n\'êtes pas connecté.'});
     }
 });
 

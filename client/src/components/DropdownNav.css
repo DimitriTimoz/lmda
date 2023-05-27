@@ -22,6 +22,7 @@
     border-bottom-left-radius: 1rem;
     border-bottom-right-radius: 1rem;
     background-color: var(--light-gray);
+    z-index: 9999;
 }
 
 .dp-category:first-child {

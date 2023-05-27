@@ -2,6 +2,7 @@ import './Header.css';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import DropdownNav from '../DropdownNav';
+import CAREGORIES_HOMMES from '../../data/index';
 
 export default class Header extends React.Component {
   constructor(props) {
@@ -9,46 +10,15 @@ export default class Header extends React.Component {
   }
 
   render() {
-    let elements = [
-          {
-            filter: "Vêtements",
-            subs: [
-              "Jean",
-              "Chemises",
-              "T-Shirt",
-              "Pull",
-              "Short"
-            ]
-          },
-          {
-            filter: "Chaussures",
-            subs: [
-              "Baskets",
-              "Sandales",
-              "Bottes",
-              "Escarpins",
-              "Mocassins"
-            ]
-          },
-          {
-            filter: "Accessoires",
-            subs: [
-              "Sacs",
-              "Ceintures",
-              "Chapeaux",
-              "Montres",
-              "Portefeuilles"
-            ]
-          }
-    ];
+    
     let nav;
     if (this.props.isAdmin) {
       nav = <nav></nav>
     } else {
       nav = <nav>
-              <DropdownNav elements={elements} placeholder={"femmes"} />
-              <DropdownNav elements={elements} placeholder={"hommes"} />
-              <DropdownNav elements={elements} placeholder={"enfants"} />
+              <DropdownNav elements={CAREGORIES_HOMMES} placeholder={"femmes"} />
+              <DropdownNav elements={CAREGORIES_HOMMES} placeholder={"hommes"} />
+              <DropdownNav elements={CAREGORIES_HOMMES} placeholder={"enfants"} />
             </nav>
     }
     return (

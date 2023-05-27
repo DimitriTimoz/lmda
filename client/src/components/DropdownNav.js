@@ -1,19 +1,24 @@
 import './DropdownNav.css';
 import React from 'react';
 
-function get_filters(elements, prefilter = "") {
+function get_filters(elements, prefilter = "", classicDpd = false) {
     let filters = [];
     for (let i = 0; i < elements.length; i++) {
-      let currentFilter = elements[i].filter;
-      if (prefilter !== "") {
-        currentFilter = prefilter + ":" + currentFilter;
-      }
-      if (Array.isArray(elements[i].subs)) {
-        let subsFilters = get_filters(elements[i].subs, currentFilter);
-        filters = filters.concat(subsFilters);
-      } else {
-        filters.push(prefilter + ":" + elements[i]);
-      }
+        // If element is an object, it has subs
+        if (classicDpd) {
+            filters.push(elements[i]);
+        } else {
+            let currentFilter = elements[i].filter;
+            if (prefilter !== "") {
+                currentFilter = prefilter + ":" + currentFilter;
+            }
+            if (Array.isArray(elements[i].subs)) {
+                let subsFilters = get_filters(elements[i].subs, currentFilter);
+                filters = filters.concat(subsFilters);
+            } else {
+                filters.push(prefilter + ":" + elements[i]);
+            }
+        }
     }
     return filters;
 }
@@ -21,10 +26,26 @@ function get_filters(elements, prefilter = "") {
 export default class DropdownNav extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {active: false};
-        this.props.filters = "";
+        this.state = {
+            active: false,
+            selection: "",
+        };
+        this.filters = "";
         this.filter_level = 1;
         this.dropdownRef = React.createRef(); 
+    }
+
+    returnFilters() {
+        if (this.props.onChange) {
+            this.props.onChange({
+                target: {
+                    name: this.props.name,
+                    value: this.filters
+                }
+                
+            });
+        }
+        
     }
 
     componentDidMount() {
@@ -43,7 +64,7 @@ export default class DropdownNav extends React.Component {
     
 
     getList() {
-        return get_filters(this.props.elements);
+        return get_filters(this.props.elements, "", this.props.classicDpd);
     }
 
     incrementFilter = (e) => {
@@ -51,17 +72,22 @@ export default class DropdownNav extends React.Component {
         let level = parseInt(e.target.getAttribute("level"));
         let filter = e.target.innerText;
         this.filter_level = level+1;
-        this.props.filters = this.props.filters.split(":").slice(0, level-1).join(":");
-        if (this.props.filters !== "") {
-            this.props.filters += ":" + filter;
+        this.filters = this.filters.split(":").slice(0, level-1).join(":");
+        
+        if (this.filters !== "") {
+            this.filters += ":" + filter;
         } else {
-            this.props.filters = filter;
+            this.filters = filter;
+            this.returnFilters();
         }
+        this.setState({
+            selection: this.filters,
+        });
         this.forceUpdate();
     }
 
     getListAtLevel(level) {
-        let filters = this.props.filters.split(":");
+        let filters = this.filters.split(":");
         if (level > filters.length + 1) {
             console.error("Dropdown: Cannot get list at level " + level + " when filter level is " + this.filter_level);
             return [];
@@ -95,9 +121,9 @@ export default class DropdownNav extends React.Component {
             // femmes:vêtements:jean
             // -> vêtements:jean if filter is "femmes"
 
-            if (list[i].startsWith(this.props.filters + ":")) {
-                items.push(list[i].slice(this.props.filters.length + 1));
-            } else if (this.props.filters === "") {
+            if (list[i].startsWith(this.filters + ":")) {
+                items.push(list[i].slice(this.filters.length + 1));
+            } else if (this.filters === "") {
                 items.push(list[i]);
             }
         }
@@ -109,7 +135,7 @@ export default class DropdownNav extends React.Component {
         this.setState({active: !this.state.active});
         
         if (!this.state.active) {
-            this.props.filters = "";
+            this.filters = "";
             this.filter_level = 1;
         }
     }
@@ -125,11 +151,11 @@ export default class DropdownNav extends React.Component {
                     <img alt="arrow" className={this.state.active ? 'arrow rotate' : 'arrow'} src='/icons/arrow.svg'/>
                 </div>
                 <div className={ this.state.active ? 'dp-category' : 'dp-category hide' }>
-                    {filters.map((items) => (
+                    {filters.map((items) => ( items[1].length > 0 &&
                     <ul className="dp-elements">
-                        <li>
+                        {!this.props.classicDpd && <li>
                             Tout
-                        </li>
+                        </li>}
                         {items[1].map((element) => (
                             <li key={element} className='dp-elemnt'>
                                 <div level={items[0]} onClick={this.incrementFilter} className="dropdown-link">

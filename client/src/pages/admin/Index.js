@@ -22,6 +22,9 @@ function Admin() {
         })
         .catch(error => {
             console.error(error.message);
+            if (window.location.pathname !== "/admin/login") {
+                window.location.href = "/admin/login";
+            }
         });
 
 
