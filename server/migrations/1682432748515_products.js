@@ -7,6 +7,7 @@ exports.up = (pgm) => {
         id: {
             type: 'serial',
             primaryKey: true,
+            unique: true,
         },
         name: {
             type: 'varchar(255)',
@@ -16,8 +17,8 @@ exports.up = (pgm) => {
             type: 'text',
             notNull: true,
         },
-        price: {
-            type: 'integer',
+        prices: {
+            type: 'integer[]',
             notNull: true,
         },
         size: { 
