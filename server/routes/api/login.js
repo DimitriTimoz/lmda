@@ -21,7 +21,6 @@ router.post('/', async function(req, res, next){
 
             if (results && results.rowCount > 0) {
                 const user = results.rows[0];
-
                 // Compare the password
                 bcrypt.compare(password, user.password, function(err, match) {
                     if (err) {
@@ -31,7 +30,7 @@ router.post('/', async function(req, res, next){
                     if (match) {
                         req.session.loggedin = true;
                         req.session.email = email;
-                        req.session.id = user.id;
+                        req.session.uid = user.id;
                         return res.json({success: 'Vous êtes maintenant connecté.'});
                     } else {
                         return res.status(400).json(INVALID_IDs);

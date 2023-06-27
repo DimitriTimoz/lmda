@@ -82,9 +82,9 @@ export default class Add extends React.Component {
 
     render() {
         let categories = [
-            "Homme",
-            "Femme",
-            "Enfant",
+            "homme",
+            "femme",
+            "enfant",
         ];
         return (
             <div className="add">
@@ -105,7 +105,11 @@ export default class Add extends React.Component {
                         <option value="5">Mauvais</option>
                     </select>
                     <div className="selectors">
-                        <DropdownNav placeholder="Categorie" classicDpd={true} name="category" onChange={this.onCategoryChange} elements={categories} />
+                        <select name="category" id="category" onChange={this.handleInputChange} >
+                            <option value="homme">homme</option>
+                            <option value="femme">femme</option>
+                            <option value="enfant">enfant</option>
+                        </select>
                         <DropdownNav placeholder="Hommes" name="specificCategory" onChange={this.handleInputChange} elements={CAREGORIES_HOMMES} />
                     </div>
                     <div className="images-pickers">

@@ -2,7 +2,7 @@
 var router = require('express').Router();
 const validator = require('validator');
 const { getProduct } = require('../../database/index');
-const { getImage } = require('../../database/images');
+const { getImage, linkImage, getImages, deleteImage } = require('../../database/images');
 
 router.get('/:pid', async function(req, res, next){
     // Check if pid is valid
@@ -23,8 +23,8 @@ router.post('/', async function(req, res, next){
     if (!req.session.loggedin) {
         return res.status(401).json({ error: 'Vous devez être connecté pour ajouter un produit.' });
     }
-    let uid = req.session.id;
-
+    let uid = req.session.uid;
+    console.log("uid", uid);
     // XSS protection
     
     console.log("req.body", req.body);
@@ -56,7 +56,7 @@ router.post('/', async function(req, res, next){
     }
 
     // Check if the category is valid
-    if (pCategory !== 'Homme' && pCategory !== 'Femme' && pCategory !== 'Enfant') {
+    if (pCategory !== 'homme' && pCategory !== 'femme' && pCategory !== 'enfant') {
         return res.status(400).json({ error: 'Veuillez spécifier une catégorie valide.' });
     }
 
@@ -67,16 +67,20 @@ router.post('/', async function(req, res, next){
 
     // Check if the preview image is valid
     // Check if the image exists and the author is the user
-    let images = await getImage(pPreviewImage, uid);
-    if (images === null || images.length === 0) {
+    let image = await getImage(pPreviewImage, uid);
+    if (isNaN(pPreviewImage) || image === null) {
         return res.status(400).json({ error: "L'image envoyée ne semble pas valide. Veuillez vous assurer d'avoir envoyé une image. Sinon veuillez contacter le support." });
-    }
+    } 
+        
 
     // Check if the other images are valid
     // Check if the images exist and the author is the user
     for (let i = 0; i < pOtherImages.length; i++) {
-        images = await getImage(pOtherImages[i], uid);
-        if (images === null || images.length === 0) {
+        if (isNaN(pOtherImages[i]) || pOtherImages[i] === "") {
+            continue
+        }
+        image = await getImage(pOtherImages[i], uid);
+        if (image === null) {
             return res.status(400).json({ error: "L'image envoyée ne semble pas valide. Veuillez vous assurer d'avoir envoyé une image. Sinon veuillez contacter le support." });
         }
     }
@@ -90,25 +94,52 @@ router.post('/', async function(req, res, next){
         return res.status(400).json({ error: 'Veuillez spécifier un état valide.' });
     }
 
-    // Check if images are a number
+    // Check if images are a number and link them to the product
     if (isNaN(pPreviewImage)) {
         return res.status(400).json({ error: 'Veuillez spécifier une image valide.' });
+    } else {
+        pPreviewImage = parseInt(pPreviewImage);
+        try {
+            linkImage(pPreviewImage, req.session.id);
+        } catch (err) {
+            console.log(err);
+            return res.status(500).json({ error: 'Une erreur est survenue lors de l\'ajout de l\'image. Veuillez contacter le support.' });
+        }
     }
 
     for (let i = 0; i < pOtherImages.length; i++) {
         if (isNaN(pOtherImages[i])) {
             return res.status(400).json({ error: 'Veuillez spécifier une image valide.' });
+        } else {
+            pOtherImages[i] = parseInt(pOtherImages[i]);
+            try {
+                linkImage(pOtherImages[i], uid);
+            } catch (err) {
+                console.error(err);
+                return res.status(500).json({ error: 'Une erreur est survenue lors de l\'ajout de l\'image. Veuillez contacter le support.' });
+            }
         }
     }
 
-    
-    // Link the images to the product
-
     // Remove the images of this author that are not used anymore
-
+    let imagesToCheck = await getImages(uid);
+    console.log(imagesToCheck);
+    for (let i = 0; i < imagesToCheck.length; i++) {
+        if (!imagesToCheck[i].linked) {
+            try {
+                if (!await deleteImage(imagesToCheck[i].id, uid)) {
+                    console.log("Error while deleting image", imagesToCheck[i].id);
+                }
+            } catch (err) {
+                console.log(err);
+            }
+        }
+    }
     
 
+    // Add the product to the database
 
+    return res.json({ success: 'Produit ajouté avec succès.' });
 });
 
 
