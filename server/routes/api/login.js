@@ -5,7 +5,6 @@ const bcrypt = require('bcryptjs');
 
 router.post('/', async function(req, res, next){
     const INVALID_IDs = { error: 'Veuillez spécifier un mot de passe et une adresse email corrects.' };
-
     if (req.session.loggedin) {
         return res.json({success: 'Vous êtes déjà connecté.'});
     }

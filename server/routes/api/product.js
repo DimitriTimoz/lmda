@@ -3,6 +3,7 @@ var router = require('express').Router();
 const validator = require('validator');
 const { getProduct } = require('../../database/index');
 const { getImage, linkImage, getImages, deleteImage } = require('../../database/images');
+const { createProduct, updateProduct } = require('../../database/product');
 
 router.get('/:pid', async function(req, res, next){
     // Check if pid is valid
@@ -24,10 +25,9 @@ router.post('/', async function(req, res, next){
         return res.status(401).json({ error: 'Vous devez être connecté pour ajouter un produit.' });
     }
     let uid = req.session.uid;
-    console.log("uid", uid);
+
     // XSS protection
-    
-    console.log("req.body", req.body);
+    let id = req.body.id;
     let pName = validator.escape(req.body.name);
     let pDescription = validator.escape(req.body.description);
     let pPrice = validator.escape(req.body.price);
@@ -137,9 +137,43 @@ router.post('/', async function(req, res, next){
     }
     
 
-    // Add the product to the database
-
-    return res.json({ success: 'Produit ajouté avec succès.' });
+    // Add the product to the database if id is not specified
+    if (id) {
+        try {
+            await updateProduct({
+                id: id,
+                name: pName,
+                description: pDescription,
+                prices: [parseInt(pPrice), parseInt(pHomeDeliveryPrice), parseInt(pRelayDeliveryPrice)],
+                size: parseInt(pSize),
+                kind: pCategory, // 'homme', 'femme', or 'enfant'
+                state: parseInt(pState),
+                photos: [pPreviewImage].concat(pOtherImages),
+                date: new Date(), // current date
+            });
+            return res.json({ success: 'Produit mis à jour avec succès.' });
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({ error: 'Une erreur est survenue lors de la mise à jour du produit. Veuillez contacter le support.' });
+        }
+    } else {
+        try {
+            await createProduct({
+                name: pName,
+                description: pDescription,
+                prices: [parseInt(pPrice), parseInt(pHomeDeliveryPrice), parseInt(pRelayDeliveryPrice)],
+                size: parseInt(pSize),
+                kind: pCategory, // 'homme', 'femme', or 'enfant'
+                state: parseInt(pState),
+                photos: [pPreviewImage].concat(pOtherImages),
+                date: new Date(), // current date
+            });
+            return res.json({ success: 'Produit ajouté avec succès.' });
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({ error: 'Une erreur est survenue lors de l\'ajout du produit. Veuillez contacter le support.' });
+        }
+    }
 });
 
 
