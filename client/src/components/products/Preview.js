@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import LikeBtn from "../LikeBtn";
 
 export default function Preview({ product }) {
-    console.log("Preview", product);
     return (
         <div className="preview">
             <Link to={`/product/${product.id}`}>

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Preview from '../components/products/Preview';
 import axios from 'axios';
+import './Home.css';
 
 function Home() {
   const [products, setProducts] = useState(null);
@@ -26,12 +27,9 @@ function Home() {
 
   if (products === null) {
     return <div>Loading...</div>;
-  } else {
-    console.log("products", products);
-  }
-
+  } 
   return (
-    <div>
+    <div id="product-list">
       {products.map((product) => (
         <Preview product={product} key={product.id} />
       ))}

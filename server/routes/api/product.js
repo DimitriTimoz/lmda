@@ -102,7 +102,7 @@ router.post('/', async function(req, res, next){
         try {
             await linkImage(pPreviewImage, req.session.id);
         } catch (err) {
-            console.log(err);
+            console.error(err);
             return res.status(500).json({ error: 'Une erreur est survenue lors de l\'ajout de l\'image. Veuillez contacter le support.' });
         }
     }
@@ -113,7 +113,6 @@ router.post('/', async function(req, res, next){
         } else {
             pOtherImages[i] = parseInt(pOtherImages[i]);
             try {
-                console.log("linking", pOtherImages[i]);
                 await linkImage(pOtherImages[i], uid);
             } catch (err) {
                 console.error(err);
@@ -124,15 +123,14 @@ router.post('/', async function(req, res, next){
 
     // Remove the images of this author that are not used anymore
     let imagesToCheck = await getImages(uid);
-    console.log(imagesToCheck);
     for (let i = 0; i < imagesToCheck.length; i++) {
         if (!imagesToCheck[i].linked) {
             try {
                 if (!await deleteImage(imagesToCheck[i].id, uid)) {
-                    console.log("Error while deleting image", imagesToCheck[i].id);
+                    console.error("Error while deleting image", imagesToCheck[i].id);
                 }
             } catch (err) {
-                console.log(err);
+                console.error(err);
             }
         }
     }

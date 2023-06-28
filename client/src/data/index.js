@@ -94,7 +94,6 @@ const CAREGORIES_HOMMES = [
         "Montres",
         "Ceintures",
         "Chapeaux",
-        "Montres",
         "Echarpes",
         "Gants",
         "Cravates",
@@ -103,4 +102,109 @@ const CAREGORIES_HOMMES = [
     
 ];
 
-export default CAREGORIES_HOMMES;
+const CAREGORIES_FEMMES = [
+  {
+    filter: "Vêtements",
+    subs: [
+      {
+        filter: "Manteaux",
+        subs: [
+          "Ponchon",
+          "Veste",
+        ]
+      },
+      {
+        filter: "Sweats",
+        subs: [
+          "Gilets",
+          "Polères",
+          "Vestes",
+          "Pull en laine"
+        ]
+      },
+      {
+        filter: "Blazers / Tailleurs",
+        subs: [
+          "Blazers",
+          "Tailleurs complets",
+          "Tailleurs séparés",
+        ]
+      },
+      {
+        filter: "Robes",
+        subs: [
+          "Robes longues",
+          "Robes courtes",
+          "Robes d'occasion",
+          "Robes mi-longues",
+        ]
+      },
+      {
+        filter: "Jupes",
+        subs: [
+          "Jupes longues",
+          "Jupes mi-courtes",
+          "Jupes courtes",
+          "Jupes taille haute",
+        ]
+      },
+      {
+        filter: "Shorts",
+        subs: [
+          "Shorts en jean",
+          "Shorts taille haute",
+          "Short genoux",
+          "Shorts courts",
+          "Pantacourts",
+        ]
+      },
+      {
+        filter: "Maillots de bain",
+        subs: [
+          "Une pièce",
+          "Deux pièces",
+          "Accessoires de plage",
+        ]
+      },
+      {
+        filter: "Sport",
+        subs: [
+          "Shorts",
+          "Brassières",
+          "Pantalons",
+          "Hauts",
+          "Pulls",
+          "Survêtements",
+        ]
+      }
+    ]
+  },
+  {
+    filter: "Chaussures",
+    subs: [
+      "Bottes",
+      "Baskets",
+      "Chaussures plates",
+      "Sandales",
+      "Chaussures à talons",
+      "Chaussons",
+      "Mules",
+    ]
+  },
+  {
+    filter: "Accessoires",
+    subs: [
+      "Bijoux",
+      "Montres",
+      "Ceintures",
+      "Echarpes",
+      "Gants",
+    ]
+  },
+  
+];
+
+module.exports = {
+  CAREGORIES_HOMMES,
+  CAREGORIES_FEMMES
+};

@@ -2,7 +2,7 @@ import './Header.css';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import DropdownNav from '../DropdownNav';
-import CAREGORIES_HOMMES from '../../data/index';
+import {CAREGORIES_HOMMES, CAREGORIES_FEMMES} from '../../data/index';
 
 export default class Header extends React.Component {
   constructor(props) {
@@ -16,7 +16,7 @@ export default class Header extends React.Component {
       nav = <nav></nav>
     } else {
       nav = <nav>
-              <DropdownNav elements={CAREGORIES_HOMMES} placeholder={"femmes"} />
+              <DropdownNav elements={CAREGORIES_FEMMES} placeholder={"femmes"} />
               <DropdownNav elements={CAREGORIES_HOMMES} placeholder={"hommes"} />
               <DropdownNav elements={CAREGORIES_HOMMES} placeholder={"enfants"} />
             </nav>

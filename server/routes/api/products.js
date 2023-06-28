@@ -9,7 +9,6 @@ const selectAll = async () => {
       for (let i = 0; i < rows.length; i++) {
         rows[i].photos = await getImagesFilenames(rows[i].photos);
       }
-      console.log("rows", rows);
       return rows;
     } catch (err) {
       console.error("error", err);

@@ -4,7 +4,7 @@ import Input from "../../components/Input";
 import Button from "../../components/Button";
 import DropdownNav from "../../components/DropdownNav";
 import ImagePicker from "../../components/ImagePicker";
-import CAREGORIES_HOMMES from "../../data";
+import { CAREGORIES_HOMMES, CAREGORIES_ENFANTS, CAREGORIES_FEMMES }from "../../data";
 import axios from 'axios';
 
 export default class Add extends React.Component {
@@ -16,7 +16,7 @@ export default class Add extends React.Component {
             price: 0,
             homeDeliveryPrice: 0,
             relayDeliveryPrice: 0,
-            category: "",
+            category: "femme",
             specificCategory: "",
             previewImage: "",
             viewImage1: "",
@@ -28,7 +28,7 @@ export default class Add extends React.Component {
 
     handleInputChange = (event) => {
         const { name, value } = event.target;
-        console.log("name:", name, ", value:", value);
+
         this.setState({
             [name]: value
         });
@@ -81,11 +81,11 @@ export default class Add extends React.Component {
      
 
     render() {
-        let categories = [
-            "homme",
-            "femme",
-            "enfant",
-        ];
+        let categories = {
+            "homme" : CAREGORIES_HOMMES,
+            "femme" : CAREGORIES_FEMMES,
+            "enfant" : CAREGORIES_ENFANTS,
+        };
         return (
             <div className="add">
                 <form className="form" onSubmit={this.submit}>
@@ -110,7 +110,7 @@ export default class Add extends React.Component {
                             <option value="femme">femme</option>
                             <option value="enfant">enfant</option>
                         </select>
-                        <DropdownNav placeholder="Hommes" name="specificCategory" onChange={this.handleInputChange} elements={CAREGORIES_HOMMES} />
+                        <DropdownNav placeholder={this.state.category} name="specificCategory" onChange={this.handleInputChange} elements={categories[this.state.category]} />
                     </div>
                     <div className="images-pickers">
                         <ImagePicker utility="preview" name="previewImage" onChange={this.handleInputChange} value={this.state.previewImage}/>
