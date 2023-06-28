@@ -118,7 +118,7 @@ export default class Add extends React.Component {
                         <ImagePicker utility="view" name="viewImage2" onChange={this.handleInputChange} value={this.state.viewImage2}/>
                         <ImagePicker utility="view" name="viewImage3" onChange={this.handleInputChange} value={this.state.viewImage2}/>
                     </div>
-                    <Button className={"submit-btn"} type="submit" title={"Ajouter"}/>
+                    <Button className={"submit-btn"} type="submit" title={"Envoyer"}/>
                 </form>
             </div>
         )

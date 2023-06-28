@@ -26,8 +26,13 @@ app.use(session({
 app.use(require('./routes'));
   
 // Handles any requests that don't match the API endpoint
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../client/build/index.html'));
+app.get('*', (req, res, next) => {
+  if (req.url.startsWith('/api')) {
+    // Skip this route for URLs starting with '/api'
+    return next();
+  }
+
+  res.sendFile(path.join(__dirname, '../client/build/index.html'));
 });
 
 app.get('/uploads/:filename', (req, res) => {

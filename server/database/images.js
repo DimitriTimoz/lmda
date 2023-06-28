@@ -37,6 +37,23 @@ async function getImages(author) {
     }
 }
 
+async function getImagesFilenames(ids) {
+    // Pop NaN values
+    ids = ids.filter(id => !isNaN(id));
+    try {
+        const query = `
+            SELECT filename FROM images
+            WHERE id = ANY($1)
+        `;
+        const { rows } = await pool.query(query, [ids]);
+        return rows.map(row => row.filename);
+    } catch (error) {
+        console.error('Error getting images filenames:', error.message);
+        return []
+    }
+}
+
+
 
 async function addImage(admin_id, filename) {
     const query = 'INSERT INTO images (author, filename) VALUES ($1, $2) RETURNING id';
@@ -107,6 +124,7 @@ async function linkImage(id, author) {
 module.exports = {
     getImage,
     getImages,
+    getImagesFilenames,
     addImage,
     linkImage,
     deleteImage

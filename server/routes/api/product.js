@@ -100,7 +100,7 @@ router.post('/', async function(req, res, next){
     } else {
         pPreviewImage = parseInt(pPreviewImage);
         try {
-            linkImage(pPreviewImage, req.session.id);
+            await linkImage(pPreviewImage, req.session.id);
         } catch (err) {
             console.log(err);
             return res.status(500).json({ error: 'Une erreur est survenue lors de l\'ajout de l\'image. Veuillez contacter le support.' });
@@ -113,7 +113,8 @@ router.post('/', async function(req, res, next){
         } else {
             pOtherImages[i] = parseInt(pOtherImages[i]);
             try {
-                linkImage(pOtherImages[i], uid);
+                console.log("linking", pOtherImages[i]);
+                await linkImage(pOtherImages[i], uid);
             } catch (err) {
                 console.error(err);
                 return res.status(500).json({ error: 'Une erreur est survenue lors de l\'ajout de l\'image. Veuillez contacter le support.' });
@@ -145,9 +146,9 @@ router.post('/', async function(req, res, next){
                 name: pName,
                 description: pDescription,
                 prices: [parseInt(pPrice), parseInt(pHomeDeliveryPrice), parseInt(pRelayDeliveryPrice)],
-                size: parseInt(pSize),
+                size: pSize,
                 kind: pCategory, // 'homme', 'femme', or 'enfant'
-                state: parseInt(pState),
+                state: pState,
                 photos: [pPreviewImage].concat(pOtherImages),
                 date: new Date(), // current date
             });
@@ -162,9 +163,9 @@ router.post('/', async function(req, res, next){
                 name: pName,
                 description: pDescription,
                 prices: [parseInt(pPrice), parseInt(pHomeDeliveryPrice), parseInt(pRelayDeliveryPrice)],
-                size: parseInt(pSize),
+                size: pSize,
                 kind: pCategory, // 'homme', 'femme', or 'enfant'
-                state: parseInt(pState),
+                state: pState,
                 photos: [pPreviewImage].concat(pOtherImages),
                 date: new Date(), // current date
             });

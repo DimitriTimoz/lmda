@@ -22,7 +22,7 @@ exports.up = (pgm) => {
             notNull: true,
         },
         size: { 
-            type: 'integer',
+            type: 'varchar(255)',
             notNull: true,
         },
         kind: {
