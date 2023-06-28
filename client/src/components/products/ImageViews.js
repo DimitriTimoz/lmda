@@ -13,12 +13,12 @@ export default class ImageViews extends React.Component {
             <div className="image-views">
                 {this.photos.map((photo, index) => { 
                     if (index === 0) {
-                        return <img src={photo} className="image-views-image main-img"/>
+                        return <img src={'/uploads/' + photo} className="image-views-image main-img"/>
                     } else if (index === 2 && this.photos.length > 3) {
                         let remaining = this.photos.length - 2;
                         return (
                             <div className="image-views-image remaining">
-                                <img src={photo} className="image-views-image"/>
+                                <img src={'/uploads/' + photo} className="image-views-image"/>
                                 <span className="remaining-amount">+ {remaining}</span>
                             </div>
                         );

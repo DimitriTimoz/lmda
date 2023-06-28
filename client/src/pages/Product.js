@@ -5,16 +5,31 @@ import LikeBtn from "../components/LikeBtn";
 
 import "./Product.css";
 
+function formatDate(date) {
+    var d = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+    if (month.length < 2) 
+        month = '0' + month;
+    if (day.length < 2) 
+        day = '0' + day;
+
+    return [day, month, year].join('/');
+}
+
 export default function Product() {
     const product_id = window.location.pathname.split("/")[2];
-    let product = {
-        photos: ["/images/clothes/main_1.png", "/images/clothes/second_1_1.png", "/images/clothes/second_2_1.png", "/images/clothes/second_2_1.png"],
-        name: "T-shirt",
-        size: "M",
-        description: "lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum",
-        price: 20,
-        id: 1
+    const product = JSON.parse(localStorage.getItem("products")).find(
+        (p) => p.id == product_id
+    );
+
+    if (!product) {
+        // TODO: Get the product from the API
+        return <div>Produit introuvable</div>;
     }
+
 
     return (
         <div>
@@ -23,7 +38,7 @@ export default function Product() {
                 <div className="product-block">
                     <div>
                         <h2>{product.name}</h2>
-                        <span className="price">{product.price} €</span>
+                        <span className="price">{product.prices[0]} €</span>
                         <span className="product-description">
                             {product.description}
                         </span>
@@ -34,15 +49,15 @@ export default function Product() {
                         <table className="product-details">
                             <tr>
                                 <td>TAILLE</td>
-                                <td>XL</td>
+                                <td>{product.size}</td>
                             </tr>
                             <tr>
                                 <td>ÉTAT</td>
-                                <td>Très bon</td>
+                                <td>{product.state}</td>
                             </tr>
                             <tr>
                                 <td>Date d'ajout</td>
-                                <td>13/03/2023</td>
+                                <td>{formatDate(product.date)}</td>
                             </tr>
                         </table>
                     </div>

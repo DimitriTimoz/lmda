@@ -12,6 +12,10 @@ function Home() {
         const response = await axios.get('/api/products/all');
         if (Array.isArray(response.data.products)) {
           setProducts(response.data.products);
+          // Save it in the localStorage
+          localStorage.setItem('products', JSON.stringify(response.data.products));
+          // Add a timestamp to the localStorage
+          localStorage.setItem('productsDate', Date.now());
         } else {
           console.error('API response is not an array:', response.data.products);
           setProducts([]);  // Set products to an empty array if the API response is not an array
