@@ -19,50 +19,105 @@ function formatDate(date) {
     return [day, month, year].join('/');
 }
 
-export default function Product() {
-    const product_id = window.location.pathname.split("/")[2];
-    const product = JSON.parse(localStorage.getItem("products")).find(
-        (p) => p.id == product_id
-    );
+export default class Product extends React.Component {
+    constructor(props) {
+        super(props); 
 
-    if (!product) {
-        // TODO: Get the product from the API
-        return <div>Produit introuvable</div>;
+        // Get the product from the local storage
+        const product_id = window.location.pathname.split("/")[2];
+        const products = localStorage.getItem("products");
+        if (products) {
+            this.product = JSON.parse(products).find(
+                (p) => p.id == product_id
+            );
+        } else {
+            this.product = null;
+        }
+
+        // Check if the product is in the cart
+        let in_cart = false;
+        const cart = localStorage.getItem("cart");
+        if (cart) {
+            const cartItems = JSON.parse(cart);
+            // If is in set in_cart to true
+            if (cartItems.find((p) => p.id == product_id)) {
+                in_cart = true;
+            }
+        }
+        this.addTocart = this.addTocart.bind(this);
+        this.viewCart = this.viewCart.bind(this);
+
+        this.state = {
+            in_cart: in_cart,
+        };
     }
 
+    viewCart() {
+        window.location.href = "/cart";
+    }
 
-    return (
-        <div>
-            <div className="product">
-                <ImageViews photos={product.photos}/>
-                <div className="product-block">
-                    <div>
-                        <h2>{product.name}</h2>
-                        <span className="price">{product.prices[0]} €</span>
-                        <span className="product-description">
-                            {product.description}
-                        </span>
-                    </div>
-                    <div>
-                        <Button title="Acheter" className="" onClick="alert(1)" />
-                        <LikeBtn product={product} className="product-like" isFavorite={false} onToggleFavorite={()=>{}} />
-                        <table className="product-details">
-                            <tr>
-                                <td>TAILLE</td>
-                                <td>{product.size}</td>
-                            </tr>
-                            <tr>
-                                <td>ÉTAT</td>
-                                <td>{product.state}</td>
-                            </tr>
-                            <tr>
-                                <td>Date d'ajout</td>
-                                <td>{formatDate(product.date)}</td>
-                            </tr>
-                        </table>
+    addTocart() {
+        const cart = localStorage.getItem("cart");
+        if (this.product) {
+            if (cart) {
+                const cartItems = JSON.parse(cart);
+                // Check if the product is already in the cart
+                if (cartItems.find((p) => p.id == this.product.id)) {
+                    return;
+                }
+                cartItems.push(this.product);
+                localStorage.setItem("cart", JSON.stringify(cartItems));
+            } else {
+                localStorage.setItem("cart", JSON.stringify([this.product]));
+            }
+            this.setState({ in_cart: true });
+        }
+    }
+    
+
+    render() {
+        if (!this.product) {
+            // TODO: Get the product from the API
+            return <div>Produit introuvable</div>;
+        }
+
+        return (
+            <div>
+                <div className="product">
+                    <ImageViews photos={this.product.photos}/>
+                    <div className="product-block">
+                        <div>
+                            <h2>{this.product.name}</h2>
+                            <span className="price">{this.product.prices[0]} €</span>
+                            <span className="product-description">
+                                {this.product.description}
+                            </span>
+                        </div>
+                        <div>
+                            {this.state.in_cart ? 
+                                <Button title="Voir mon pannier" className="" onClick={this.viewCart} />
+                                : 
+                                <Button title="Acheter" className="" onClick={this.addTocart} />}
+                            
+                            <LikeBtn product={this.product} className="product-like" isFavorite={false} onToggleFavorite={()=>{}} />
+                            <table className="product-details">
+                                <tr>
+                                    <td>TAILLE</td>
+                                    <td>{this.product.size}</td>
+                                </tr>
+                                <tr>
+                                    <td>ÉTAT</td>
+                                    <td>{this.product.state}</td>
+                                </tr>
+                                <tr>
+                                    <td>Date d'ajout</td>
+                                    <td>{formatDate(this.product.date)}</td>
+                                </tr>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    );
+        );
+    }
 }
