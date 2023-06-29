@@ -30,9 +30,9 @@ router.post('/', async function(req, res, next){
     let id = req.body.id;
     let pName = validator.escape(req.body.name);
     let pDescription = validator.escape(req.body.description);
-    let pPrice = validator.escape(req.body.price);
-    let pHomeDeliveryPrice = validator.escape(req.body.homeDeliveryPrice);
-    let pRelayDeliveryPrice = validator.escape(req.body.relayDeliveryPrice);
+    let pPrice = req.body.price;
+    let pHomeDeliveryPrice = req.body.homeDeliveryPrice;
+    let pRelayDeliveryPrice = req.body.relayDeliveryPrice;
     let pPreviewImage = req.body.previewImage;
     let pOtherImages = req.body.otherImages;
     let pCategory = validator.escape(req.body.category);
@@ -100,7 +100,7 @@ router.post('/', async function(req, res, next){
     } else {
         pPreviewImage = parseInt(pPreviewImage);
         try {
-            await linkImage(pPreviewImage, req.session.id);
+            await linkImage(pPreviewImage, uid);
         } catch (err) {
             console.error(err);
             return res.status(500).json({ error: 'Une erreur est survenue lors de l\'ajout de l\'image. Veuillez contacter le support.' });
