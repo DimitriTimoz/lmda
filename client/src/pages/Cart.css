@@ -32,8 +32,8 @@
     height: fit-content;
 }
 
-.cart-products {
-
+.cart-products > * {
+    margin: 0.75rem 0px;
 }
 
 .cart-delivery {

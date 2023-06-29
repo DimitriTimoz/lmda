@@ -1,4 +1,5 @@
 const { Product } = require('../models/product');
+const { getImagesFilenames } = require('../database/images');
 
 module.exports.getProduct = async function(pid) {
     const pool = require('../db');
@@ -7,10 +8,22 @@ module.exports.getProduct = async function(pid) {
         if (result.rows.length === 0) {
             return null;
         }
-        return new Product(result.rows[0].id, result.rows[0].name, result.rows[0].description, result.rows[0].price, result.rows[0].size, result.rows[0].state, result.rows[0].photos, result.rows[0].date);
+        return {
+            id: result.rows[0].id,
+            name: result.rows[0].name,
+            description: result.rows[0].description,
+            prices: result.rows[0].prices,
+            size: result.rows[0].size,
+            kind: result.rows[0].kind,
+            state: result.rows[0].state,
+            photo_ids: result.rows[0].photos,
+            photos: await getImagesFilenames(result.rows[0].photos), // updated this line
+            date: result.rows[0].date,
+        }
     } catch (err) {
         console.error("Error for getting the product:", err);
         return null;
     }
 };
+
 

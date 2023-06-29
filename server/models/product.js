@@ -11,24 +11,11 @@ const selectAll = async () => {
 };
   
 
-class ShortProduct {
-    constructor(pid, name, price, size, preview_photo, photos) {
-        this.pid = pid;
-        this.name = name;
-        this.price = price;
-        this.size = size;
-        this.preview_photo = preview_photo;
-        this.photos = photos;
-    }
-
-}
-
-
 class Product {
-    constructor(pid, name, description, price, size, state, photos, date) {
+    constructor(pid, name, description, prices, size, state, photos, date) {
         this.pid = pid;
         this.name = name;
-        this.price = price;
+        this.prices = price;
         this.size = size;
         this.state = state;
         this.photos = photos;
@@ -64,9 +51,7 @@ class Product {
         return this.photos;
     }
 
-    getShortProduct() {
-        return new ShortProduct(this.pid, this.name, this.price, this.size, this.photos[0]);
-    }
+   
 }
 
-module.exports = { ShortProduct, Product };
+module.exports = { Product };

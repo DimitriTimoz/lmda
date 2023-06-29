@@ -35,6 +35,7 @@ function Admin() {
                 <Route path='/login' element={<Login />} />
                 <Route path="/" element={<Dashboard />} />
                 <Route path='/add' element={<Add/>}/>
+                <Route path='/edit/:id' element={<Add/>}/>
             </Routes>
         </div>
     );

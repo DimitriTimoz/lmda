@@ -23,7 +23,7 @@ export default class ImageViews extends React.Component {
                             </div>
                         );
                     } else if (index < 3) {
-                        return <img src={photo} className="image-views-image"/>
+                        return <img src={'/uploads/' + photo} className="image-views-image"/>
                     }
 
                     })

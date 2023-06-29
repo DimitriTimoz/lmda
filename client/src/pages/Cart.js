@@ -10,13 +10,17 @@ class Cart extends React.Component {
        
         this.state = {
             products: [],
-            total: 0,
-            productsTotal: 0,
-            deliveryTotal: 0,
             deliverySystem: 0,
         };
         
         this.handleProductUpdate = this.handleProductUpdate.bind(this);
+        this.changeDeliverySystem = this.changeDeliverySystem.bind(this);
+    }
+
+    changeDeliverySystem = (e) => {
+        this.setState({
+            deliverySystem: parseInt(e.target.value),
+        });
     }
 
     componentDidMount() {
@@ -30,29 +34,27 @@ class Cart extends React.Component {
         if (cart) {
             products = JSON.parse(cart);
         } 
+        
+
+        this.setState({
+            products: products,
+        });
+    }
+    
+    render() {
         // Calculate new totals
         let productsTotal = 0;
         let deliveryTotal = 0;
 
-        products.forEach((product) => {
-            total += product.prices[0];
+        this.state.products.forEach((product) => {
             productsTotal += product.prices[0];
             if (this.state.deliverySystem > 0) {
                 deliveryTotal += product.prices[this.state.deliverySystem];
             }
 
         });
+        let total = productsTotal + deliveryTotal;
 
-        this.setState({
-            products: products,
-            total: total + deliveryTotal,
-            productsTotal: productsTotal,
-            deliveryTotal: deliveryTotal,
-        });
-    }
-    
-    render() {
-        
         return (
             <div className="cart">
                 <div className='cart-details'>
@@ -74,7 +76,10 @@ class Cart extends React.Component {
                                 À domicile
                                 </td>
                                 <td style={{ width: '20%' }}>
-                                <Radio/>
+                                <Radio name="delivery-system" 
+                                    value="0" 
+                                    checked={this.state.deliverySystem === 0}
+                                    onChange={this.changeDeliverySystem} />
                                 </td>
                             </tr>
                             <tr className='delivery-kind'>
@@ -85,7 +90,10 @@ class Cart extends React.Component {
                                 En point relais
                                 </td>
                                 <td style={{ width: '20%' }}>
-                                <Radio/>
+                                <Radio name="delivery-system" 
+                                    value="1" 
+                                    checked={this.state.deliverySystem === 0}
+                                    onChange={this.changeDeliverySystem} />
                                 </td>
                             </tr>
                         </table>
@@ -105,15 +113,15 @@ class Cart extends React.Component {
                     <table className='summary'>
                         <tr>
                             <td>Commande</td>
-                            <td>{this.state.productsTotal} €</td>
+                            <td>{productsTotal} €</td>
                         </tr>
                         <tr>
                             <td>Frais de port</td>
-                            <td>{this.state.deliveryTotal} €</td>
+                            <td>{deliveryTotal} €</td>
                         </tr>
                         <tr>
                             <td>Total</td>
-                            <td>{this.state.total} €</td>
+                            <td>{total} €</td>
                         </tr>
                     </table>
                     <Button title="Valider" className={"valid-button"} />
