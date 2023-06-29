@@ -4,17 +4,19 @@ import React from "react";
 export default class LikeBtn extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {active: false};
         // Check if the product is already liked
+        let active = false;
         if (this.props.pid) {
             let likes = localStorage.getItem("likes");
             if (likes) {
                 likes = JSON.parse(likes);
                 if (likes.includes(this.props.pid)) {
-                    this.state.active = true;
+                    active = true;
                 }
             }
         }
+        this.state = {active: active};
+
     }
 
     trigger() {

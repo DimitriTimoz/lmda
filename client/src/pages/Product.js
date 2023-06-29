@@ -99,7 +99,7 @@ export default class Product extends React.Component {
                                 : 
                                 <Button title="Acheter" className="" onClick={this.addTocart} />}
                             
-                            <LikeBtn product={this.product} className="product-like" isFavorite={false} onToggleFavorite={()=>{}} />
+                            <LikeBtn pid={this.product.id} className="product-like" />
                             <table className="product-details">
                                 <tr>
                                     <td>TAILLE</td>
