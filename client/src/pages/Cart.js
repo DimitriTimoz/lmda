@@ -2,10 +2,7 @@ import React from 'react';
 import Button from '../components/Button';
 import Radio from '../components/Radio';
 import RawPreview from '../components/products/RawPreview';
-import { ReactComponentElement } from 'react';
-
 import "./Cart.css"
-import ImagePicker from '../components/ImagePicker';
 
 class Cart extends React.Component {
     constructor(props) {
@@ -15,11 +12,13 @@ class Cart extends React.Component {
             products: [],
             total: 0,
             productsTotal: 0,
+            deliveryTotal: 0,
+            deliverySystem: 0,
         };
         
         this.handleProductUpdate = this.handleProductUpdate.bind(this);
     }
-    
+
     componentDidMount() {
         this.handleProductUpdate();
     }
@@ -32,23 +31,28 @@ class Cart extends React.Component {
             products = JSON.parse(cart);
         } 
         // Calculate new totals
-        let total = 0;
         let productsTotal = 0;
+        let deliveryTotal = 0;
+
         products.forEach((product) => {
             total += product.prices[0];
             productsTotal += product.prices[0];
+            if (this.state.deliverySystem > 0) {
+                deliveryTotal += product.prices[this.state.deliverySystem];
+            }
+
         });
 
         this.setState({
             products: products,
-            total: total,
+            total: total + deliveryTotal,
             productsTotal: productsTotal,
+            deliveryTotal: deliveryTotal,
         });
     }
     
     render() {
         
-
         return (
             <div className="cart">
                 <div className='cart-details'>
@@ -105,7 +109,7 @@ class Cart extends React.Component {
                         </tr>
                         <tr>
                             <td>Frais de port</td>
-                            <td>0 €</td>
+                            <td>{this.state.deliveryTotal} €</td>
                         </tr>
                         <tr>
                             <td>Total</td>
