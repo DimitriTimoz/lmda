@@ -10,24 +10,40 @@ import ImagePicker from '../components/ImagePicker';
 class Cart extends React.Component {
     constructor(props) {
         super(props);
+
+        // Get the products from the local storage in the cart
+        const cart = localStorage.getItem("cart");
+        if (cart) {
+            this.products = JSON.parse(cart);
+        } else {
+            this.products = null;
+        }
+        
+        let total = 0;
+        let productsTotal = 0;
+        if (this.products) {
+            this.products.forEach((product) => {
+                total += product.prices[0];
+                productsTotal += product.prices[0];
+            });
+        }
+
+        this.state = {
+            products: this.products,
+            total: total,
+            productsTotal: productsTotal,
+        };
     }
     
     render() {
-        let products = [{
-            image: "/previews/preview.png",
-            name: "T-shirt",
-            size: "M",
-            state: "Très bon",
-            price: 20,
-            id: 1
-        }];
+        
 
         return (
             <div className="cart">
                 <div className='cart-details'>
                     <div className='cart-products'>
                         <h3>Commande</h3> 
-                        {products.map((product) => (
+                        {this.state.products.map((product) => (
                             <RawPreview product={product}/>
                         ))}
 
@@ -74,7 +90,7 @@ class Cart extends React.Component {
                     <table className='summary'>
                         <tr>
                             <td>Commande</td>
-                            <td>0 €</td>
+                            <td>{this.state.productsTotal} €</td>
                         </tr>
                         <tr>
                             <td>Frais de port</td>
@@ -82,7 +98,7 @@ class Cart extends React.Component {
                         </tr>
                         <tr>
                             <td>Total</td>
-                            <td>0 €</td>
+                            <td>{this.state.total} €</td>
                         </tr>
                     </table>
                     <Button title="Valider" className={"valid-button"} />
