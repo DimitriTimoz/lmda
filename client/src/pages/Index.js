@@ -5,6 +5,7 @@ import Home from './Home';
 import Favorites from './Favorites';
 import Cart from './Cart';
 import Product from './Product';
+import Products from './Products';
 
 function Index() {
   return (
@@ -15,6 +16,7 @@ function Index() {
             <Route path="/favorites" element={<Favorites />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/product/:id" element={<Product/>} />
+            <Route path="/products/:filter" element={<Products/>} />
         </Routes>
     </div>
   );
