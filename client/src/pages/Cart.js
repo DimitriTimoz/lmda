@@ -10,29 +10,40 @@ import ImagePicker from '../components/ImagePicker';
 class Cart extends React.Component {
     constructor(props) {
         super(props);
+       
+        this.state = {
+            products: [],
+            total: 0,
+            productsTotal: 0,
+        };
+        
+        this.handleProductUpdate = this.handleProductUpdate.bind(this);
+    }
+    
+    componentDidMount() {
+        this.handleProductUpdate();
+    }
 
+    handleProductUpdate = () => {
         // Get the products from the local storage in the cart
         const cart = localStorage.getItem("cart");
+        let products = [];
         if (cart) {
-            this.products = JSON.parse(cart);
-        } else {
-            this.products = null;
-        }
-        
+            products = JSON.parse(cart);
+        } 
+        // Calculate new totals
         let total = 0;
         let productsTotal = 0;
-        if (this.products) {
-            this.products.forEach((product) => {
-                total += product.prices[0];
-                productsTotal += product.prices[0];
-            });
-        }
+        products.forEach((product) => {
+            total += product.prices[0];
+            productsTotal += product.prices[0];
+        });
 
-        this.state = {
-            products: this.products,
+        this.setState({
+            products: products,
             total: total,
             productsTotal: productsTotal,
-        };
+        });
     }
     
     render() {
@@ -44,7 +55,7 @@ class Cart extends React.Component {
                     <div className='cart-products'>
                         <h3>Commande</h3> 
                         {this.state.products.map((product) => (
-                            <RawPreview product={product}/>
+                            <RawPreview product={product} onChange={this.handleProductUpdate}/>
                         ))}
 
                     </div>

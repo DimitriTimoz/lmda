@@ -22,6 +22,7 @@ export default class RawPreview extends React.Component {
                 if (cartItems.find((p) => p.id == this.state.product.id)) {
                     cartItems.splice(cartItems.indexOf(this.state.product), 1);
                     localStorage.setItem("cart", JSON.stringify(cartItems));
+                    this.props.onChange();
                 }
             }
         }
