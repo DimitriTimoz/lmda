@@ -27,7 +27,9 @@ function get_filters(elements, prefilter = "", classicDpd = false) {
 export default class DropdownNav extends React.Component {
     constructor(props) {
         super(props);
+        let selector = this.props.selector || false;
         this.state = {
+            selector: selector,
             active: false,
             selection: "",
             category: this.props.category || "",
@@ -157,7 +159,7 @@ export default class DropdownNav extends React.Component {
                 <div className={ this.state.active ? 'dp-category' : 'dp-category hide' }>
                 {filters.map((items) => ( items[1].length > 0 &&
                 <ul className="dp-elements">
-                    {!this.props.classicDpd && <li>
+                    {!this.state.selector && <li>
                         <Link to={"/products/" + this.state.category + "/" + (items[0] === 0 ? "all" : items[2].toLocaleLowerCase().replace(" ", "-"))}>Tout</Link>
                     </li>}
                     {items[1].map((element) => (

@@ -144,7 +144,7 @@ const Add = (props) => {
                         <option value="femme">femme</option>
                         <option value="enfant">enfant</option>
                     </select>
-                    <DropdownNav placeholder={productState.category} name="specificCategory" onChange={handleInputChange} elements={categories[productState.category]} />
+                    <DropdownNav placeholder={productState.category} slector={false} name="specificCategory" onChange={handleInputChange} elements={categories[productState.category]} />
                 </div>
                 <div className="images-pickers">
                     <ImagePicker utility="preview" name="previewImage" onChange={handleInputChange} value={productState.previewImage}/>

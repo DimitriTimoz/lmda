@@ -1,0 +1,11 @@
+#dashboard {
+    display: flex;
+    justify-content: space-between;
+}
+#dashboard .column {
+    width: 100%;
+}
+
+.column h3 {
+    text-align: center;
+}
