@@ -6,12 +6,14 @@ class Products extends React.Component {
     constructor(props) {
         super(props);
         let filter = this.props.filter;
+        let category = this.props.category;
         if (!filter) {
             filter = "all";
         }
 
         this.state = {
             filter: filter,
+            category: category,
             products: []
         };
     }

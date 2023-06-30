@@ -25,6 +25,7 @@ export default class Product extends React.Component {
 
         // Get the product from the local storage
         const product_id = window.location.pathname.split("/")[2];
+        
         const products = localStorage.getItem("products");
         if (products) {
             this.product = JSON.parse(products).find(

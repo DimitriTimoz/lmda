@@ -16,7 +16,7 @@ function Index() {
             <Route path="/favorites" element={<Favorites />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/product/:id" element={<Product/>} />
-            <Route path="/products/:filter" element={<Products/>} />
+            <Route path="/products/:category/:filter" element={<Products/>} />
         </Routes>
     </div>
   );
