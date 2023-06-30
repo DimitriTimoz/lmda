@@ -6,6 +6,10 @@
     grid-gap: 0.5rem;
 }
 
+.one-image {
+    grid-template-columns: repeat(2, 1fr) !important;
+}
+
 .image-views-image {
     width: 100%;
     height: 100%;

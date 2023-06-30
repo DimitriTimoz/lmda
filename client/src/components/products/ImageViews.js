@@ -10,7 +10,7 @@ export default class ImageViews extends React.Component {
         this.photos = this.props.photos || [];
 
         return (
-            <div className="image-views">
+            <div className={"image-views " + (this.props.photos.length === 1 ? "one-image" : "")}>
                 {this.photos.map((photo, index) => { 
                     if (index === 0) {
                         return <img src={'/uploads/' + photo} className="image-views-image main-img"/>

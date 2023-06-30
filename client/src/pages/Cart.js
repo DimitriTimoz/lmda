@@ -92,21 +92,18 @@ class Cart extends React.Component {
                                 <td style={{ width: '20%' }}>
                                 <Radio name="delivery-system" 
                                     value="1" 
-                                    checked={this.state.deliverySystem === 0}
+                                    checked={this.state.deliverySystem === 1}
                                     onChange={this.changeDeliverySystem} />
                                 </td>
                             </tr>
                         </table>
                     </div>
-                    <div className='cart-adress'>
-                        <h3>Adresse</h3>
-                        <Button title="Ajouter" className={""} />
-
-                    </div>
-                    <div className='cart-payment'>
-                        <h3>Paiement</h3>
-                        <Button title="Ajouter une méthode de paiment" className={""} />
-                    </div>
+                    {this.state.deliverySystem > 0 &&
+                        <div className='cart-adress'>
+                            <h3>Adresse</h3>
+                            <Button title="Ajouter" className={""} />
+                        </div>
+                    }
                 </div>
                 <div className='cart-summary'>
                     <h4>Résumé de votre commande</h4>
@@ -124,7 +121,7 @@ class Cart extends React.Component {
                             <td>{total} €</td>
                         </tr>
                     </table>
-                    <Button title="Valider" className={"valid-button"} />
+                    <Button title="Payer" className={"valid-button"} />
                 </div>
             </div>
         );
