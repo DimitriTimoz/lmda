@@ -3,7 +3,7 @@ var router = require('express').Router();
 const validator = require('validator');
 const { getProduct } = require('../../database/index');
 const { getImage, linkImage, getImages, deleteImage } = require('../../database/images');
-const { createProduct, updateProduct } = require('../../database/product');
+const { createProduct, updateProduct, deleteProduct } = require('../../database/product');
 
 router.get('/:pid', async function(req, res, next){
     // Check if pid is valid
@@ -175,5 +175,38 @@ router.post('/', async function(req, res, next){
     }
 });
 
+// Delete a product
+router.delete('/:id', async (req, res) => {
+    const { id } = req.params;
+    // Check is the user is logged in
+    if (!req.session.uid) {
+        return res.status(401).json({ error: 'Vous devez être connecté pour effectuer cette action.' });
+    }
+
+    // Check if the id is valid
+    if (isNaN(id)) {
+        return res.status(400).json({ error: 'Veuillez spécifier un id valide.' });
+    }
+
+    // Check if the product exists
+    let product = await getProduct(id);
+    if (product === null) {
+        return res.status(400).json({ error: 'Le produit spécifié n\'existe pas.' });
+    }
+
+    // Delete the product
+    try {
+        let pid = await deleteProduct(id);
+        if (pid === null) {
+            return res.status(400).json({ error: 'Le produit spécifié n\'existe pas.' });
+        }
+        
+        return res.json({ success: 'Produit supprimé avec succès.' });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Une erreur est survenue lors de la suppression du produit. Veuillez contacter le support.' });
+    }
+
+});
 
 module.exports = router;
