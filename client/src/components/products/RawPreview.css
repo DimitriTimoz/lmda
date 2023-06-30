@@ -19,6 +19,10 @@
     font-weight: 400;
     font-family: 'Roboto', sans-serif;
     font-weight: bold;
+    max-height: 3ch;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
 }
 
 .raw-preview .p-details {
