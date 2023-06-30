@@ -8,6 +8,7 @@ export default class RawPreview extends React.Component {
         super(props);
         this.state = {
             product: this.props.product,
+            edit: this.props.edit || false,
         };
 
         this.removeFormCart = this.removeFormCart.bind(this);
@@ -35,7 +36,10 @@ export default class RawPreview extends React.Component {
                 <div className="raw-preview-left">
                     <h4 className="p-name" >{this.state.product.name}</h4>
                     <span className="p-details" >{this.state.product.size + " - " + this.state.product.state}</span>
-                    <TxtButton title="Supprimer" className="view-button" onClick={this.removeFormCart} />
+                    <div className="buttons">
+                        {this.state.edit ? <TxtButton title="Modifier" className="view-button" onClick={() => {window.location.href = "/edit/" + this.state.product.id}} /> : null}
+                        <TxtButton title="Supprimer" className="view-button" onClick={this.removeFormCart} />
+                    </div>
                 </div>
                 <span className="price" >{this.state.product.prices[0]}&nbsp;€</span>
             </div>
