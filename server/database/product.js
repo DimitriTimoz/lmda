@@ -19,7 +19,7 @@ async function updateProduct(product) {
   const { id, name, description, prices, size, kind, state, photos, date, specifyCategory } = product;
   const queryString = `
     UPDATE products
-    SET name = $1, description = $2, prices = $3, size = $4, kind = $5, state = $6, photos = $7, date = $8, specifyCategory = $9
+    SET name = $1, description = $2, prices = $3, size = $4, kind = $5, state = $6, photos = $7, date = $8, "specifyCategory" = $9
     WHERE id = $10
     RETURNING *;
   `;

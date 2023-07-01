@@ -20,7 +20,7 @@ export default class Dashboard extends React.Component {
 
     updateProducts = () => {
         // Fetch all products
-        axios.get("/api/products/admin/all").then((res) => {
+        axios.get("/api/products/admin/all/all").then((res) => {
             let products = res.data.products;
             // Get ordrered products
             let products_ordered = products.filter((product) => {

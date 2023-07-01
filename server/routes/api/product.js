@@ -127,6 +127,7 @@ router.post('/', async function(req, res, next){
                 kind: pCategory, // 'homme', 'femme', or 'enfant'
                 state: pState,
                 photos: pPhotosIds,
+                specifyCategory: pSpecifyCategory,
                 date: new Date(), // current date
             });
             return res.json({ success: 'Produit mis à jour avec succès.' });
@@ -144,6 +145,7 @@ router.post('/', async function(req, res, next){
                 kind: pCategory, // 'homme', 'femme', or 'enfant'
                 state: pState,
                 photos: pPhotosIds,
+                specifyCategory: pSpecifyCategory,
                 date: new Date(), // current date
             });
             return res.json({ success: 'Produit ajouté avec succès.' });

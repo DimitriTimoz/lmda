@@ -9,7 +9,7 @@ function Home() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get('/api/products/all');
+        const response = await axios.get('/api/products/all/all');
         if (Array.isArray(response.data.products)) {
           setProducts(response.data.products);
           // Save it in the localStorage

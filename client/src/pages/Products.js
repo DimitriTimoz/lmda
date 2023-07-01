@@ -11,6 +11,10 @@ class Products extends React.Component {
             filter = "all";
         }
 
+        if (!category) {
+            category = "all";
+        }
+
         this.state = {
             filter: filter,
             category: category,
@@ -29,7 +33,7 @@ class Products extends React.Component {
     }
 
     getProducts() {
-        fetch("/api/products/" + this.state.filter)
+        fetch("/api/products/" + this.state.category + "/" + this.state.filter)
             .then((res) => res.json())
             .then((data) => {
                 localStorage.setItem("products", JSON.stringify(data.products));
