@@ -1,4 +1,6 @@
 const pool = require('../db');
+const { deleteImage } = require('./images');
+const { getProduct } = require('./index');
 
 async function createProduct(product) { 
   // get columns names of products table
@@ -27,6 +29,14 @@ async function updateProduct(product) {
 }
 
 async function deleteProduct(id) {
+  // Get the images to delete
+  const product = await getProduct(id);
+  const images = product.photos;
+  // Delete the images
+  for (let i = 0; i < images.length; i++) {
+    await deleteImage(images[i]);
+  }
+  // Delete the product
   const queryString = `
     DELETE FROM products
     WHERE id = $1
