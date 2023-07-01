@@ -35,12 +35,12 @@ router.post('/', async function(req, res, next){
     let pRelayDeliveryPrice = req.body.relayDeliveryPrice;
     let pPhotosIds = req.body.photosIds;
     let pCategory = validator.escape(req.body.category);
-    let pSpecifyCategory = validator.escape(req.body.specificCategory);
+    let pSpecifyCategory = validator.escape(req.body.specifyCategory);
     let pSize = validator.escape(req.body.size);
-    let pState = validator.escape(req.body.state);
+    let pState = req.body.state;
 
     // Check if all fields are filled
-    if (!pName || !pDescription || !pPrice || !pHomeDeliveryPrice || !pRelayDeliveryPrice || !pPhotosIds || !pCategory || !pSpecifyCategory || !pSize) {
+    if (!pName || !pDescription || !pPrice || !pHomeDeliveryPrice || !pRelayDeliveryPrice || !pPhotosIds || !pCategory || !pSize || !pState) {
         return res.status(400).json({ error: 'Veuillez remplir tous les champs.' });
     }
 
@@ -60,8 +60,8 @@ router.post('/', async function(req, res, next){
     }
 
     // Check if the subcategory is valid
-    if (pSpecifyCategory.length === 0) {
-        return res.status(400).json({ error: 'Veuillez spécifier une sous-catégorie.' });
+    if (pSpecifyCategory.length > 1000) {
+        return res.status(400).json({ error: 'Veuillez spécifier une sous-catégorie plus courte (taille anormale).' });
     }   
 
     // Check if the other images are valid

@@ -1,16 +1,17 @@
 const pool = require('../db');
 
-async function createProduct(product) {
-    const { name, description, prices, size, kind, state, photos, date, specifyCategory } = product;
-    const queryString = `
-      INSERT INTO products (name, description, prices, size, kind, state, photos, date, specifyCategory)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-      RETURNING *;
-    `;
-    const values = [name, description, prices, size, kind, state, photos, date, specifyCategory];
-    const res = await pool.query(queryString, values);
-    return res.rows[0]; // Returns the inserted product
-  }
+async function createProduct(product) { 
+  // get columns names of products table
+  const { name, description, prices, size, kind, state, photos, date, specifyCategory } = product;
+  const queryString = `
+    INSERT INTO products (name, description, prices, size, kind, state, photos, date, "specifyCategory")
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    RETURNING *;
+  `;
+  const values = [name, description, prices, size, kind, state, photos, date, specifyCategory];
+  const res = await pool.query(queryString, values);
+  return res.rows[0]; // Returns the inserted product
+}
   
 async function updateProduct(product) {
   const { id, name, description, prices, size, kind, state, photos, date, specifyCategory } = product;

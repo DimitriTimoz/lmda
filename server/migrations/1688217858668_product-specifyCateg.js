@@ -6,13 +6,12 @@ exports.up = pgm => {
     pgm.addColumns('products', {
         specifyCategory: {
             type: 'text',
-            default: "",
-            notNull: true
-        }
-    })
-
+            default: 'none',
+            notNull: false,
+        },
+    });
 };
 
 exports.down = pgm => {
-    pgm.dropColumns('products', ['ordered', 'shipped'])
+    pgm.dropColumns('products', 'specifyCategory');
 };

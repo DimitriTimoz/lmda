@@ -25,6 +25,7 @@ const Add = (props) => {
         photosIds: ["", "", "", ""],
         photosSrc: [],
         size: "",
+        state: "0"
     });
     
     const { id } = useParams();
@@ -46,6 +47,7 @@ const Add = (props) => {
                         specifyCategory: item.specifyCategory,
                         photosIds: item.photo_ids,
                         photosSrc: item.photos,
+                        state: item.state,
                         size: item.size,
                     }));
                 })
@@ -111,7 +113,6 @@ const Add = (props) => {
         "femme" : CAREGORIES_FEMMES,
         "enfant" : CAREGORIES_ENFANTS,
     };
-    console.log(productState.category);
     return (
         <div className="add">
             <form className="form" onSubmit={submit}>
