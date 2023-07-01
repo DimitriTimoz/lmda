@@ -2,7 +2,7 @@ import React from "react";
 import ImageViews from "../components/products/ImageViews";
 import Button from "../components/Button";
 import LikeBtn from "../components/LikeBtn";
-import ImageCarroussel from "../components/products/ImageCarroussel";
+import ImageCarrousel from "../components/products/ImageCarrousel";
 import "./Product.css";
 
 function formatDate(date) {
@@ -88,7 +88,7 @@ export default class Product extends React.Component {
         return (
             <div>
                 <div className="product">
-                    <ImageCarroussel enable={true} photos={photos_paths}/>
+                    <ImageCarrousel enable={true} photos={photos_paths}/>
                     <div className="product-block">
                         <div>
                             <h2>{this.product.name}</h2>

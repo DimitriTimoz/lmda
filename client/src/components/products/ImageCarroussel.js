@@ -1,7 +1,7 @@
 import React from "react";
-import "./ImageCarroussel.css";
+import "./ImageCarrousel.css";
 
-export default class ImageCarroussel extends React.Component {
+export default class ImageCarrousel extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -11,7 +11,7 @@ export default class ImageCarroussel extends React.Component {
 
         this.nextPhoto = this.nextPhoto.bind(this);
         this.prevPhoto = this.prevPhoto.bind(this);
-        this.closeCarroussel = this.closeCarroussel.bind(this);
+        this.closeCarrousel = this.closeCarrousel.bind(this);
     }
 
     componentDidMount() {
@@ -24,7 +24,7 @@ export default class ImageCarroussel extends React.Component {
         });
     }
 
-    closeCarroussel() {
+    closeCarrousel() {
         this.props.enabled = false;
     }
 
@@ -50,20 +50,20 @@ export default class ImageCarroussel extends React.Component {
             return <div></div>;
         }
         return (
-            <div className="image-carroussel">
-                <div className="image-carroussel-main">
-                    <img src={selected_photo} className="image-carroussel-main-image"/>
-                    <div className="image-carroussel-buttons">
-                        <button className="image-carroussel-button" onClick={this.prevPhoto}>{"<"}</button>
-                        <button className="image-carroussel-button" onClick={this.nextPhoto}>{">"}</button>
+            <div className="image-carrousel">
+                <div className="image-carrousel-main">
+                    <img src={selected_photo} className="image-carrousel-main-image"/>
+                    <div className="image-carrousel-buttons">
+                        <button className="image-carrousel-button" onClick={this.prevPhoto}>{"<"}</button>
+                        <button className="image-carrousel-button" onClick={this.nextPhoto}>{">"}</button>
                     </div>
                 </div>
-                <div className="image-carroussel-thumbnails">
+                <div className="image-carrousel-thumbnails">
                     {this.state.photos.map((photo, index) => {
                         if (index === selected) {
-                            return <img src={photo} className="image-carroussel-thumbnail selected" onClick={() => this.selectPhoto(index)}/>
+                            return <img src={photo} className="image-carrousel-thumbnail selected" onClick={() => this.selectPhoto(index)}/>
                         } else {
-                            return <img src={photo} className="image-carroussel-thumbnail" onClick={() => this.selectPhoto(index)}/>
+                            return <img src={photo} className="image-carrousel-thumbnail" onClick={() => this.selectPhoto(index)}/>
                         }
                     }
                     )}
