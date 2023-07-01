@@ -2,7 +2,7 @@ import React from "react";
 import ImageViews from "../components/products/ImageViews";
 import Button from "../components/Button";
 import LikeBtn from "../components/LikeBtn";
-
+import ImageCarroussel from "../components/products/ImageCarroussel";
 import "./Product.css";
 
 function formatDate(date) {
@@ -81,11 +81,14 @@ export default class Product extends React.Component {
             // TODO: Get the product from the API
             return <div>Produit introuvable</div>;
         }
-
+        let photos = this.product.photos.slice(1);
+        let photos_paths = photos.map((photo) => {
+            return '/uploads/' + photo;
+        });
         return (
             <div>
                 <div className="product">
-                    <ImageViews photos={this.product.photos}/>
+                    <ImageCarroussel enable={true} photos={photos_paths}/>
                     <div className="product-block">
                         <div>
                             <h2>{this.product.name}</h2>
