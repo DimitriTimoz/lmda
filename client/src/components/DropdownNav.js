@@ -85,7 +85,6 @@ export default class DropdownNav extends React.Component {
         this.setState({
             selection: this.filters,
         });
-        this.forceUpdate();
     }
 
     getListAtLevel(level) {
@@ -112,7 +111,6 @@ export default class DropdownNav extends React.Component {
             }
         }
         return [items, prefilter];
-        
     }
 
     getAllMatchingFilters() {
