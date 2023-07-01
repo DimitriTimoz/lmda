@@ -38,7 +38,7 @@ export default class Login extends React.Component {
             .then(response => {
                 if (response.status === 200) {
                     // Redirect to admin page
-                    window.location.href = "/admin/add";
+                    window.location.href = "/admin";
                 } else {
                     // Display error message
                     this.setState({message: response.data.message});
