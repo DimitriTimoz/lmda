@@ -8,20 +8,22 @@ import ImagePicker from "../../components/ImagePicker";
 import { CAREGORIES_HOMMES, CAREGORIES_ENFANTS, CAREGORIES_FEMMES }from "../../data";
 import axios from 'axios';
 
+function zip(arrays) {
+    return arrays[0].map((_, i) => [arrays[0][i], arrays[1][i]]);
+}
+
 const Add = (props) => {
     const [productState, setProductState] = useState({
         id: null,  // Add an id field to your state
-        productName: "",
+        name: "",
         description: "",
         price: 0,
         homeDeliveryPrice: 0,
         relayDeliveryPrice: 0,
         category: "femme",
-        specificCategory: "",
-        previewImage: "",
-        viewImage1: "",
-        viewImage2: "",
-        viewImage3: "",
+        specifyCategory: "",
+        photosIds: ["", "", "", ""],
+        photosSrc: [],
         size: "",
     });
     
@@ -29,43 +31,21 @@ const Add = (props) => {
 
     useEffect(() => {
         if (id) {
-            setProductState(prevState => ({ ...prevState, id: id}));
             axios.get(`/api/product/${id}`)
                 .then(response => {
                     // Use the existing item data to set our state
-                    /*{
-                    "id": 70,
-                    "name": "Ava + Viv • 1x Wrap Dress",
-                    "description": " [Offers always welcome!] [I hold bundles for one hour listed for specified &#x27;Vinted customer&#x27;. After that, I will relist those items] [I do not reserve items] [If you offer a price, please be prepared to purchase! 😀] Thank you!",
-                    "prices": [
-                        6,
-                        1,
-                        1
-                    ],
-                    "size": "16",
-                    "kind": "femme",
-                    "state": 1,
-                    "photos": [
-                        "73",
-                        "74",
-                        "75",
-                        "NaN"
-                    ],
-                    "date": "2023-06-29T13:45:36.967Z"
-                }*/
                     const item = response.data;
-                    setProductState(prevState => ({ ...prevState, 
-                        productName: item.name,
+                    setProductState(prevState => ({ 
+                        id: item.id,
+                        name: item.name,
                         description: item.description,
                         price: item.prices[0],
                         homeDeliveryPrice: item.prices[1],
                         relayDeliveryPrice: item.prices[2],
-                        category: item.kind,
-                        specificCategory: item.subCategory,
-                        previewImage: item.photo_ids[0],
-                        viewImage1: item.photo_ids[1],
-                        viewImage2: item.photo_ids[2],
-                        viewImage3: item.photo_ids[3],
+                        category: item.category,
+                        specifyCategory: item.specifyCategory,
+                        photosIds: item.photo_ids,
+                        photosSrc: item.photos,
                         size: item.size,
                     }));
                 })
@@ -75,25 +55,36 @@ const Add = (props) => {
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
+        console.log(productState);
+
         setProductState(prevState => ({
             ...prevState,
             [name]: value
         }));
     }
 
+    const handleImageChange = (index, value) => {
+        let newPhotoIds = [...productState.photosIds]; // copy the array
+        newPhotoIds[index] = value.target.value; // replace the value at index
+    
+        setProductState(prevState => ({
+            ...prevState,
+            photosIds: newPhotoIds
+        }));
+    };
+
     const submit = (event) => {
         event.preventDefault();
         let body = {
             id: productState.id,
-            name: productState.productName,
+            name: productState.name,
             description: productState.description,
             price: productState.price,
             homeDeliveryPrice: productState.homeDeliveryPrice,
             relayDeliveryPrice: productState.relayDeliveryPrice,
-            previewImage: productState.previewImage,
-            otherImages: [productState.viewImage1, productState.viewImage2, productState.viewImage3],
+            photosIds: productState.photosIds,
             category: productState.category,
-            subCategory: productState.specificCategory,
+            specifyCategory: productState.specifyCategory,
             size: productState.size,
             state: productState.state,
         }
@@ -102,7 +93,7 @@ const Add = (props) => {
             .then(response => {
                 if (response.status === 200) {
                     // Redirect to admin page
-                    alert("Produit ajouté");
+                    alert("Produit mis à jour avec succès !");
                 } else {
                     // Display error message
                     this.setState({message: response.data.message});
@@ -120,17 +111,18 @@ const Add = (props) => {
         "femme" : CAREGORIES_FEMMES,
         "enfant" : CAREGORIES_ENFANTS,
     };
+    console.log(productState.category);
     return (
         <div className="add">
             <form className="form" onSubmit={submit}>
                 <h3>Nouveau</h3>
-                <Input placeholder="Nom du produit" name="productName" onChange={handleInputChange} />
-                <Input type="textarea" placeholder="Description" name="description" onChange={handleInputChange} />
-                <Input type="number" placeholder="Prix" name="price" onChange={handleInputChange} />
-                <Input type="number" placeholder="Frais de port à domicile" name="homeDeliveryPrice" onChange={handleInputChange} />
-                <Input type="number" placeholder="Frais de port en point relais" name="relayDeliveryPrice" onChange={handleInputChange} />
-                <Input placeholder="Taille" name="size" onChange={handleInputChange} />
-                <select name="state" id="state" onChange={handleInputChange} >
+                <Input placeholder="Nom du produit" name="name" value={productState.name} onChange={handleInputChange} />
+                <Input type="textarea" placeholder="Description" name="description" value={productState.description} onChange={handleInputChange} />
+                <Input type="number" placeholder="Prix" name="price" value={productState.price} onChange={handleInputChange} />
+                <Input type="number" placeholder="Frais de port à domicile" name="homeDeliveryPrice" value={productState.homeDeliveryPrice} onChange={handleInputChange} />
+                <Input type="number" placeholder="Frais de port en point relais" name="relayDeliveryPrice" value={productState.relayDeliveryPrice} onChange={handleInputChange} />
+                <Input placeholder="Taille" name="size" value={productState.size} onChange={handleInputChange} />
+                <select name="state" id="state" value={productState.state} onChange={handleInputChange} >
                     <option value="0">Nouveau</option>
                     <option value="1">Très bon</option>
                     <option value="2">Bon</option>
@@ -139,19 +131,40 @@ const Add = (props) => {
                     <option value="5">Mauvais</option>
                 </select>
                 <div className="selectors">
-                    <select name="category" id="category" onChange={handleInputChange} >
+                    <select name="category" id="category" value={productState.category} onChange={handleInputChange} >
                         <option value="homme">homme</option>
                         <option value="femme">femme</option>
                         <option value="enfant">enfant</option>
                     </select>
-                    <DropdownNav placeholder={productState.category} slector={false} name="specificCategory" onChange={handleInputChange} elements={categories[productState.category]} />
+                    <DropdownNav placeholder={productState.category} slector={false} name="specifyCategory"  onChange={handleInputChange} elements={categories[productState.category]} />
                 </div>
                 <div className="images-pickers">
-                    <ImagePicker utility="preview" name="previewImage" onChange={handleInputChange} value={productState.previewImage}/>
-                    <ImagePicker utility="view" name="viewImage1" onChange={handleInputChange} value={productState.viewImage1}/>
-                    <ImagePicker utility="view" name="viewImage2" onChange={handleInputChange} value={productState.viewImage2}/>
-                    <ImagePicker utility="view" name="viewImage3" onChange={handleInputChange} value={productState.viewImage2}/>
+                {zip([productState.photosIds, productState.photosSrc]).map((image, index) => {
+                    let src = image[1] ? "/uploads/" + image[1] : "";
+                    if (index === 0) {
+                        return (
+                            <ImagePicker 
+                                key={index}
+                                src={src}
+                                utility="preview" 
+                                name={`viewImage${index}`} 
+                                onChange={(value) => handleImageChange(index, value)}
+                                value={image[0]}
+                            />
+                        )
+                    }
+                    return (
+                    <ImagePicker 
+                        key={index}
+                        src={src}
+                        utility="view" 
+                        name={`viewImage${index}`} 
+                        onChange={(value) => handleImageChange(index, value)}
+                        value={image[0]}
+                    />
+                    )})}
                 </div>
+
                 <Button className={"submit-btn"} type="submit" title={"Envoyer"}/>
             </form>
         </div>

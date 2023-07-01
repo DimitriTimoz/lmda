@@ -33,15 +33,14 @@ router.post('/', async function(req, res, next){
     let pPrice = req.body.price;
     let pHomeDeliveryPrice = req.body.homeDeliveryPrice;
     let pRelayDeliveryPrice = req.body.relayDeliveryPrice;
-    let pPreviewImage = req.body.previewImage;
-    let pOtherImages = req.body.otherImages;
+    let pPhotosIds = req.body.photosIds;
     let pCategory = validator.escape(req.body.category);
-    let pSubCategory = validator.escape(req.body.subCategory);
+    let pSpecifyCategory = validator.escape(req.body.specificCategory);
     let pSize = validator.escape(req.body.size);
     let pState = validator.escape(req.body.state);
 
     // Check if all fields are filled
-    if (!pName || !pDescription || !pPrice || !pHomeDeliveryPrice || !pRelayDeliveryPrice || !pPreviewImage || !pOtherImages || !pCategory || !pSubCategory || !pSize) {
+    if (!pName || !pDescription || !pPrice || !pHomeDeliveryPrice || !pRelayDeliveryPrice || !pPhotosIds || !pCategory || !pSpecifyCategory || !pSize) {
         return res.status(400).json({ error: 'Veuillez remplir tous les champs.' });
     }
 
@@ -61,25 +60,17 @@ router.post('/', async function(req, res, next){
     }
 
     // Check if the subcategory is valid
-    if (pSubCategory.length === 0) {
+    if (pSpecifyCategory.length === 0) {
         return res.status(400).json({ error: 'Veuillez spécifier une sous-catégorie.' });
-    }
-
-    // Check if the preview image is valid
-    // Check if the image exists and the author is the user
-    let image = await getImage(pPreviewImage, uid);
-    if (isNaN(pPreviewImage) || image === null) {
-        return res.status(400).json({ error: "L'image envoyée ne semble pas valide. Veuillez vous assurer d'avoir envoyé une image. Sinon veuillez contacter le support." });
-    } 
-        
+    }   
 
     // Check if the other images are valid
     // Check if the images exist and the author is the user
-    for (let i = 0; i < pOtherImages.length; i++) {
-        if (isNaN(pOtherImages[i]) || pOtherImages[i] === "") {
+    for (let i = 0; i < pPhotosIds.length; i++) {
+        if (isNaN(pPhotosIds[i]) || pPhotosIds[i] === "") {
             continue
         }
-        image = await getImage(pOtherImages[i], uid);
+        image = await getImage(pPhotosIds[i], uid);
         if (image === null) {
             return res.status(400).json({ error: "L'image envoyée ne semble pas valide. Veuillez vous assurer d'avoir envoyé une image. Sinon veuillez contacter le support." });
         }
@@ -95,25 +86,13 @@ router.post('/', async function(req, res, next){
     }
 
     // Check if images are a number and link them to the product
-    if (isNaN(pPreviewImage)) {
-        return res.status(400).json({ error: 'Veuillez spécifier une image valide.' });
-    } else {
-        pPreviewImage = parseInt(pPreviewImage);
-        try {
-            await linkImage(pPreviewImage, uid);
-        } catch (err) {
-            console.error(err);
-            return res.status(500).json({ error: 'Une erreur est survenue lors de l\'ajout de l\'image. Veuillez contacter le support.' });
-        }
-    }
-
-    for (let i = 0; i < pOtherImages.length; i++) {
-        if (isNaN(pOtherImages[i])) {
+    for (let i = 0; i < pPhotosIds.length; i++) {
+        if (isNaN(pPhotosIds[i])) {
             return res.status(400).json({ error: 'Veuillez spécifier une image valide.' });
         } else {
-            pOtherImages[i] = parseInt(pOtherImages[i]);
+            pPhotosIds[i] = parseInt(pPhotosIds[i]);
             try {
-                await linkImage(pOtherImages[i], uid);
+                await linkImage(pPhotosIds[i], uid);
             } catch (err) {
                 console.error(err);
                 return res.status(500).json({ error: 'Une erreur est survenue lors de l\'ajout de l\'image. Veuillez contacter le support.' });
@@ -147,7 +126,7 @@ router.post('/', async function(req, res, next){
                 size: pSize,
                 kind: pCategory, // 'homme', 'femme', or 'enfant'
                 state: pState,
-                photos: [pPreviewImage].concat(pOtherImages),
+                photos: pPhotosIds,
                 date: new Date(), // current date
             });
             return res.json({ success: 'Produit mis à jour avec succès.' });
@@ -164,7 +143,7 @@ router.post('/', async function(req, res, next){
                 size: pSize,
                 kind: pCategory, // 'homme', 'femme', or 'enfant'
                 state: pState,
-                photos: [pPreviewImage].concat(pOtherImages),
+                photos: pPhotosIds,
                 date: new Date(), // current date
             });
             return res.json({ success: 'Produit ajouté avec succès.' });

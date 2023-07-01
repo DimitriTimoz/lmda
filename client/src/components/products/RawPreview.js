@@ -59,7 +59,7 @@ export default class RawPreview extends React.Component {
                     <h4 className="p-name" >{this.state.product.name}</h4>
                     <span className="p-details" >{this.state.product.size + " - " + this.state.product.state}</span>
                     <div className="buttons">
-                        {this.state.edit ? <TxtButton title="Modifier" className="view-button" onClick={() => {window.location.href = "/edit/" + this.state.product.id}} /> : null}
+                        {this.state.edit ? <TxtButton title="Modifier" className="view-button" onClick={() => {window.location.href = "/admin/edit/" + this.state.product.id}} /> : null}
                         <TxtButton title="Supprimer" className="view-button" onClick={this.removeAction} />
                     </div>
                 </div>

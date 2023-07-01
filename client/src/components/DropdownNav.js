@@ -34,7 +34,7 @@ export default class DropdownNav extends React.Component {
             selection: "",
             category: this.props.category || "",
         };
-        this.filters = "";
+        this.filters = this.props.value || "";
         this.filter_level = 1;
         this.dropdownRef = React.createRef(); 
     }
