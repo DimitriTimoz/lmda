@@ -4,14 +4,18 @@ const pool = require('../../db');
 
 const selectAll = async (admin) => {
     try {
-      let query = "SELECT * FROM products";
+      let query = "SELECT id, name, description, prices, size, kind, 'specifyCategory', state, photos, date FROM products WHERE ordered = false AND shipped = false";
       if (admin) {
-        query = "SELECT (id, name, description, prices, size, kind, 'specifyCategory', state, photos, date) FROM products WHERE ordered = false AND delivered = false";
+        query = "SELECT * FROM products";
       }
-      const result = await pool.query("SELECT * FROM products");
+      const result = await pool.query(query);
       rows = result.rows;
       for (let i = 0; i < rows.length; i++) {
-        rows[i].photos = await getImagesFilenames(rows[i].photos);
+        if (rows[i].photos === null) {
+          rows[i].photos = [];
+        } else {
+          rows[i].photos = await getImagesFilenames(rows[i].photos);
+        }
       }
       return rows;
     } catch (err) {

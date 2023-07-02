@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const session = require('express-session');
+const expressSanitizer = require('express-sanitizer');
 
 // Serve the static files from the React app
 const path = require('path');
@@ -14,6 +15,7 @@ app.use(cors());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(expressSanitizer());
 
 
 app.use(session({

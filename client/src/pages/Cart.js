@@ -3,7 +3,7 @@ import Button from '../components/Button';
 import Radio from '../components/Radio';
 import RawPreview from '../components/products/RawPreview';
 import "./Cart.css"
-
+import axios from 'axios';
 class Cart extends React.Component {
     constructor(props) {
         super(props);
@@ -15,6 +15,7 @@ class Cart extends React.Component {
         
         this.handleProductUpdate = this.handleProductUpdate.bind(this);
         this.changeDeliverySystem = this.changeDeliverySystem.bind(this);
+        this.submit = this.submit.bind(this);
     }
 
     changeDeliverySystem = (e) => {
@@ -38,6 +39,46 @@ class Cart extends React.Component {
         this.setState({
             products: products,
         });
+    }
+
+    submit = () => {
+        // Get the products from the local storage in the cart
+        const cart = localStorage.getItem("cart");
+        let products = [];
+        if (cart) {
+            products = JSON.parse(cart);
+        }
+
+        // Get the IDs of the products
+        let products_ids = [];
+        products.forEach((product) => {
+            products_ids.push(product.id);
+        });
+
+        let address = "temp adress";
+        let email = "temp.email@example.com";
+        let phone = "0123456789";
+        // Send the order to the server
+        let body = {
+            products: products_ids,
+            delivery: {
+                address: address,
+            },
+            phone: phone,
+            email: email,
+        };
+        
+        axios.post('/api/order', body)
+            .then((res) => {
+                // If the order was created successfully
+                // Clear the cart
+                if (res.status === 201) {
+                    localStorage.removeItem("cart");
+                }
+                // Redirect to the order page
+                window.location.href = "/order/" + res.data.id;
+            }
+        );
     }
     
     render() {
@@ -120,7 +161,7 @@ class Cart extends React.Component {
                             <td>{total} €</td>
                         </tr>
                     </table>
-                    <Button title="Payer" className={"valid-button"} />
+                    <Button title="Payer" className={"valid-button"} onClick={this.submit} />
                 </div>
             </div>
         );
