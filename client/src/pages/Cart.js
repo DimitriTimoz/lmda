@@ -34,7 +34,6 @@ class Cart extends React.Component {
         if (cart) {
             products = JSON.parse(cart);
         } 
-        
 
         this.setState({
             products: products,

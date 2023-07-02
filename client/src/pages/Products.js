@@ -1,65 +1,44 @@
-import React from "react";
-import { useParams } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useParams, useLocation } from "react-router-dom";
 import Preview from "../components/products/Preview";
 
-class Products extends React.Component {
-    constructor(props) {
-        super(props);
-        let filter = this.props.filter;
-        let category = this.props.category;
-        if (!filter) {
-            filter = "all";
-        }
+function ProductsBase({ products, getProducts }) {
+    useEffect(() => {
+        getProducts();
+    }, [getProducts]);
 
-        if (!category) {
-            category = "all";
-        }
+    return (
+        <div id="products">
+            <h1>Products</h1>
+            {products.map((product) => {
+                return <Preview key={product.id} product={product} />;
+            })}
+        </div>
+    );
+}
 
-        this.state = {
-            filter: filter,
-            category: category,
-            products: []
-        };
-    }
+function Products(props) {
+    const { filter } = useParams();
+    const location = useLocation();
+    const [products, setProducts] = useState([]);
 
-    componentDidMount() {
-        this.getProducts();
-    }
+    let category = props.category || "all";
 
-    componentDidUpdate(prevProps) {
-        if (prevProps.filter !== this.props.filter) {
-            this.getProducts();
-        }
-    }
-
-    getProducts() {
-        fetch("/api/products/" + this.state.category + "/" + this.state.filter)
+    const getProducts = () => {
+        fetch("/api/products/" + category + "/" + filter)
             .then((res) => res.json())
             .then((data) => {
                 localStorage.setItem("products", JSON.stringify(data.products));
-                this.setState({ products: data.products });
+                setProducts(data.products);
             });
-    }
-
-    render() {
-        return (
-            <div id="products">
-                <h1>Products</h1>
-                {this.state.products.map((product) => {
-                    return <Preview key={product.id} product={product} />;
-                })}
-            </div>
-        );
-    }
-}
-
-// Create a higher-order component that uses the useParams hook
-function withParams(Component) {
-    return function WrappedComponent(props) {
-        const { filter } = useParams();
-        return <Component {...props} filter={filter} />;
     };
+
+    // Trigger getProducts whenever location changes
+    useEffect(() => {
+        getProducts();
+    }, [location, filter, category]);
+
+    return <ProductsBase products={products} getProducts={getProducts} />;
 }
 
-// Use the HOC when exporting
-export default withParams(Products);
+export default Products;

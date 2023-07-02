@@ -34,6 +34,7 @@
     display: block;
     font-size: 1.2rem;
     color: var(--dark-green);
+    margin-bottom: 2rem;
 }
 
 .product-details {
@@ -59,5 +60,9 @@
     .product-block {
         width: 100%;
         padding: 1rem 0px;
+    }
+
+    .product-description {
+        margin-bottom: 1rem;
     }
 }
