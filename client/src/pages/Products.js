@@ -9,10 +9,13 @@ function ProductsBase({ products, getProducts }) {
 
     return (
         <div id="products">
-            <h1>Products</h1>
-            {products.map((product) => {
-                return <Preview key={product.id} product={product} />;
-            })}
+            <h2>Products</h2>
+            {products.length === 0 ? <div>Aucun produit dans cette catégorie</div> :
+                products.map((product) => {
+                    return <Preview key={product.id} product={product} />;
+                })
+            }
+            
         </div>
     );
 }
