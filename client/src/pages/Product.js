@@ -23,13 +23,17 @@ export default class Product extends React.Component {
         super(props); 
 
         // Get the product from the local storage
-        const product_id = window.location.pathname.split("/")[2];
-        
+        let product_id = window.location.pathname.split("/")[2];
+        if (isNaN(product_id)) {
+            window.location.href = "/";
+        }
+        product_id = parseInt(product_id);
         const products = localStorage.getItem("products");
         if (products) {
             this.product = JSON.parse(products).find(
                 (p) => p.id === product_id
             );
+            console.log(this.product);
         } else {
             this.product = null;
         }
