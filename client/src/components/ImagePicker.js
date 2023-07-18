@@ -58,7 +58,7 @@ export default class ImagePicker extends React.Component {
     let src = this.state.src || this.props.src || '/icons/image.svg';
     return (
       <div className="image-picker">
-        <img src={src} alt="image" />
+        <img src={src} alt="Prévisualisation envoyée" />
         <input
           type="file"
           accept="image/*"

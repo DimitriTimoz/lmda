@@ -52,7 +52,7 @@ export default class ImageCarrousel extends React.Component {
         return (
             <div className="image-carrousel">
                 <div className="image-carrousel-main">
-                    <img src={selected_photo} className="image-carrousel-main-image"/>
+                    <img src={selected_photo} className="image-carrousel-main-image" alt="Prévisualisation du vêtement principale"/>
                     <div className="image-carrousel-buttons">
                         <button className="image-carrousel-button" onClick={this.prevPhoto}>{"<"}</button>
                         <button className="image-carrousel-button" onClick={this.nextPhoto}>{">"}</button>
@@ -61,9 +61,9 @@ export default class ImageCarrousel extends React.Component {
                 <div className="image-carrousel-thumbnails">
                     {this.state.photos.map((photo, index) => {
                         if (index === selected) {
-                            return <img src={photo} className="image-carrousel-thumbnail selected" onClick={() => this.selectPhoto(index)}/>
+                            return <img src={photo} className="image-carrousel-thumbnail selected" alt="Prévisualisation du vêtement selectionnée" onClick={() => this.selectPhoto(index)}/>
                         } else {
-                            return <img src={photo} className="image-carrousel-thumbnail" onClick={() => this.selectPhoto(index)}/>
+                            return <img src={photo} className="image-carrousel-thumbnail" alt="Prévisualisation selectionnable" onClick={() => this.selectPhoto(index)}/>
                         }
                     }
                     )}

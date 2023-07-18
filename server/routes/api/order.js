@@ -61,4 +61,21 @@ router.post('/', async (req, res) => {
     }
 });
 
+router.delete('/:id', async (req, res) => {
+    const { id } = req.params;
+    // Check is the user is logged in
+    if (!req.session.uid) {
+        return res.status(401).json({ error: 'Vous devez être connecté pour effectuer cette action.' });
+    }
+    // Cancel the order. Set ordered to false for each product in the order by getting the order with one product id
+    try {
+        await db.query('UPDATE products SET ordered = FALSE FROM orders CROSS JOIN LATERAL unnest(orders.products) AS product WHERE product = $1 AND products.id = product', [id]);
+        return res.json({ success: 'Commande annulée avec succès.' });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Une erreur est survenue lors de l\'annulation de la commande. Veuillez contacter le support.' });
+    }
+});
+
+
 module.exports = router;

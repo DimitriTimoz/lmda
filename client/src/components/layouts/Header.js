@@ -5,12 +5,7 @@ import DropdownNav from '../DropdownNav';
 import {CAREGORIES_HOMMES, CAREGORIES_FEMMES} from '../../data/index';
 
 export default class Header extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
-    
     let nav;
     if (this.props.isAdmin) {
       nav = <nav></nav>
