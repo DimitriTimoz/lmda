@@ -49,11 +49,12 @@ class Home extends Component {
     try {
       const response = await axios.get('/api/products/all/all');
       if (Array.isArray(response.data.products)) {
-        let women = applyFilter(response.data.products, "femme", "all")
-        let mem = applyFilter(response.data.products, "homme", "all")
-        let childs = applyFilter(response.data.products, "enfant", "all")
-        this.setState({ products: response.data.products, news: response.data.products, childs: childs, mem: mem, women: women });
-        localStorage.setItem('products', JSON.stringify(response.data.products));
+        let products = response.data.products.reverse();
+        let women = applyFilter(products, "femme", "all")
+        let men = applyFilter(products, "homme", "all")
+        let childs = applyFilter(products, "enfant", "all")
+        this.setState({ products: products, news: products, childs: childs, men: men, women: women });
+        localStorage.setItem('products', JSON.stringify(products));
         localStorage.setItem('productsDate', Date.now());
       } else {
         console.error('API response is not an array:', response.data.products);
