@@ -4,7 +4,7 @@ const pool = require('../../db');
 
 const selectAll = async (admin) => {
     try {
-      let query = "SELECT id, name, description, prices, size, kind, 'specifyCategory', state, photos, date FROM products WHERE ordered = false AND shipped = false";
+      let query = "SELECT id, name, description, prices, size, kind, \"specifyCategory\", state, photos, date FROM products WHERE ordered = false AND shipped = false";
       if (admin) {
         query = "SELECT * FROM products";
       }
@@ -17,6 +17,7 @@ const selectAll = async (admin) => {
           rows[i].photos = await getImagesFilenames(rows[i].photos);
         }
       }
+      console.log(rows);
       return rows;
     } catch (err) {
       console.error("error", err);

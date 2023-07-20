@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useParams, useLocation } from "react-router-dom";
 import Preview from "../components/products/Preview";
 
@@ -15,7 +15,6 @@ function ProductsBase({ products, getProducts }) {
                     return <Preview key={product.id} product={product} />;
                 })
             }
-            
         </div>
     );
 }
@@ -27,19 +26,19 @@ function Products(props) {
 
     let category = props.category || "all";
 
-    const getProducts = () => {
+    const getProducts = useCallback(() => {
         fetch("/api/products/" + category + "/" + filter)
             .then((res) => res.json())
             .then((data) => {
                 localStorage.setItem("products", JSON.stringify(data.products));
                 setProducts(data.products);
             });
-    };
+    }, [category, filter]);
 
-    // Trigger getProducts whenever location changes
+    // Trigger getProducts only when location changes
     useEffect(() => {
         getProducts();
-    }, [location, filter, category]);
+    }, [location, getProducts]);
 
     return <ProductsBase products={products} getProducts={getProducts} />;
 }
