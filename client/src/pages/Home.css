@@ -1,5 +1,15 @@
 #product-list {
     display: flex;
+    flex-direction: column;
+}
+
+.products-raw {
+    display: flex;
+    flex-direction: row;
+}
+
+.products-raw > * {
+    margin: 0.3rem;
 }
 
 #product-list > div {

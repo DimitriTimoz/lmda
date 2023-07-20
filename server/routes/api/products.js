@@ -2,11 +2,14 @@ var router = require('express').Router();
 const { getImagesFilenames } = require('../../database/images');
 const pool = require('../../db');
 
-const selectAll = async (admin) => {
+const selectAll = async (admin, k = null) => {
     try {
       let query = "SELECT id, name, description, prices, size, kind, \"specifyCategory\", state, photos, date FROM products WHERE ordered = false AND shipped = false";
       if (admin) {
         query = "SELECT * FROM products";
+      }
+      if (k) {
+        query += ` ORDER BY date ASC LIMIT ${k}`;
       }
       const result = await pool.query(query);
       rows = result.rows;
@@ -17,7 +20,6 @@ const selectAll = async (admin) => {
           rows[i].photos = await getImagesFilenames(rows[i].photos);
         }
       }
-      console.log(rows);
       return rows;
     } catch (err) {
       console.error("error", err);
@@ -54,7 +56,7 @@ function applyFilter(products, category, filter) {
 
 
 router.get('/:category/:filter', async (req, res, next) => {
-    result = await selectAll(false);
+    result = await selectAll(false, 100);
     let category = req.params.category;
     // if end with 's' remove it
     if (category[category.length - 1] === 's') {
