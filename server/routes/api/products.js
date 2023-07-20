@@ -42,6 +42,9 @@ function applyFilter(products, category, filter) {
       if (product.specifyCategory === null) {
         return false;
       }
+      if (!product.specifyCategory) {
+        return false;
+      }
       return product.specifyCategory.toLowerCase().includes(filter);
     });
   }
