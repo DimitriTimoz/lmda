@@ -136,9 +136,14 @@ class DropdownNav extends React.Component {
     render() {
         const { active, selection } = this.state;
         const range = [...Array(this.filter_level).keys()];
+        // Get the level max possible
+        const maxLevel = this.getList().reduce((max, filter) => {
+            const level = filter.split(":").length;
+            return level > max ? level : max;
+        }, 0);
         const filters = range.map((i) => {
             const [items, prefilter] = this.getFiltersAtLevel(i + 1);
-            return [i + 1, items, prefilter];
+            return [i + 1, items, prefilter, i === maxLevel-1];
         });
 
         return (
@@ -148,16 +153,22 @@ class DropdownNav extends React.Component {
                     <img alt="arrow" className={active ? 'arrow rotate' : 'arrow'} src='/icons/arrow.svg' />
                 </div>
                 <div className={active ? 'dp-category' : 'dp-category hide'}>
-                    {filters.map(([level, items, prefilter]) => (items.length > 0 &&
+                    {filters.map(([level, items, prefilter, last_level]) => (items.length > 0 &&
                         <ul className="dp-elements" key={level}>
                             {!this.props.selector && <li>
                                 <Link to={"/products/" + this.props.category + "/" + (level === 0 ? "all" : prefilter.toLocaleLowerCase().replace(" ", "-"))}>Tout</Link>
                             </li>}
                             {items.map((element) => (
                                 <li key={element} className='dp-element'>
-                                    <div level={level} onClick={this.incrementFilter} className="dropdown-link">
-                                        {element}
-                                    </div>
+                                    {!last_level ?
+                                        <div level={level} onClick={this.incrementFilter} className="dropdown-link">
+                                            {element} 
+                                        </div>
+                                        :
+                                        <Link to={"/products/" + this.props.category + "/" + prefilter.toLocaleLowerCase().replace(" ", "-") + ":" + element.toLocaleLowerCase().replace(" ", "-")} className="dropdown-link">
+                                            {element}
+                                        </Link>}
+                                        
                                 </li>
                             ))}
                         </ul>))}

@@ -29,11 +29,11 @@ const selectAll = async (admin, k = null) => {
   
 
 function applyFilter(products, category, filter) {
-  filter = filter.toLowerCase();
-  category = category.toLowerCase();
+  filter = filter.toLocaleLowerCase().replace(" ", "-");
+  category = category.toLocaleLowerCase().replace(" ", "-");
   if (category !== 'all') {
     products = products.filter((product) => {
-        return product.kind.toLowerCase().includes(category);
+        return product.kind.toLowerCase().replace(" ", "-").includes(category);
     });
   }
 
@@ -45,7 +45,7 @@ function applyFilter(products, category, filter) {
         return false;
       }
    
-      return product.specifyCategory.toLowerCase().includes(filter);
+      return product.specifyCategory.toLowerCase().replace(" ", "-").includes(filter);
     });
   }
 }
