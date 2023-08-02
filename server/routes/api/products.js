@@ -31,7 +31,6 @@ const selectAll = async (admin, k = null) => {
 function applyFilter(products, category, filter) {
   filter = filter.toLowerCase();
   category = category.toLowerCase();
-
   if (category !== 'all') {
     products = products.filter((product) => {
         return product.kind.toLowerCase().includes(category);
@@ -45,9 +44,7 @@ function applyFilter(products, category, filter) {
       if (product.specifyCategory === null) {
         return false;
       }
-      if (!product.specifyCategory) {
-        return false;
-      }
+   
       return product.specifyCategory.toLowerCase().includes(filter);
     });
   }
@@ -62,7 +59,6 @@ router.get('/:category/:filter', async (req, res, next) => {
     if (category[category.length - 1] === 's') {
       category = category.slice(0, -1);
     }
-
     result = applyFilter(result, category, req.params.filter);
     if(req.params){
         return res.json({products: result});

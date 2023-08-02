@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Preview from '../components/products/Preview';
 import axios from 'axios';
 import './Home.css';
+import TxtButton from '../components/TxtButton';
 
 function applyFilter(products, category, filter) {
   filter = filter.toLowerCase();
@@ -76,7 +77,10 @@ class Home extends Component {
     return (
       <div id="product-list">
         <div className='product-category'>
-          <h3>Nouveautées</h3>
+          <div className="header-row">
+            <h3>Nouveautées</h3>
+            <TxtButton title="Voir plus" link="/products/all/all" />
+          </div>
           <div className='products-raw'>
             {news.map((product) => (
               <Preview product={product} key={product.id} />
@@ -84,7 +88,10 @@ class Home extends Component {
           </div>
         </div>
         <div className='product-category'>
-          <h3>Femmes</h3>
+          <div className="header-row">
+            <h3>Femmes</h3>
+            <TxtButton title="Voir plus" link="/products/femmes/all" />
+          </div>
           <div className='products-raw'>
             {women.map((product) => (
               <Preview product={product} key={product.id} />
@@ -92,7 +99,10 @@ class Home extends Component {
           </div>
         </div>
         <div className='product-category'>
-          <h3>Hommes</h3>
+          <div className="header-row">
+            <h3>Hommes</h3>
+            <TxtButton title="Voir plus" link="/products/hommes/all"/>
+          </div>
           <div className='products-raw'>
             {men.map((product) => (
               <Preview product={product} key={product.id} />
@@ -100,7 +110,10 @@ class Home extends Component {
           </div>
         </div>
         <div className='product-category'>
-          <h3>Enfants</h3>
+          <div className="header-row">
+            <h3>Enfants</h3>
+            <TxtButton title="Voir plus" link="/products/enfants/all"/>
+          </div>
           <div className='products-raw'>
             {childs.map((product) => (
               <Preview product={product} key={product.id} />

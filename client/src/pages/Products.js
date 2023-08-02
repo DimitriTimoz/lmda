@@ -20,14 +20,14 @@ function ProductsBase({ products, getProducts }) {
 }
 
 function Products(props) {
-    const { filter } = useParams();
+    const { filter, category } = useParams();
     const location = useLocation();
     const [products, setProducts] = useState([]);
 
-    let category = props.category || "all";
-
+    let filter_arg = filter || "all";
+    let category_arg = category || "all";
     const getProducts = useCallback(() => {
-        fetch("/api/products/" + category + "/" + filter)
+        fetch("/api/products/" + category_arg + "/" + filter_arg)
             .then((res) => res.json())
             .then((data) => {
                 localStorage.setItem("products", JSON.stringify(data.products));
