@@ -7,7 +7,6 @@
     display: grid;
     grid-template-columns: repeat(auto-fill, 7rem);
     grid-auto-rows: 1fr; /* This ensures each cell takes up equal height, even if content is of different sizes. */
-    grid-auto-flow: column; /* This forces content to flow into columns rather than rows. */
     gap: 10px; /* For some spacing between items. */
     overflow-x: auto; /* To scroll if items exceed the container's width. */
     white-space: nowrap; /* To ensure content does not wrap to the next line. */  
@@ -30,3 +29,13 @@
     margin: 0.6rem 0;
     margin-right: 1rem;
 }
+
+@media screen and (max-width: 700px) {
+    .products-raw {
+        /* max 2 raws */
+        grid-template-columns: repeat(auto-fill, 7rem);
+        grid-auto-rows: 1fr;
+        
+    }
+}
+    

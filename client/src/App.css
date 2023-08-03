@@ -22,8 +22,6 @@ html, body, #root, .App {
 h1 {
   font-family: 'Ruthie', cursive;
   font-weight: 400;
-  font-size: 4.0rem;
-  margin: 0.5rem;
   color: var(--dark-green);
 }
 

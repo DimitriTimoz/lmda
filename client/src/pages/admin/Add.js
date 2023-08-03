@@ -137,7 +137,7 @@ const Add = (props) => {
                         <option value="femme">femme</option>
                         <option value="enfant">enfant</option>
                     </select>
-                    <DropdownNav placeholder={productState.category} slector={false} name="specifyCategory"  onChange={handleInputChange} elements={categories[productState.category]} />
+                    <DropdownNav placeholder={productState.category} slector={true} name="specifyCategory"  onChange={handleInputChange} elements={categories[productState.category]} />
                 </div>
                 <div className="images-pickers">
                 {zip([productState.photosIds, productState.photosSrc]).map((image, index) => {

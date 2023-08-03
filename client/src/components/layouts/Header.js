@@ -19,8 +19,11 @@ export default class Header extends React.Component {
     return (
      <div>
       <header>
-        <Link to="/"><img alt="logo" src="/logo.png"/></Link>
-        <Link to="/"><h1>Le monde d'Anna</h1></Link>
+        <div className="burger-menu-trigger">
+          <img alt="burger-menu" src='/icons/burger-menu.svg'/>
+        </div> 
+        <Link to="/"><img id="app-logo" alt="logo" src="/logo.png"/></Link>
+        <Link to="/" className='app-name-container'><h1>Le monde d'Anna</h1></Link>
         <div className="personnal-nav">
             <Link to="/favorites"><img alt="favorites" src='/icons/heart.svg'/></Link>
             <Link to="/cart"><img alt="cart" src='/icons/basket.svg'/></Link>

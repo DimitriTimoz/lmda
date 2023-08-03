@@ -158,7 +158,7 @@ class DropdownNav extends React.Component {
                             </li>}
                             {items.map((element) => (
                                 <li key={element} className='dp-element'>
-                                    {!last_level ?
+                                    {!last_level || this.props.selector ?
                                         <div level={level} onClick={this.incrementFilter} className="dropdown-link">
                                             {element} 
                                         </div>
