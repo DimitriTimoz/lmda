@@ -29,11 +29,10 @@ class DropdownNav extends React.Component {
         super(props);
         this.state = {
             active: false,
-            selection: "",
+            filter: "",
         };
         this.filter_level = 1;
         this.dropdownRef = React.createRef();
-        this.filters = ""; 
     }    
 
     componentDidMount() {
@@ -55,7 +54,7 @@ class DropdownNav extends React.Component {
             this.props.onChange({
                 target: {
                     name: this.props.name,
-                    value: this.filters
+                    value: this.state.filter
                 }
             });
         }
@@ -66,16 +65,17 @@ class DropdownNav extends React.Component {
         let level = parseInt(e.target.getAttribute("level"));
         let filter = e.target.innerText;
         this.filter_level = level + 1;
-        this.filters = this.filters.split(":").slice(0, level - 1).join(":");
+        let filter_final = this.state.filter.split(":").slice(0, level - 1).join(":");
 
-        if (this.filters !== "") {
-            this.filters += ":" + filter;
+        if (filter_final !== "") {
+            filter_final += ":" + filter;
         } else {
-            this.filters = filter;
+            filter_final = filter;
         }
-        this.returnFilters();
         this.setState({
+            filter: filter_final,
         });
+        this.returnFilters();
     }
 
     trigger = () => {
@@ -89,7 +89,7 @@ class DropdownNav extends React.Component {
     }
 
     getFiltersAtLevel(level) {
-        const filters = this.filters.split(":");
+        const filters = this.state.filter.split(":");
         if (level > filters.length + 1) {
             console.error("Dropdown: Cannot get list at level " + level + " when filter level is " + this.filter_level);
             return [[], ""];
@@ -114,16 +114,17 @@ class DropdownNav extends React.Component {
         return [items, prefilter];
     }
 
-    getAllMatchingFilters() {
+    getAllMatchingFilters = () => {
         let items = [];
         const list = this.getList();
         // Extract all filters from elements
+        console.log("filters: " + this.state.filter);
         for (let i = 0; i < list.length; i++) {
             // femmes:vêtements:jean
             // -> vêtements:jean if filter is "femmes"
-            if (list[i].startsWith(this.filters + ":")) {
-                items.push(list[i].slice(this.filters.length + 1));
-            } else if (this.filters === "") {
+            if (list[i].startsWith(this.state.filter + ":")) {
+                items.push(list[i].slice(this.state.filter.length + 1));
+            } else if (this.state.filter === "") {
                 items.push(list[i]);
             }
         }

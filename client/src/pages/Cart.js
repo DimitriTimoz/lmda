@@ -103,6 +103,9 @@ class Cart extends React.Component {
                         {this.state.products.map((product) => (
                             <RawPreview product={product} onChange={this.handleProductUpdate}/>
                         ))}
+                        {this.state.products.length === 0 &&
+                            <span>Votre panier est vide</span>
+                        }
 
                     </div>
                     <div className='cart-delivery'>
