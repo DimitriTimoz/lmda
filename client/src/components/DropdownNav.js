@@ -74,16 +74,13 @@ class DropdownNav extends React.Component {
             this.filters = filter;
         }
         this.returnFilters();
-
         this.setState({
-            selection: this.filters,
         });
     }
 
     trigger = () => {
         this.setState((prevState) => ({
             active: !prevState.active,
-            selection: prevState.active ? "" : this.state.selection,
         }));
     }
 
@@ -134,7 +131,7 @@ class DropdownNav extends React.Component {
     }
 
     render() {
-        const { active, selection } = this.state;
+        const { active } = this.state;
         const range = [...Array(this.filter_level).keys()];
         // Get the level max possible
         const maxLevel = this.getList().reduce((max, filter) => {

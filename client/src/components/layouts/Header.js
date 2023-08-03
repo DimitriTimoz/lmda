@@ -11,9 +11,9 @@ export default class Header extends React.Component {
       nav = <nav></nav>
     } else {
       nav = <nav>
-              <DropdownNav elements={CAREGORIES_FEMMES} category="femmes" placeholder={"femmes"} />
-              <DropdownNav elements={CAREGORIES_HOMMES} category="hommes" placeholder={"hommes"} />
-              <DropdownNav elements={CAREGORIES_HOMMES} category="enfants" placeholder={"enfants"} />
+              <DropdownNav elements={CAREGORIES_FEMMES} category="femmes" selector={ false } placeholder={"femmes"} />
+              <DropdownNav elements={CAREGORIES_HOMMES} category="hommes" selector={ false } placeholder={"hommes"} />
+              <DropdownNav elements={CAREGORIES_HOMMES} category="enfants"selector={ false } placeholder={"enfants"} />
             </nav>
     }
     return (
