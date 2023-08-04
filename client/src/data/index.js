@@ -123,7 +123,7 @@ const CAREGORIES_FEMMES = [
         ]
       },
       {
-        filter: "Blazers / Tailleurs",
+        filter: "Blazers & Tailleurs",
         subs: [
           "Blazers",
           "Tailleurs complets",

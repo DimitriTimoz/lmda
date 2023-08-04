@@ -32,10 +32,9 @@
 
 @media screen and (max-width: 700px) {
     .products-raw {
-        /* max 2 raws */
-        grid-template-columns: repeat(auto-fill, 7rem);
-        grid-auto-rows: 1fr;
-        
+        display: grid;
+        justify-items: center;
+        grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr));
     }
 }
     

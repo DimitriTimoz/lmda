@@ -47,3 +47,23 @@
     margin: 0.7rem 0px;
     cursor: pointer;
 }
+
+@media screen and (max-width: 700px)  {
+    .dp-elements, nav {
+        left: 0;
+        width: 100%;
+        height: 100%;
+        position: fixed;
+        background-color: white;
+    }
+
+    nav {
+        flex-direction: column;
+        justify-content: start;
+        display: none;
+    }
+
+    nav > * {
+        margin: 1rem 0px;
+    }
+}

@@ -141,7 +141,11 @@ class DropdownNav extends React.Component {
         }, 0);
         const filters = range.map((i) => {
             const [items, prefilter] = this.getFiltersAtLevel(i + 1);
-            return [i + 1, items, prefilter, i === maxLevel-1];
+            let prefilter_final = prefilter;
+            if (prefilter === "") {
+                prefilter_final = "all";
+            }
+            return [i + 1, items, prefilter_final, i === maxLevel-1];
         });
 
         return (
