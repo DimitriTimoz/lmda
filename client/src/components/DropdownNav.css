@@ -60,6 +60,7 @@
     nav {
         flex-direction: column;
         justify-content: start;
+        z-index: 9999;
     }
 
     nav > * {

@@ -21,14 +21,20 @@ export default class Header extends React.Component {
   render() {
     
     let burgerMenuSrc = "";
-    let hideMobile = "hide-mobile"
+    let hideMobile = "hide-mobile";
+    let no_overflow = <></>;
     if (this.state.isBurgerMenuOpen) {
       burgerMenuSrc = '/icons/burger-menu-unfold.svg';
       hideMobile = "";
+      if (window.innerWidth < 700) {
+        no_overflow = <style>{'body {overflow: hidden;}'}</style>;
+        window.scrollTo(0, 0);
+      }
+  
     } else {
       burgerMenuSrc = '/icons/burger-menu.svg';
     }
-
+    
     let nav;
     if (this.props.isAdmin) {
       nav = <nav></nav>
@@ -53,6 +59,7 @@ export default class Header extends React.Component {
         </div>
       </header>
       {nav}
+      {no_overflow}
     </div>
     );
   }
