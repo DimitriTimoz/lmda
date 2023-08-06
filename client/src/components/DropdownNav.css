@@ -60,7 +60,6 @@
     nav {
         flex-direction: column;
         justify-content: start;
-        display: none;
     }
 
     nav > * {

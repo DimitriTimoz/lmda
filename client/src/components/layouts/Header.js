@@ -5,12 +5,35 @@ import DropdownNav from '../DropdownNav';
 import {CAREGORIES_HOMMES, CAREGORIES_FEMMES} from '../../data/index';
 
 export default class Header extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isBurgerMenuOpen: false
+    }
+
+    this.triggerMenu = this.triggerMenu.bind(this);
+  }
+
+  triggerMenu = () => {
+    this.setState({isBurgerMenuOpen: !this.state.isBurgerMenuOpen});
+  }
+
   render() {
+    
+    let burgerMenuSrc = "";
+    let hideMobile = "hide-mobile"
+    if (this.state.isBurgerMenuOpen) {
+      burgerMenuSrc = '/icons/burger-menu-unfold.svg';
+      hideMobile = "";
+    } else {
+      burgerMenuSrc = '/icons/burger-menu.svg';
+    }
+
     let nav;
     if (this.props.isAdmin) {
       nav = <nav></nav>
     } else {
-      nav = <nav>
+      nav = <nav className={hideMobile}>
               <DropdownNav elements={CAREGORIES_FEMMES} category="femmes" selector={ false } placeholder={"femmes"} />
               <DropdownNav elements={CAREGORIES_HOMMES} category="hommes" selector={ false } placeholder={"hommes"} />
               <DropdownNav elements={CAREGORIES_HOMMES} category="enfants"selector={ false } placeholder={"enfants"} />
@@ -20,7 +43,7 @@ export default class Header extends React.Component {
      <div>
       <header>
         <div className="burger-menu-trigger">
-          <img alt="burger-menu" src='/icons/burger-menu.svg'/>
+          <img alt="burger-menu" src={burgerMenuSrc} onClick={this.triggerMenu}/>
         </div> 
         <Link to="/"><img id="app-logo" alt="logo" src="/logo.png"/></Link>
         <Link to="/" className='app-name-container'><h1>Le monde d'Anna</h1></Link>
