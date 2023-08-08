@@ -84,16 +84,15 @@ class Cart extends React.Component {
     render() {
         // Calculate new totals
         let productsTotal = 0;
-        let deliveryTotal = 0;
-
+        let massTotal = 0;
         this.state.products.forEach((product) => {
             productsTotal += product.prices[0];
             if (this.state.deliverySystem > 0) {
-                deliveryTotal += product.prices[this.state.deliverySystem];
+                massTotal += product.mass
             }
 
         });
-        let total = productsTotal + deliveryTotal;
+        let total = productsTotal + massTotal * 0.01;
 
         return (
             <div className="cart">
@@ -157,7 +156,7 @@ class Cart extends React.Component {
                         </tr>
                         <tr>
                             <td>Frais de port</td>
-                            <td>{deliveryTotal} €</td>
+                            <td>{massTotal} €</td>
                         </tr>
                         <tr>
                             <td>Total</td>

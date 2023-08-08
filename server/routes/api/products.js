@@ -4,7 +4,7 @@ const pool = require('../../db');
 
 const selectAll = async (admin, k = null) => {
     try {
-      let query = "SELECT id, name, description, prices, size, kind, \"specifyCategory\", state, photos, date FROM products WHERE ordered = false AND shipped = false";
+      let query = "SELECT id, name, description, prices, size, kind, \"specifyCategory\", state, photos, date, mass FROM products WHERE ordered = false AND shipped = false";
       if (admin) {
         query = "SELECT * FROM products";
       }

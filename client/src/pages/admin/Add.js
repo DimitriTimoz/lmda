@@ -18,8 +18,7 @@ const Add = (props) => {
         name: "",
         description: "",
         price: 0,
-        homeDeliveryPrice: 0,
-        relayDeliveryPrice: 0,
+        mass: 0,
         category: "femme",
         specifyCategory: "",
         photosIds: ["", "", "", ""],
@@ -41,8 +40,7 @@ const Add = (props) => {
                         name: item.name,
                         description: item.description,
                         price: item.prices[0],
-                        homeDeliveryPrice: item.prices[1],
-                        relayDeliveryPrice: item.prices[2],
+                        mass: item.mass,
                         category: item.category,
                         specifyCategory: item.specifyCategory,
                         photosIds: item.photo_ids,
@@ -82,8 +80,7 @@ const Add = (props) => {
             name: productState.name,
             description: productState.description,
             price: productState.price,
-            homeDeliveryPrice: productState.homeDeliveryPrice,
-            relayDeliveryPrice: productState.relayDeliveryPrice,
+            mass: productState.mass,
             photosIds: productState.photosIds,
             category: productState.category,
             specifyCategory: productState.specifyCategory,
@@ -120,8 +117,7 @@ const Add = (props) => {
                 <Input placeholder="Nom du produit" name="name" value={productState.name} onChange={handleInputChange} />
                 <Input type="textarea" placeholder="Description" name="description" value={productState.description} onChange={handleInputChange} />
                 <Input type="number" placeholder="Prix" name="price" value={productState.price} onChange={handleInputChange} />
-                <Input type="number" placeholder="Frais de port à domicile" name="homeDeliveryPrice" value={productState.homeDeliveryPrice} onChange={handleInputChange} />
-                <Input type="number" placeholder="Frais de port en point relais" name="relayDeliveryPrice" value={productState.relayDeliveryPrice} onChange={handleInputChange} />
+                <Input type="number" placeholder="Masse" name="mass" value={productState.mass} onChange={handleInputChange} />
                 <Input placeholder="Taille" name="size" value={productState.size} onChange={handleInputChange} />
                 <select name="state" id="state" value={productState.state} onChange={handleInputChange} >
                     <option value="0">Nouveau</option>

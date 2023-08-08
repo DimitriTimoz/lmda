@@ -31,8 +31,7 @@ router.post('/', async function(req, res, next){
     let pName = validator.escape(req.body.name);
     let pDescription = validator.escape(req.body.description);
     let pPrice = req.body.price;
-    let pHomeDeliveryPrice = req.body.homeDeliveryPrice;
-    let pRelayDeliveryPrice = req.body.relayDeliveryPrice;
+    let pMass = req.body.mass;
     let pPhotosIds = req.body.photosIds;
     let pCategory = validator.escape(req.body.category);
     let pSpecifyCategory = validator.escape(req.body.specifyCategory);
@@ -40,18 +39,23 @@ router.post('/', async function(req, res, next){
     let pState = req.body.state;
 
     // Check if all fields are filled
-    if (!pName || !pDescription || !pPrice || !pHomeDeliveryPrice || !pRelayDeliveryPrice || !pPhotosIds || !pCategory || !pSize || !pState) {
+    if (!pName || !pDescription || !pPrice ||!pMass || !pPhotosIds || !pCategory || !pSize || !pState) {
         return res.status(400).json({ error: 'Veuillez remplir tous les champs.' });
     }
 
     // Check if the price is a number
-    if (isNaN(pPrice) || isNaN(pHomeDeliveryPrice) || isNaN(pRelayDeliveryPrice)) {
-        return res.status(400).json({ error: 'Veuillez spécifier des prix valides.' });
+    if (isNaN(pPrice)){
+        return res.status(400).json({ error: 'Veuillez spécifier un prix valide.' });
+    }
+
+    // Check if the mass is a number
+    if (isNaN(pMass)){
+        return res.status(400).json({ error: 'Veuillez spécifier une masse valide.' });
     }
 
     // Check if the price is positive
-    if (pPrice < 0 || pHomeDeliveryPrice < 0 || pRelayDeliveryPrice < 0) {
-        return res.status(400).json({ error: 'Veuillez spécifier des prix positifs.' });
+    if (pPrice < 0 || pMass < 0) {
+        return res.status(400).json({ error: 'Veuillez spécifier des nombres positifs.' });
     }
 
     // Check if the category is valid
@@ -122,7 +126,8 @@ router.post('/', async function(req, res, next){
                 id: id,
                 name: pName,
                 description: pDescription,
-                prices: [parseInt(pPrice), parseInt(pHomeDeliveryPrice), parseInt(pRelayDeliveryPrice)],
+                prices: [parseInt(pPrice)],
+                mass: parseInt(pMass),
                 size: pSize,
                 kind: pCategory, // 'homme', 'femme', or 'enfant'
                 state: pState,
