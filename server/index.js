@@ -24,6 +24,18 @@ app.use(session({
   saveUninitialized : true
 }));
 
+app.use(
+  express.json({
+    // We need the raw body to verify webhook signatures.
+    // Let's compute it only when hitting the Stripe webhook endpoint.
+    verify: function (req, res, buf) {
+      if (req.originalUrl.startsWith('/webhook')) {
+        req.rawBody = buf.toString();
+      }
+    },
+  })
+);
+
 
 app.use(require('./routes'));
   

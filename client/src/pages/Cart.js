@@ -1,16 +1,20 @@
-import React from 'react';
+import {Component, useEffect} from 'react';
 import Button from '../components/Button';
 import Radio from '../components/Radio';
 import RawPreview from '../components/products/RawPreview';
-import "./Cart.css"
+import {Elements} from '@stripe/react-stripe-js';
+import CheckoutForm from '../components/CheckoutForm'
 import axios from 'axios';
-class Cart extends React.Component {
+
+import "./Cart.css"
+class Cart extends Component {
     constructor(props) {
         super(props);
-       
+
         this.state = {
             products: [],
             deliverySystem: 0,
+            secret: "",
         };
         
         this.handleProductUpdate = this.handleProductUpdate.bind(this);
@@ -67,8 +71,13 @@ class Cart extends React.Component {
             phone: phone,
             email: email,
         };
-        
-        axios.post('/api/order', body)
+            // Create PaymentIntent as soon as the page loads
+        axios.get("/api/payement/create-payment-intent")
+            .then((res) => {
+                this.setState({secret: res.data.clientSecret})
+            });
+          
+        /*axios.post('/api/order', body)
             .then((res) => {
                 // If the order was created successfully
                 // Clear the cart
@@ -78,7 +87,7 @@ class Cart extends React.Component {
                 // Redirect to the order page
                 window.location.href = "/order/" + res.data.id;
             }
-        );
+        );*/
     }
     
     render() {
@@ -92,6 +101,7 @@ class Cart extends React.Component {
             }
 
         });
+        const clientSecret = this.state.secret;
         let total = productsTotal + massTotal * 0.01;
 
         return (
@@ -163,6 +173,12 @@ class Cart extends React.Component {
                             <td>{total} €</td>
                         </tr>
                     </table>
+                    {clientSecret && this.props.stripePromise && (
+                        <Elements stripe={this.props.stripePromise} options={{ clientSecret }}>
+                            <CheckoutForm />
+                        </Elements>
+                    )}
+
                     <Button title="Payer" className={"valid-button"} onClick={this.submit} />
                 </div>
             </div>
