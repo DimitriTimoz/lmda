@@ -41,7 +41,7 @@ router.post('/webhook', async (req, res) => {
     let data, eventType;
   
     // Check if webhook signing is configured.
-    if (process.env.STRIPE_WEBHOOK_SECRET) {
+    if (env.STRIPE_WEBHOOK_SECRET) {
       // Retrieve the event by verifying the signature using the raw body and secret.
       let event;
       let signature = req.headers['stripe-signature'];
@@ -68,7 +68,7 @@ router.post('/webhook', async (req, res) => {
       // Funds have been captured
       // Fulfill any orders, e-mail receipts, etc
       // To cancel the payment after capture you will need to issue a Refund (https://stripe.com/docs/api/refunds)
-      console.log('💰 Payment captured!');
+      console.log('💰 Payment captured!', data);
     } else if (eventType === 'payment_intent.payment_failed') {
       console.log('❌ Payment failed.');
     }
