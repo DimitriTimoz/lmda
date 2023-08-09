@@ -72,7 +72,7 @@ class Cart extends Component {
             email: email,
         };
             // Create PaymentIntent as soon as the page loads
-        axios.get("/api/payement/create-payment-intent")
+        axios.post("/api/payement/create-payment-intent", body)
             .then((res) => {
                 this.setState({secret: res.data.clientSecret})
             });

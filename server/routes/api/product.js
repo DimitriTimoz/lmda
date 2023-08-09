@@ -126,7 +126,7 @@ router.post('/', async function(req, res, next){
                 id: id,
                 name: pName,
                 description: pDescription,
-                prices: [parseInt(pPrice)],
+                prices: [parseInt(pPrice*10)],
                 mass: parseInt(pMass),
                 size: pSize,
                 kind: pCategory, // 'homme', 'femme', or 'enfant'
