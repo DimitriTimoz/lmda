@@ -3,7 +3,7 @@ const db = require('../db');
 // Update the order to mark it as paid
 async function valid_payement(stripe_id) {
     try {
-        const query = `UPDATE orders SET paid = TRUE WHERE stripe_id = $1 `;
+        const query = `UPDATE orders SET paid = TRUE WHERE payment_intent_id = $1 `;
         const { rows } = await db.query(query, [stripe_id]);
         return rows;
     } catch (error) {
@@ -15,7 +15,7 @@ async function valid_payement(stripe_id) {
 // Update the order to mark it as canceled and make the products available again
 async function payement_canceled(stripe_id) {
     try {
-        const query = `UPDATE orders SET paid = FALSE WHERE stripe_id = $1 `;
+        const query = `UPDATE orders SET paid = FALSE WHERE payment_intent_id = $1 `;
         const { rows } = await db.query(query, [stripe_id]);
         if (rows.length !== 1) {
             return false;
