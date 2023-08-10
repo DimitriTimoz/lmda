@@ -39,7 +39,25 @@ class Cart extends Component {
         if (cart) {
             products = JSON.parse(cart);
         } 
-
+        // Check if the product is available
+        products.forEach((product) => {
+            axios.get("/api/product/" + product.id)
+            .then((res) => {
+                if (res.status === 200) {
+                    // Check if the product is still available
+                    if (res.data.ordered) {
+                        let products = JSON.parse(localStorage.getItem("cart"));
+                        let index = products.indexOf(product);
+                        products.splice(index, 1);
+                        this.setState({
+                            products: products,
+                        });
+                        localStorage.setItem("cart", JSON.stringify(products));
+                    }
+                }
+            });
+        });
+    
         this.setState({
             products: products,
         });
@@ -122,30 +140,30 @@ class Cart extends Component {
                         <table className='delivery-kinds'>
                             <tr className='delivery-kind'>
                                 <td style={{ width: '20%' }}>
-                                <img src="/icons/home.svg" alt="Home" />
+                                    <img src="/icons/home.svg" alt="Home" />
                                 </td>
                                 <td style={{ width: '60%' }}>
-                                À domicile
+                                    À domicile
                                 </td>
                                 <td style={{ width: '20%' }}>
-                                <Radio name="delivery-system" 
-                                    value="0" 
-                                    checked={this.state.deliverySystem === 0}
-                                    onChange={this.changeDeliverySystem} />
+                                    <Radio name="delivery-system" 
+                                        value="0" 
+                                        checked={this.state.deliverySystem === 0}
+                                        onChange={this.changeDeliverySystem} />
                                 </td>
                             </tr>
                             <tr className='delivery-kind'>
                                 <td style={{ width: '20%' }}>
-                                <img src="/icons/pin.svg" alt="Point relais" />
+                                    <img src="/icons/pin.svg" alt="Point relais" />
                                 </td>
                                 <td style={{ width: '60%' }}>
-                                En point relais
+                                    En point relais
                                 </td>
                                 <td style={{ width: '20%' }}>
-                                <Radio name="delivery-system" 
-                                    value="1" 
-                                    checked={this.state.deliverySystem === 1}
-                                    onChange={this.changeDeliverySystem} />
+                                    <Radio name="delivery-system" 
+                                        value="1" 
+                                        checked={this.state.deliverySystem === 1}
+                                        onChange={this.changeDeliverySystem} />
                                 </td>
                             </tr>
                         </table>
@@ -162,7 +180,7 @@ class Cart extends Component {
                     <table className='summary'>
                         <tr>
                             <td>Commande</td>
-                            <td>{productsTotal} €</td>
+                            <td>{parseFloat(productsTotal)/100} €</td>
                         </tr>
                         <tr>
                             <td>Frais de port</td>
@@ -170,7 +188,7 @@ class Cart extends Component {
                         </tr>
                         <tr>
                             <td>Total</td>
-                            <td>{total} €</td>
+                            <td>{parseFloat(total)/100} €</td>
                         </tr>
                     </table>
                     {clientSecret && this.props.stripePromise && (
