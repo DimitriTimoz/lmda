@@ -71,14 +71,12 @@ router.post('/create-payment-intent', async (req, res) => {
       return res.status(500).json({ message: 'Something went wrong.' });
   }
   
-
-
   try{
     const paymentIntent = await stripe.paymentIntents.create({
       shipping: {
         name: user.name,
         address: {
-
+          
         },
       },
       currency: 'eur',
