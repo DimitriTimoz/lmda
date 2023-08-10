@@ -54,8 +54,8 @@ router.post('/', async function(req, res, next){
     }
 
     // Check if the price is positive
-    if (pPrice < 0 || pMass < 0) {
-        return res.status(400).json({ error: 'Veuillez spécifier des nombres positifs.' });
+    if (pPrice < 1 || pMass < 1) {
+        return res.status(400).json({ error: 'Veuillez spécifier des nombres positifs différents de 0.' });
     }
 
     // Check if the category is valid
@@ -126,7 +126,7 @@ router.post('/', async function(req, res, next){
                 id: id,
                 name: pName,
                 description: pDescription,
-                prices: [parseInt(pPrice*10)],
+                prices: [parseInt(pPrice)],
                 mass: parseInt(pMass),
                 size: pSize,
                 kind: pCategory, // 'homme', 'femme', or 'enfant'

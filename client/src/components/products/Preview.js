@@ -10,7 +10,7 @@ export default function Preview({ product }) {
                 <img src={`/uploads/${product.photos[0]}`} alt={product.name} className="preview-image"/>
             </Link>
             <div className="preview-details">
-                <span>{product.prices[0]} €</span>
+                <span>{parseFloat(product.prices[0])/100} €</span>
                 <div className="preview-like-size">
                     <span className="product-size">{product.size}</span>
                     <LikeBtn pid={product.id} className="product-like"/>

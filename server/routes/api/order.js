@@ -46,7 +46,7 @@ router.post('/', async (req, res) => {
         // Créez la nouvelle commande
         const order = await db.query(
             'INSERT INTO orders (user_id, products, date, total, status, address) VALUES ($1, $2, NOW(), $3, $4, $5) RETURNING *',
-            [user.id, products, total * 100, 0, delivery.address]  
+            [user.id, products, total, 0, delivery.address]  
         );
 
         // Mettez à jour les produits pour marquer qu'ils ont été commandés

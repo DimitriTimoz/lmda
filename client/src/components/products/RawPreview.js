@@ -87,7 +87,7 @@ export default class RawPreview extends React.Component {
                         <TxtButton title="Supprimer" className="view-button" onClick={this.removeAction} />
                     </div>
                 </div>
-                <span className="price" >{this.state.product.prices[0]}&nbsp;€</span>
+                <span className="price" >{parseFloat(this.state.product.prices[0])/100}&nbsp;€</span>
             </div>
         );
     }
