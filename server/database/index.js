@@ -14,12 +14,14 @@ module.exports.getProduct = async function(pid) {
             description: result.rows[0].description,
             prices: result.rows[0].prices,
             size: result.rows[0].size,
+            mass: result.rows[0].mass,
             category: result.rows[0].kind,
             specifyCategory: result.rows[0].specifyCategory,
             state: result.rows[0].state,
             photo_ids: result.rows[0].photos,
             photos: await getImagesFilenames(result.rows[0].photos), // updated this line
             date: result.rows[0].date,
+            ordered: result.rows[0].ordered,
         }
     } catch (err) {
         console.error("Error for getting the product:", err);
