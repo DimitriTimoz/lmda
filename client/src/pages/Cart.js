@@ -1,4 +1,4 @@
-import {Component, useEffect} from 'react';
+import {Component} from 'react';
 import Button from '../components/Button';
 import Radio from '../components/Radio';
 import RawPreview from '../components/products/RawPreview';
@@ -7,6 +7,7 @@ import CheckoutForm from '../components/CheckoutForm'
 import axios from 'axios';
 
 import "./Cart.css"
+import ErrorPopup from '../components/ErrorPopup';
 class Cart extends Component {
     constructor(props) {
         super(props);
@@ -15,11 +16,18 @@ class Cart extends Component {
             products: [],
             deliverySystem: 0,
             secret: "",
+            error: "",
         };
         
         this.handleProductUpdate = this.handleProductUpdate.bind(this);
         this.changeDeliverySystem = this.changeDeliverySystem.bind(this);
         this.submit = this.submit.bind(this);
+    }
+
+    throwError = (error) => {
+        this.setState({
+            error: error,
+        });
     }
 
     changeDeliverySystem = (e) => {
@@ -30,6 +38,14 @@ class Cart extends Component {
 
     componentDidMount() {
         this.handleProductUpdate();
+        // Load the script for the relay
+        const script = document.createElement("script");
+
+        script.src = "/scripts/ralay.js";
+        script.async = true;
+    
+        document.getElementsByTagName("head")[0].appendChild(script);
+    
     }
 
     handleProductUpdate = () => {
@@ -89,23 +105,18 @@ class Cart extends Component {
             phone: phone,
             email: email,
         };
-            // Create PaymentIntent as soon as the page loads
+        // Create PaymentIntent as soon as the page loads
         axios.post("/api/payement/create-payment-intent", body)
             .then((res) => {
-                this.setState({secret: res.data.clientSecret})
-            });
-          
-        /*axios.post('/api/order', body)
-            .then((res) => {
-                // If the order was created successfully
-                // Clear the cart
-                if (res.status === 201) {
-                    localStorage.removeItem("cart");
+                if (res.status === 200) {
+                    this.setState({secret: res.data.clientSecret})
+                } else {
+                    this.throwError("Une erreur est survenue lors de la création de la commande: " + res.data.message);
                 }
-                // Redirect to the order page
-                window.location.href = "/order/" + res.data.id;
-            }
-        );*/
+            }).catch((err) => {
+                err = err.response.data.message;
+                this.throwError("Une erreur est survenue lors de la création de la commande: " + err);
+            });
     }
     
     render() {
@@ -175,7 +186,7 @@ class Cart extends Component {
                         </div>
                     }
                 </div>
-                <div className='cart-summary'>
+                {total > 0 && <div className='cart-summary'>
                     <h4>Résumé de votre commande</h4>
                     <table className='summary'>
                         <tr>
@@ -198,7 +209,9 @@ class Cart extends Component {
                     )}
 
                     <Button title="Payer" className={"valid-button"} onClick={this.submit} />
-                </div>
+                </div>}
+                <div id="Zone_Widget"></div>
+                {this.state.error.length > 0 && <ErrorPopup error={this.state.error} onClose={() => {this.setState({error: ""})}} />}
             </div>
         );
     }
