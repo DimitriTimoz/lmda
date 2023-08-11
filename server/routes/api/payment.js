@@ -1,6 +1,6 @@
 var router = require('express').Router();
 const env = require('dotenv').config({path: './.env'}).parsed;
-const { valid_payement, payement_canceled } = require('../../database/payement');
+const { valid_payment, payment_canceled } = require('../../database/payment');
 const db = require('../../db');
 const stripe = require('stripe')(env.STRIPE_SECRET_KEY, {
     apiVersion: '2022-11-15',
@@ -14,12 +14,11 @@ router.get('/config', (req, res) => {
 
 router.post('/create-payment-intent', async (req, res) => {
     let { products, delivery, email, phone } = req.body;
-
     if (!products || !delivery || !email || !phone) {
         return res.status(400).json({ message: 'Infos manquantes.' });
     }
 
-    // Protect adress and email against SQL injections and XSS attacks
+    // Protect adress and email against SQL injections and XSS attacks TODO: add misssing 
     email = req.sanitize(email);
     delivery.address = req.sanitize(delivery.address);
 
@@ -129,13 +128,13 @@ router.post('/webhook', async (req, res) => {
       // Funds have been captured
       // Fulfill any orders, e-mail receipts, etc
       // To cancel the payment after capture you will need to issue a Refund (https://stripe.com/docs/api/refunds)
-      if ((await valid_payement(data.object.id)).length !== 1) {
+      if ((await valid_payment(data.object.id)).length !== 1) {
 
       } else {
         console.log("❌ order doesn't exists.");
       }
     } else if (eventType === 'payment_intent.payment_failed') {
-        if (await payement_canceled(data.object.id)) {
+        if (await payment_canceled(data.object.id)) {
             console.log("❌ order canceled.");
         }
     }

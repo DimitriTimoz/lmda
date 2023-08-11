@@ -6,6 +6,6 @@ router.use('/product', require('./product'));
 router.use("/login", require("./login"));
 router.use("/upload-image", require("./upload"));
 router.use("/order", require("./order"));
-router.use("/payement", require("./payement"));
+router.use("/payment", require("./payment"));
 
 module.exports = router;

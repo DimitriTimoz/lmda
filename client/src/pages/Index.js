@@ -14,7 +14,7 @@ function Index() {
   const [ stripePromise, setStripePromise ] = useState(null);
 
   useEffect(() => {
-    fetch("/api/payement/config").then(async (r) => {
+    fetch("/api/payment/config").then(async (r) => {
       const { publishableKey } = await r.json();
       setStripePromise(loadStripe(publishableKey));
     });
