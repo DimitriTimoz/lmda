@@ -16,7 +16,6 @@ async function computeDeliveryPrice(products) {
 
   let price = 0;
   // Compute the price according to the mass
-
   return price
 }
 
@@ -30,12 +29,13 @@ router.get('/config', (req, res) => {
 router.post('/create-payment-intent', async (req, res) => {
     let { products, delivery, email, phone } = req.body;
     if (!products || !delivery || !email || !phone) {
-        return res.status(400).json({ message: 'Infos manquantes.' });
+        return res.status(400).json({ message: 'Infos manquantes, veuillez compléter tous les champs' });
     }
 
     // Protect adress and email against SQL injections and XSS attacks TODO: add misssing 
-    email = req.sanitize(email);
-    delivery.address = req.sanitize(delivery.address);
+    email = req.sanitize(email); // TODO Check email
+    delivery.address = req.sanitize(delivery.address); // TODO Check address
+    phone = req.sanitize(phone); // TODO Check phone
 
     let total = 0;
     let user = null;
@@ -53,11 +53,13 @@ router.post('/create-payment-intent', async (req, res) => {
           return res.status(400).json({ message: 'Certains produits sont incorrects.' });
       }
 
+      // Check that products are available
       const productsDb = await db.query('SELECT * FROM products WHERE id = ANY($1) AND ordered = FALSE', [products]);
       if (productsDb.rows.length !== products.length) {
           return res.status(400).json({ message: 'Certains produits n\'existent pas ou sont déjà commandés.' });
       }
 
+      // Compute the total price without delivery
       for (let i = 0; i < productsDb.rows.length; i++) {
           const product = productsDb.rows[i];
           total += product.prices[0]
@@ -68,23 +70,24 @@ router.post('/create-payment-intent', async (req, res) => {
           return res.status(400).json({ message: 'Le montant total de votre commande est trop faible.' });
       }
 
-      // Créez la nouvelle commande
+      // Create the order
       const order = await db.query(
           'INSERT INTO orders (user_id, products, date, total, status, address) VALUES ($1, $2, NOW(), $3, $4, $5) RETURNING *',
           [user.id, products, total, 0, delivery.address]  
       );
 
-      // Mettez à jour les produits pour marquer qu'ils ont été commandés
+      // Set products as ordered
       for (let i = 0; i < products.length; i++) {
           await db.query('UPDATE products SET ordered = TRUE WHERE id = $1', [products[i]]);
       }
 
-      
   } catch (error) {
       console.error(error);
-      return res.status(500).json({ message: 'Something went wrong.' });
+      return res.status(500).json({ message: 'Une erreur est survenue, veuillez nous contacter pour régler cette erreur.' });
   }
+  // Compute the total amount
   let deliveryPrice = await computeDeliveryPrice(products);
+  total += deliveryPrice;
 
   try{
     const paymentIntent = await stripe.paymentIntents.create({
@@ -111,8 +114,8 @@ router.post('/create-payment-intent', async (req, res) => {
       error: {
         message: e.message,
       },
-      });
-    }
+    });
+  }
 });
 
 router.post('/webhook', async (req, res) => {
@@ -158,7 +161,5 @@ router.post('/webhook', async (req, res) => {
     }
     res.sendStatus(200);
   });
-  
-  
 
 module.exports = router;
