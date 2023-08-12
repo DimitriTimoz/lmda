@@ -19,7 +19,7 @@ async function addAdmin(email, password) {
       const query = `
         INSERT INTO admins (email, password)
         VALUES ($1, $2)
-        RETURNING id, email;
+        RETURNING id, email, password;
       `;
   
       const { rows } = await pool.query(query, [email, hashedPassword]);
