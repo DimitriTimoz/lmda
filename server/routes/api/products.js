@@ -69,23 +69,23 @@ router.get('/:category/:filter', async (req, res, next) => {
 
 
 router.get('/admin/:category/:filter', async (req, res, next) => {
-  // Check if the user is logged in
+  // Check that the user is logged in
   if (!req.session.loggedin) {
-    return res.status(401).json({ error: 'Vous devez être connecté pour ajouter un produit.' });
+    return res.status(401).json({ error: 'Vous devez être connecté pour récupérer les produits en tant qu\'administrateur.' });
   } 
+
   let category = req.params.category;
+
   // if end with 's' remove it
   if (category[category.length - 1] === 's') {
     category = category.slice(0, -1);
   }
 
+  // Get all products as an admin
   result = await selectAll(true);
   result = applyFilter(result, category, req.params.filter);
-  if(req.params){
-      return res.json({products: result});
-  } else {
-      return res.json({products: result});
-  }
+  
+  return res.json({products: result});
 });
 
 
