@@ -29,12 +29,11 @@ router.get('/config', (req, res) => {
 
 router.post('/create-payment-intent', async (req, res) => {
     let { products, delivery, email, phone } = req.body;
-
     if (!products || !delivery || !email || !phone) {
         return res.status(400).json({ message: 'Infos manquantes.' });
     }
 
-    // Protect adress and email against SQL injections and XSS attacks
+    // Protect adress and email against SQL injections and XSS attacks TODO: add misssing 
     email = req.sanitize(email);
     delivery.address = req.sanitize(delivery.address);
 
