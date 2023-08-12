@@ -6,10 +6,8 @@ var router = require('express').Router();
 const pool = require('../../db');
 const upload = multer({ dest: 'uploads/' });
 const { addImage } = require('../../database/images');
-// Redéfinition des dimensions de l'image
 
-
-
+// Redifine the image resolution of an image and save it
 router.post('/', upload.single('image'), async (req, res) => {
   // Check if the user is logged in
   if (!req.session.loggedin) {
