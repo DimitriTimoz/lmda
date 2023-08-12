@@ -7,6 +7,7 @@ import DropdownNav from "../../components/DropdownNav";
 import ImagePicker from "../../components/ImagePicker";
 import { CAREGORIES_HOMMES, CAREGORIES_ENFANTS, CAREGORIES_FEMMES }from "../../data";
 import axios from 'axios';
+import ErrorPopup from "../../components/ErrorPopup";
 
 function zip(arrays) {
     return arrays[0].map((_, i) => [arrays[0][i], arrays[1][i]]);
@@ -24,7 +25,8 @@ const Add = (props) => {
         photosIds: ["", "", "", ""],
         photosSrc: [],
         size: "",
-        state: "0"
+        state: "0",
+        message: "",
     });
     
     const { id } = useParams();
@@ -49,7 +51,10 @@ const Add = (props) => {
                         size: item.size,
                     }));
                 })
-                .catch(error => console.error(error));
+                .catch(error => {
+                    setProductState( prevState => ({ ...prevState, message: error.response.data.error }));
+                    console.log(error.response.data.error)
+                });
         }
     }, [id]);
 
@@ -62,7 +67,7 @@ const Add = (props) => {
             [name]: value
         }));
     }
-
+    
     const handleImageChange = (index, value) => {
         let newPhotoIds = [...productState.photosIds]; // copy the array
         newPhotoIds[index] = value.target.value; // replace the value at index
@@ -72,6 +77,14 @@ const Add = (props) => {
             photosIds: newPhotoIds
         }));
     };
+
+    const closePopup = () => {
+        setProductState(prevState => ({
+            ...prevState,
+            message: ""
+        }));
+    }
+    
 
     const submit = (event) => {
         event.preventDefault();
@@ -101,7 +114,8 @@ const Add = (props) => {
             })
             .catch(error => {
                 // Code à exécuter en cas d'erreur
-                console.error(error.message);
+                console.log(error.response.data.error);
+                setProductState( prevState => ({...prevState, message: error.response.data.error }));
             });
     }
 
@@ -163,6 +177,9 @@ const Add = (props) => {
 
                 <Button className={"submit-btn"} type="submit" title={"Envoyer"}/>
             </form>
+            {productState.message.length > 0  &&
+                <ErrorPopup message={productState.error} onClose={closePopup} />
+            }
         </div>
     )
     
