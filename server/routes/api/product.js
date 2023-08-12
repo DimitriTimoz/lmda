@@ -3,7 +3,7 @@ var router = require('express').Router();
 const validator = require('validator');
 const { getProduct } = require('../../database/index');
 const { getImage, linkImage, getImages, deleteImage } = require('../../database/images');
-const { createProduct, updateProduct, deleteProduct } = require('../../database/product');
+const { createProduct, updateProduct, deleteProduct, isProductOrdered } = require('../../database/product');
 
 router.get('/:pid', async function(req, res, next){
     // Check if pid is valid
@@ -13,7 +13,7 @@ router.get('/:pid', async function(req, res, next){
 
     let product = await getProduct(req.params.pid);
     if (product === null) {
-        return res.status(404).json({ error: 'Product not found.' });
+        return res.status(404).json({ error: 'Produit introuvable.' });
     } else {
         return res.json(product);
     }    
@@ -38,38 +38,38 @@ router.post('/', async function(req, res, next){
     let pSize = validator.escape(req.body.size);
     let pState = req.body.state;
 
-    // Check if all fields are filled
-    if (!pName || !pDescription || !pPrice ||!pMass || !pPhotosIds || !pCategory || !pSize || !pState) {
+    // Check that all fields are filled
+    if (!pName || !pName || !pDescription || !pPrice ||!pMass || !pPhotosIds || !pCategory || !pSpecifyCategory || !pSize || !pState) {
         return res.status(400).json({ error: 'Veuillez remplir tous les champs.' });
     }
 
-    // Check if the price is a number
+    // Check that the price is a number
     if (isNaN(pPrice)){
         return res.status(400).json({ error: 'Veuillez spécifier un prix valide.' });
     }
 
-    // Check if the mass is a number
+    // Check that the mass is a number
     if (isNaN(pMass)){
         return res.status(400).json({ error: 'Veuillez spécifier une masse valide.' });
     }
 
-    // Check if the price is positive
+    // Check that the price and the mass are positives
     if (pPrice < 1 || pMass < 1) {
         return res.status(400).json({ error: 'Veuillez spécifier des nombres positifs différents de 0.' });
     }
 
-    // Check if the category is valid
+    // Check that the category is valid
     if (pCategory !== 'homme' && pCategory !== 'femme' && pCategory !== 'enfant') {
         return res.status(400).json({ error: 'Veuillez spécifier une catégorie valide.' });
     }
 
-    // Check if the subcategory is valid
+    // Check that the subcategory is not too long
     if (pSpecifyCategory.length > 1000) {
         return res.status(400).json({ error: 'Veuillez spécifier une sous-catégorie plus courte (taille anormale).' });
     }   
 
-    // Check if the other images are valid
-    // Check if the images exist and the author is the user
+    // Check that the other images are valid
+    // Check that the images exist and the author is the user
     for (let i = 0; i < pPhotosIds.length; i++) {
         if (isNaN(pPhotosIds[i]) || pPhotosIds[i] === "") {
             continue
@@ -80,16 +80,17 @@ router.post('/', async function(req, res, next){
         }
     }
 
-    // Check if the state is valid
+    // Check that the state is valid
     if (isNaN(pState)) {
         return res.status(400).json({ error: 'Veuillez spécifier un état valide.' });
     }
 
+    // Check that the state is a number between 0 and 4
     if (pState < 0 || pState > 4) {
         return res.status(400).json({ error: 'Veuillez spécifier un état valide.' });
     }
 
-    // Check if images are a number and link them to the product
+    // Check that images are a number and link them to the product
     for (let i = 0; i < pPhotosIds.length; i++) {
         if (isNaN(pPhotosIds[i])) {
             return res.status(400).json({ error: 'Veuillez spécifier une image valide.' });
@@ -164,17 +165,17 @@ router.post('/', async function(req, res, next){
 // Delete a product
 router.delete('/:id', async (req, res) => {
     const { id } = req.params;
-    // Check is the user is logged in
+    // Check that the user is logged in
     if (!req.session.uid) {
         return res.status(401).json({ error: 'Vous devez être connecté pour effectuer cette action.' });
     }
 
-    // Check if the id is valid
+    // Check that the id is valid
     if (isNaN(id)) {
         return res.status(400).json({ error: 'Veuillez spécifier un id valide.' });
     }
 
-    // Check if the product exists
+    // Check that the product exists
     let product = await getProduct(id);
     if (product === null) {
         return res.status(400).json({ error: 'Le produit spécifié n\'existe pas.' });
@@ -182,11 +183,20 @@ router.delete('/:id', async (req, res) => {
 
     // Delete the product
     try {
+        // Check that the product is not ordered
+        try {
+            if (await isProductOrdered(id)) {
+                return res.status(400).json({ error: 'Le produit spécifié est déjà commandé, vous devez annuler la commande avant de le supprimer.' });
+            }    
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({ error: 'Une erreur est survenue lors de la suppression du produit. ' + err });
+        }
+       
         let pid = await deleteProduct(id);
         if (pid === null) {
             return res.status(400).json({ error: 'Le produit spécifié n\'existe pas.' });
         }
-        
         return res.json({ success: 'Produit supprimé avec succès.' });
     } catch (err) {
         console.error(err);

@@ -47,8 +47,25 @@ async function deleteProduct(id) {
   return res.rows[0]; // Returns the deleted product
 }
 
+async function isProductOrdered(pid) {
+  // Check if the product is ordered
+  const queryString = `
+    SELECT ordered
+    FROM products
+    WHERE id = $1;
+  `;
+  const values = [pid];
+
+  const rows = await pool.query(queryString, values);
+  if (rows.length === 0) {
+    throw new "Product not found"
+  }
+  return rows[0].ordered;
+}
+
 module.exports = {
     createProduct,
     updateProduct,
-    deleteProduct
+    deleteProduct,
+    isProductOrdered
 };
