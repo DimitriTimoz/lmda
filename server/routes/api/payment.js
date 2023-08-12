@@ -150,7 +150,7 @@ router.post('/webhook', async (req, res) => {
       // Fulfill any orders, e-mail receipts, etc
       // To cancel the payment after capture you will need to issue a Refund (https://stripe.com/docs/api/refunds)
       if ((await validPayment(data.object.id)).length !== 1) {
-
+        console.log("✅ order paid.");
       } else {
         console.log("❌ order doesn't exists.");
       }
