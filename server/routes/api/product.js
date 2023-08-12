@@ -144,11 +144,12 @@ router.post('/', async function(req, res, next){
             await createProduct({
                 name: pName,
                 description: pDescription,
-                prices: [parseInt(pPrice), parseInt(pHomeDeliveryPrice), parseInt(pRelayDeliveryPrice)],
+                prices: [parseInt(pPrice)],
                 size: pSize,
                 kind: pCategory, // 'homme', 'femme', or 'enfant'
                 state: pState,
                 photos: pPhotosIds,
+                mass: parseInt(pMass),
                 specifyCategory: pSpecifyCategory,
                 date: new Date(), // current date
             });
