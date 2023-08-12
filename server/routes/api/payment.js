@@ -1,10 +1,25 @@
 var router = require('express').Router();
 const env = require('dotenv').config({path: './.env'}).parsed;
-const { valid_payement, payement_canceled } = require('../../database/payement');
+const { valid_payment, payment_canceled } = require('../../database/payment');
 const db = require('../../db');
 const stripe = require('stripe')(env.STRIPE_SECRET_KEY, {
     apiVersion: '2022-11-15',
 });
+
+async function computeDeliveryPrice(products) {
+  // Compute the mass of the products
+  let mass = 0;
+  for (let i = 0; i < products.length; i++) {
+      const product = products[i];
+      mass += product.mass;
+  }
+
+  let price = 0;
+  // Compute the price according to the mass
+
+  return price
+}
+
 
 router.get('/config', (req, res) => {
     res.status(200).json({
@@ -70,7 +85,8 @@ router.post('/create-payment-intent', async (req, res) => {
       console.error(error);
       return res.status(500).json({ message: 'Something went wrong.' });
   }
-  
+  let deliveryPrice = await computeDeliveryPrice(products);
+
   try{
     const paymentIntent = await stripe.paymentIntents.create({
       shipping: {
@@ -83,10 +99,12 @@ router.post('/create-payment-intent', async (req, res) => {
       amount: total,
       automatic_payment_methods: { enabled: true }
     });
-  
+
     // Send publishable key and PaymentIntent details to client
     res.send({
       clientSecret: paymentIntent.client_secret,
+      deliveryPrice: deliveryPrice,
+      total: total,
     });
   } catch (e) {
     console.log(e);
@@ -129,13 +147,13 @@ router.post('/webhook', async (req, res) => {
       // Funds have been captured
       // Fulfill any orders, e-mail receipts, etc
       // To cancel the payment after capture you will need to issue a Refund (https://stripe.com/docs/api/refunds)
-      if ((await valid_payement(data.object.id)).length !== 1) {
+      if ((await valid_payment(data.object.id)).length !== 1) {
 
       } else {
         console.log("❌ order doesn't exists.");
       }
     } else if (eventType === 'payment_intent.payment_failed') {
-        if (await payement_canceled(data.object.id)) {
+        if (await payment_canceled(data.object.id)) {
             console.log("❌ order canceled.");
         }
     }

@@ -118,7 +118,6 @@ router.post('/', async function(req, res, next){
         }
     }
     
-
     // Add the product to the database if id is not specified
     if (id) {
         try {

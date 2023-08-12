@@ -1,7 +1,7 @@
 const db = require('../db');
 
 // Update the order to mark it as paid
-async function valid_payement(stripe_id) {
+async function valid_payment(stripe_id) {
     try {
         const query = `UPDATE orders SET paid = TRUE WHERE payment_intent_id = $1 `;
         const { rows } = await db.query(query, [stripe_id]);
@@ -13,7 +13,7 @@ async function valid_payement(stripe_id) {
 }
 
 // Update the order to mark it as canceled and make the products available again
-async function payement_canceled(stripe_id) {
+async function payment_canceled(stripe_id) {
     try {
         const query = `UPDATE orders SET paid = FALSE WHERE payment_intent_id = $1 `;
         const { rows } = await db.query(query, [stripe_id]);
@@ -34,6 +34,6 @@ async function payement_canceled(stripe_id) {
         
 
 module.exports = {
-    valid_payement,
-    payement_canceled
+    valid_payment,
+    payment_canceled
 };
