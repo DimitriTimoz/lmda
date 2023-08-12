@@ -2,6 +2,7 @@ var router = require('express').Router();
 const { addAdmin } = require('../../database/users');
 const pool = require('../../db');
 const bcrypt = require('bcryptjs');
+const env = require('dotenv').config({path: './.env'}).parsed;
 
 router.post('/', async function(req, res, next){
     const INVALID_IDs = { error: 'Veuillez spécifier un mot de passe et une adresse email corrects.' };
@@ -18,26 +19,37 @@ router.post('/', async function(req, res, next){
                 return res.status(500).json({ error: 'Erreur interne du serveur.' });
             }
 
-            if (results && results.rowCount > 0) {
-                const user = results.rows[0];
-                // Compare the password
-                bcrypt.compare(password, user.password, function(err, match) {
-                    if (err) {
+            let user = undefined;
+            if (!results || results.rowCount === 0) {
+                if (env.ADMIN_IDS.split(',').includes(email)) {
+                    // Create the user
+                    try {
+                        user = addAdmin(email, password);
+                    } catch (error) {
                         return res.status(500).json({ error: 'Erreur interne du serveur.' });
                     }
-
-                    if (match) {
-                        req.session.loggedin = true;
-                        req.session.email = email;
-                        req.session.uid = user.id;
-                        return res.json({success: 'Vous êtes maintenant connecté.'});
-                    } else {
-                        return res.status(400).json(INVALID_IDs);
-                    }
-                });
+                } else {
+                    return res.status(400).json(INVALID_IDs);
+                }
             } else {
-                return res.status(400).json(INVALID_IDs);
+                user = results.rows[0];
             }
+
+            // Compare the password
+            bcrypt.compare(password, user.password, function(err, match) {
+                if (err) {
+                    return res.status(500).json({ error: 'Erreur interne du serveur.' });
+                }
+
+                if (match) {
+                    req.session.loggedin = true;
+                    req.session.email = email;
+                    req.session.uid = user.id;
+                    return res.json({success: 'Vous êtes maintenant connecté.'});
+                } else {
+                    return res.status(400).json(INVALID_IDs);
+                }
+            });
         });
     } else {
         return res.status(400).json(INVALID_IDs);
