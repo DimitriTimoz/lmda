@@ -22,12 +22,12 @@ router.post('/', async function(req, res, next){
             let user = undefined;
             if (!results || results.rowCount === 0) {
                 if (env.ADMIN_IDS.split(',').includes(email)) {
-                    // Create the user
+                    // Create the user if is whitelisted as an admin
                     try {
                         user = addAdmin(email, password);
                     } catch (error) {
                         return res.status(500).json({ error: 'Erreur interne du serveur.' });
-                    }
+                    } 
                 } else {
                     return res.status(400).json(INVALID_IDs);
                 }
