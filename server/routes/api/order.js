@@ -20,5 +20,21 @@ router.delete('/:id', async (req, res) => {
     }
 });
 
+router.get("/all", async (req, res) => {
+    // Check if the user is logged in
+    if (!req.session.uid) {
+        return res.status(401).json({ error: 'Vous devez être connecté pour effectuer cette action.' });
+    }
+    // Get all orders
+    try {
+        const result = await db.query('SELECT * FROM orders');
+        return res.json({ orders: result.rows });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Une erreur est survenue lors de la récupération des commandes. Veuillez contacter le support.' });
+    }
+});
+
+
 
 module.exports = router;
