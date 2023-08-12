@@ -1,6 +1,6 @@
 var router = require('express').Router();
 const env = require('dotenv').config({path: './.env'}).parsed;
-const { valid_payment, payment_canceled } = require('../../database/payment');
+const { validPayment, paymentCanceled } = require('../../database/payment');
 const db = require('../../db');
 const stripe = require('stripe')(env.STRIPE_SECRET_KEY, {
     apiVersion: '2022-11-15',
@@ -149,13 +149,13 @@ router.post('/webhook', async (req, res) => {
       // Funds have been captured
       // Fulfill any orders, e-mail receipts, etc
       // To cancel the payment after capture you will need to issue a Refund (https://stripe.com/docs/api/refunds)
-      if ((await valid_payment(data.object.id)).length !== 1) {
+      if ((await validPayment(data.object.id)).length !== 1) {
 
       } else {
         console.log("❌ order doesn't exists.");
       }
     } else if (eventType === 'payment_intent.payment_failed') {
-        if (await payment_canceled(data.object.id)) {
+        if (await paymentCanceled(data.object.id)) {
             console.log("❌ order canceled.");
         }
     }
