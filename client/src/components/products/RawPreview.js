@@ -7,6 +7,7 @@ export default class RawPreview extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            order_mode: this.props.order || false,
             product: this.props.product,
             edit: this.props.edit || false,
             cancel_order: this.props.cancelOrder || false,
@@ -72,22 +73,38 @@ export default class RawPreview extends React.Component {
 
 
     render() {
-        if (!this.state.product) {
+        if (!this.state.product && !this.props.order) {
             return null;
         }
         return (
             <div className="raw-preview">
-                <img src={"/uploads/" + this.state.product.photos[0]} alt={this.state.product.name} className="raw-preview-image"/>
+                {this.props.order ?
+                    <img className="raw-preview-image"/>
+                :
+                    <img src={"/uploads/" + this.state.product.photos[0]} alt={this.state.product.name} className="raw-preview-image"/>
+                }
                 <div className="raw-preview-left">
-                    <h4 className="p-name" >{this.state.product.name}</h4>
-                    <span className="p-details" >{this.state.product.size + " - " + this.state.product.state}</span>
+                    {this.props.order ?
+                        <h4 className="p-name" >{"Nom Prénom"}</h4>
+                    :
+                        <h4 className="p-name" >{this.state.product.name}</h4>
+                    }
+                    {this.props.order ?
+                        <span className="p-details" >{this.props.order.products.length + " Produit(s)"}</span>
+                        :
+                        <span className="p-details" >{this.state.product.size + " - " + this.state.product.state}</span>
+                    }
                     <div className="buttons">
                         {this.state.edit ? <TxtButton title="Modifier" className="view-button" onClick={() => {window.location.href = "/admin/edit/" + this.state.product.id}} /> : null}
                         {this.state.cancel_order ? <TxtButton title="Annuler" className="view-button" onClick={this.cancelOrder} /> : null}
                         <TxtButton title="Supprimer" className="view-button" onClick={this.removeAction} />
                     </div>
                 </div>
-                <span className="price" >{parseFloat(this.state.product.prices[0])/100}&nbsp;€</span>
+                {this.props.order ?
+                    <span className="price" >{parseFloat(this.props.order.amount / 100)}&nbsp;€</span>
+                :
+                    <span className="price" >{parseFloat(this.state.product.prices[0])/100}&nbsp;€</span>
+                }
             </div>
         );
     }
