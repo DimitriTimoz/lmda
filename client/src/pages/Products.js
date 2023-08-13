@@ -23,21 +23,23 @@ function ProductsBase({ products, getProducts, category }) {
     return (
         <div id="products-base">
             <h2>{category}</h2>
-            <select className="select-container select-dropdown" name="state" id="state" value={productState.state} onChange={(e) => setProductState({ state: e.target.value })}>
-                <option value="0">Tous les états</option>
-                <option value="1">Très bon</option>
-                <option value="2">Bon</option>
-                <option value="3">Correct</option>
-                <option value="4">Moyen</option>
-                <option value="5">Mauvais</option>
-            </select>
-            <div id="products">
-                {products_filtrerd.length === 0 ? <div>Aucun produit dans cette catégorie</div> :
-                    products_filtrerd.map((product) => {
-                        return <Preview key={product.id} product={product} />;
-                    })
-                }
+            {products_filtrerd.length === 0 ? <div>Aucun produit dans cette catégorie</div> :
+                <div>
+                <select className="select-container select-dropdown" name="state" id="state" value={productState.state} onChange={(e) => setProductState({ state: e.target.value })}>
+                    <option value="0">Tous les états</option>
+                    <option value="1">Très bon</option>
+                    <option value="2">Bon</option>
+                    <option value="3">Correct</option>
+                    <option value="4">Moyen</option>
+                    <option value="5">Mauvais</option>
+                </select>
+                <div id="products">
+                        {products_filtrerd.map((product) => {
+                            return <Preview key={product.id} product={product} />;
+                        })}
+                </div>
             </div>
+            }
         </div>
     );
 }
