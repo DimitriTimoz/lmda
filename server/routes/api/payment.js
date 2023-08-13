@@ -59,6 +59,8 @@ router.post('/create-payment-intent', async (req, res) => {
 
     let total = 0;
     let user = null;
+    let order = null;
+    
     try {
       // Créez un nouvel utilisateur ou trouvez un utilisateur existant
       user = await db.query('SELECT * FROM users WHERE email = $1', [email]);
@@ -91,7 +93,7 @@ router.post('/create-payment-intent', async (req, res) => {
       }
 
       // Create the order
-      const order = await db.query(
+      order = await db.query(
           'INSERT INTO orders (user_id, products, date, total, status, address) VALUES ($1, $2, NOW(), $3, $4, $5) RETURNING *',
           [user.id, products, total, 0, delivery.address]  
       );
