@@ -6,6 +6,18 @@ const stripe = require('stripe')(env.STRIPE_SECRET_KEY, {
     apiVersion: '2022-11-15',
 });
 
+function checkEmail(email) {
+  return email.match(
+    /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+  );
+};
+
+function checkPhone(phone) {
+  return phone.match(
+    /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im
+  );
+};
+
 async function computeDeliveryPrice(products) {
   // Compute the mass of the products
   let mass = 0;
@@ -32,10 +44,18 @@ router.post('/create-payment-intent', async (req, res) => {
         return res.status(400).json({ message: 'Infos manquantes, veuillez compléter tous les champs' });
     }
 
-    // Protect adress and email against SQL injections and XSS attacks TODO: add misssing 
-    email = req.sanitize(email); // TODO Check email
+    // Protect adress and email against SQL injections and XSS attacks  
+    if (!checkEmail(email)) {
+        return res.status(400).json({ message: 'Adresse email invalide.' });
+    }
+    email = req.sanitize(email.toLowerCase()); 
+
     delivery.address = req.sanitize(delivery.address); // TODO Check address
-    phone = req.sanitize(phone); // TODO Check phone
+
+    if (!checkPhone(phone)) {
+        return res.status(400).json({ message: 'Numéro de téléphone invalide.' });
+    }
+    phone = req.sanitize(phone); 
 
     let total = 0;
     let user = null;
