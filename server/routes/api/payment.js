@@ -171,10 +171,10 @@ router.post('/webhook', async (req, res) => {
       // Funds have been captured
       // Fulfill any orders, e-mail receipts, etc
       // To cancel the payment after capture you will need to issue a Refund (https://stripe.com/docs/api/refunds)
-      if ((await validPayment(data.object.id)).length !== 1) {
+      if ((await validPayment(data.object.id)).length === 1) {
         console.log("✅ order paid.");
       } else {
-        console.log("❌ order doesn't exists.");
+        console.log("❌ order doesn't exists. Stripe payment intent id: " + data.object.id);
       }
     } else if (eventType === 'payment_intent.payment_failed') {
         if (await paymentCanceled(data.object.id)) {
