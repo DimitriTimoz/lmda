@@ -43,3 +43,40 @@ a {
     display: none;
   }
 }
+
+.select-container {
+  margin: 0.5rem 0;
+  position: relative;
+  display: inline-block;
+  width: 9rem; 
+}
+
+.select-container::after {
+  content: '\25BC'; 
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+}
+
+.select-dropdown {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: white;
+  appearance: none; 
+  -webkit-appearance: none; 
+}
+
+.select-option {
+  padding: 5px;
+}
+
+.select-option:hover {
+  background-color: #f0f0f0;
+}
+
+.select-dropdown option[value="0"] {
+  font-style: italic;
+  color: #aaa;
+}  

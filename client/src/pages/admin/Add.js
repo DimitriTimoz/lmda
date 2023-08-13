@@ -133,7 +133,7 @@ const Add = (props) => {
                 <Input type="number" placeholder="Prix" name="price" value={productState.price} onChange={handleInputChange} />
                 <Input type="number" placeholder="Masse" name="mass" value={productState.mass} onChange={handleInputChange} />
                 <Input placeholder="Taille" name="size" value={productState.size} onChange={handleInputChange} />
-                <select name="state" id="state" value={productState.state} onChange={handleInputChange} >
+                <select className="select-container select-dropdown" name="state" id="state" value={productState.state} onChange={handleInputChange} >
                     <option value="1">Très bon</option>
                     <option value="2">Bon</option>
                     <option value="3">Correct</option>
