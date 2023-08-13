@@ -121,6 +121,8 @@ router.post('/create-payment-intent', async (req, res) => {
       amount: total,
       automatic_payment_methods: { enabled: true }
     });
+    // Set the stripe payment intent id in the database
+    await db.query('UPDATE orders SET payment_intent_id = $1 WHERE id = $2', [paymentIntent.id, order.id]);
 
     // Send publishable key and PaymentIntent details to client
     res.send({
