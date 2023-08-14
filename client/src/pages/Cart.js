@@ -1,6 +1,5 @@
 import {Component} from 'react';
 import Button from '../components/Button';
-import Radio from '../components/Radio';
 import RawPreview from '../components/products/RawPreview';
 import {Elements} from '@stripe/react-stripe-js';
 import CheckoutForm from '../components/CheckoutForm'

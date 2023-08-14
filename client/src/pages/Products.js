@@ -69,7 +69,7 @@ function Products(props) {
                 localStorage.setItem("products", JSON.stringify(data.products));
                 setProducts(data.products);
             });
-    }, [category, filter]);
+    });
 
     // Trigger getProducts only when location changes
     useEffect(() => {

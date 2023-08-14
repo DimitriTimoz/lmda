@@ -35,7 +35,6 @@ export default class ImageCarrousel extends React.Component {
 
     render() {
         let selected = this.state.selected;
-        let selected_photo = this.state.photos[selected];
         if (this.props.enabled === false) {
             return <div></div>;
         }

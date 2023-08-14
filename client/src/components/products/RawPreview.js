@@ -84,7 +84,7 @@ export default class RawPreview extends React.Component {
         return (
             <div className="raw-preview">
                 {this.props.order ?
-                    <img className="raw-preview-image"/>
+                    <img className="raw-preview-image" alt="useless for now"/>
                 :
                     <img src={"/uploads/" + this.state.product.photos[0]} alt={this.state.product.name} className="raw-preview-image"/>
                 }
