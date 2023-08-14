@@ -56,6 +56,10 @@ class Cart extends Component {
                         localStorage.setItem("cart", JSON.stringify(products));
                     }
                 }
+            }).catch((err) => {
+                this.setState({
+                    error: err.response.data.message,
+                });
             });
         });
     
@@ -101,6 +105,7 @@ class Cart extends Component {
         let phone = "0123456789";
         // Send the order to the server
         let body = {
+            name: "Foo Bar", 
             products: products_ids,
             delivery: {
                 address: address,
