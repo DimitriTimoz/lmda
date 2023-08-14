@@ -55,12 +55,15 @@ async function isProductOrdered(pid) {
     WHERE id = $1;
   `;
   const values = [pid];
-
-  const rows = await pool.query(queryString, values);
-  if (rows.length === 0) {
-    throw new "Product not found"
+  try {
+    const rows = await pool.query(queryString, values);
+    if (rows.length === 0) {
+      throw new "Product not found"
+    }
+    return rows[0].ordered;
+  } catch (err) {
+    throw err;
   }
-  return rows[0].ordered;
 }
 
 module.exports = {
