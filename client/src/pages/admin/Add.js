@@ -141,7 +141,7 @@ const Add = (props) => {
                     <option value="5">Mauvais</option>
                 </select>
                 <div className="selectors">
-                    <select name="category" id="category" value={productState.category} onChange={handleInputChange} >
+                    <select className="select-container select-dropdown" name="category" id="category" value={productState.category} onChange={handleInputChange} >
                         <option value="homme">homme</option>
                         <option value="femme">femme</option>
                         <option value="enfant">enfant</option>
