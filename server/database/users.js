@@ -31,9 +31,24 @@ async function addAdmin(email, password) {
     }
 }
 
+async function getUser(uid) {
+  try {
+    const query = `
+      SELECT * FROM users
+      WHERE id = $1;
+    `;
+    const { rows } = await pool.query(query, [uid]);
+    return rows;
+  } catch (error) {
+    console.error('Error getting user:', error.message);
+    throw error;
+  }
+}
+
 module.exports = {
     hashPassword,
     comparePassword,
-    addAdmin
+    addAdmin,
+    getUser,
 };
 
