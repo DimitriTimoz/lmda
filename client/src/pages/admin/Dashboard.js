@@ -30,6 +30,7 @@ export default class Dashboard extends React.Component {
             order: order,
         });
     }
+    
     componentDidMount = () => {
         this.updateProducts();
     }
@@ -38,8 +39,7 @@ export default class Dashboard extends React.Component {
         // Fetch all products
         axios.get("/api/products/all/all").then((res) => {
             let products = res.data.products;
-            this.setState({ productsInsell: products,
-            });
+            this.setState({ productsInsell: products });
         });
 
         // Fetch all orders
@@ -53,8 +53,6 @@ export default class Dashboard extends React.Component {
             let ordersShipped = orders.filter((order) => {
                 return order.shipped;
             });
-            console.log(ordersPaid);
-            console.log(ordersShipped);
             this.setState({ 
                     ordersPaid: ordersPaid,
                     ordersShipped: ordersShipped    
