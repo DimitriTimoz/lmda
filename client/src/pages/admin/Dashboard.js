@@ -2,6 +2,7 @@ import React from "react";
 import "./Dashboard.css";
 import axios from "axios";
 import RawPreview from "../../components/products/RawPreview";
+import Order from "../../components/Order";
 export default class Dashboard extends React.Component {
     constructor(props) {
         super(props);
@@ -48,28 +49,31 @@ export default class Dashboard extends React.Component {
 
     render() {
         return (
-            <div id="dashboard">
-                <div className="column">
-                    <h3>En vente</h3>
-                    {this.state.products_insell.map((product) => {
-                        return <RawPreview product={product} edit={true} admin={true} onChange={this.updateProducts}/>;
-                    })}
+            <div>
+                <div id="dashboard">
+                    <div className="column">
+                        <h3>En vente</h3>
+                        {this.state.products_insell.map((product) => {
+                            return <RawPreview product={product} edit={true} admin={true} onChange={this.updateProducts}/>;
+                        })}
+                    </div>
+                    <div className="column">
+                        <h3>Commandes en attente</h3>
+                        {this.state.orders_paid.map((order) => {
+                            return <RawPreview order={order} cancelOrder={true} admin={true} onChange={this.updateProducts}/>;
+                        })}
+                    </div>
+                    <div className="column">
+                        <h3>Commandes expédiés</h3>
+                        {this.state.orders_shipped.map((order) => {
+                            return <RawPreview order={order} edit={false} onChange={this.updateProducts}/>;
+                        })}
+                    </div>
+                    <div className="column">
+                        <h3>Recherche</h3>
+                    </div>
                 </div>
-                <div className="column">
-                    <h3>Commandes en attente</h3>
-                    {this.state.orders_paid.map((order) => {
-                        return <RawPreview order={order} cancelOrder={true} admin={true} onChange={this.updateProducts}/>;
-                    })}
-                </div>
-                <div className="column">
-                    <h3>Commandes expédiés</h3>
-                    {this.state.orders_shipped.map((order) => {
-                        return <RawPreview order={order} edit={false} onChange={this.updateProducts}/>;
-                    })}
-                </div>
-                <div className="column">
-                    <h3>Recherche</h3>
-                </div>
+                <Order />
             </div>
         )
     }
