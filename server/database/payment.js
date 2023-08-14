@@ -3,12 +3,12 @@ const db = require('../db');
 // Update the order to mark it as paid
 async function validPayment(stripe_id) {
     try {
-        const query = `UPDATE orders SET paid = TRUE WHERE payment_intent_id = $1 `;
-        const { rows } = await db.query(query, [stripe_id]);
-        return rows;
+        const query = `UPDATE orders SET paid = TRUE WHERE payment_intent_id = $1`;
+        await db.query(query, [stripe_id]);
+        return true;
     } catch (error) {
         console.error('Error getting images:', error.message);
-        return [];
+        return false;
     }
 }
 

@@ -65,11 +65,11 @@ router.post('/create-payment-intent', async (req, res) => {
     // Créez un nouvel utilisateur ou trouvez un utilisateur existant
     user = await db.query('SELECT * FROM users WHERE email = $1', [email]);
     if (user.rows.length === 0) {
-        user = await db.query('INSERT INTO users (email, phone, address) VALUES ($1, $2, $3) RETURNING *', [email, phone, delivery.address]);
+        let query = await db.query('INSERT INTO users (email, phone, address) VALUES ($1, $2, $3) RETURNING *', [email, phone, delivery.address]);
+        user = query.rows[0];
     } else {
         user = user.rows[0];
     }
-
     // Check that products are ids
     if (products.some(id => isNaN(id))) {
         return res.status(400).json({ message: 'Certains produits sont incorrects.' });
@@ -97,6 +97,7 @@ router.post('/create-payment-intent', async (req, res) => {
         'INSERT INTO orders (user_id, products, date, total, status, address) VALUES ($1, $2, NOW(), $3, $4, $5) RETURNING id',
         [user.id, products, total, 0, delivery.address]  
     );
+
     if (order.rows.length === 0) {
         return res.status(500).json({ message: 'Une erreur est survenue, veuillez nous contacter pour régler cette erreur.' });
     }
@@ -183,8 +184,8 @@ router.post('/webhook', async (req, res) => {
       // Funds have been captured
       // Fulfill any orders, e-mail receipts, etc
       // To cancel the payment after capture you will need to issue a Refund (https://stripe.com/docs/api/refunds)
-      if ((await validPayment(data.object.id)).length === 1) {
-        console.log("✅ order paid.");
+      if ((await validPayment(data.object.id))) {
+        console.log("✅ order paid. Stripe payment intent id: " + data.object.id);
       } else {
         console.log("❌ order doesn't exists. Stripe payment intent id: " + data.object.id);
       }
