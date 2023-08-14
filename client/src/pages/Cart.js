@@ -14,14 +14,14 @@ class Cart extends Component {
 
         this.state = {
             products: [],
-            deliverySystem: 0,
             secret: "",
             error: "",
+            openned: false,
         };
         
         this.handleProductUpdate = this.handleProductUpdate.bind(this);
-        this.changeDeliverySystem = this.changeDeliverySystem.bind(this);
         this.submit = this.submit.bind(this);
+        this.openDeliveryMenu = this.openDeliveryMenu.bind(this);
     }
 
     throwError = (error) => {
@@ -30,22 +30,8 @@ class Cart extends Component {
         });
     }
 
-    changeDeliverySystem = (e) => {
-        this.setState({
-            deliverySystem: parseInt(e.target.value),
-        });
-    }
-
     componentDidMount() {
-        this.handleProductUpdate();
-        // Load the script for the relay
-        const script = document.createElement("script");
-
-        script.src = "/scripts/ralay.js";
-        script.async = true;
-    
-        document.getElementsByTagName("head")[0].appendChild(script);
-    
+        this.handleProductUpdate();    
     }
 
     handleProductUpdate = () => {
@@ -79,6 +65,24 @@ class Cart extends Component {
         });
     }
 
+    openDeliveryMenu() {
+        if (this.state.products.length === 0) {
+            console.log("No products in the cart");
+            return;
+        }
+
+        this.setState({
+            openned: true,
+        });
+        // Load the script for the relay
+        const script = document.createElement("script");
+
+        script.src = "/scripts/ralay.js";
+        script.async = true;
+    
+        document.getElementsByTagName("head")[0].appendChild(script);
+    }
+    
     submit = () => {
         // Get the products from the local storage in the cart
         const cart = localStorage.getItem("cart");
@@ -125,11 +129,8 @@ class Cart extends Component {
         let massTotal = 0;
         this.state.products.forEach((product) => {
             productsTotal += product.prices[0];
-            if (this.state.deliverySystem > 0) {
-                massTotal += product.mass
-            }
-
         });
+
         const clientSecret = this.state.secret;
         let total = productsTotal + massTotal * 0.01;
 
@@ -148,43 +149,12 @@ class Cart extends Component {
                     </div>
                     <div className='cart-delivery'>
                         <h3>Livraison</h3>
-                        <table className='delivery-kinds'>
-                            <tr className='delivery-kind'>
-                                <td style={{ width: '20%' }}>
-                                    <img src="/icons/home.svg" alt="Home" />
-                                </td>
-                                <td style={{ width: '60%' }}>
-                                    À domicile
-                                </td>
-                                <td style={{ width: '20%' }}>
-                                    <Radio name="delivery-system" 
-                                        value="0" 
-                                        checked={this.state.deliverySystem === 0}
-                                        onChange={this.changeDeliverySystem} />
-                                </td>
-                            </tr>
-                            <tr className='delivery-kind'>
-                                <td style={{ width: '20%' }}>
-                                    <img src="/icons/pin.svg" alt="Point relais" />
-                                </td>
-                                <td style={{ width: '60%' }}>
-                                    En point relais
-                                </td>
-                                <td style={{ width: '20%' }}>
-                                    <Radio name="delivery-system" 
-                                        value="1" 
-                                        checked={this.state.deliverySystem === 1}
-                                        onChange={this.changeDeliverySystem} />
-                                </td>
-                            </tr>
-                        </table>
+                        {this.state.openned ?
+                            <div id="Zone_Widget"></div>
+                            :
+                            <Button title="Ajouter" onClick={this.openDeliveryMenu} />
+                        }
                     </div>
-                    {this.state.deliverySystem > 0 &&
-                        <div className='cart-adress'>
-                            <h3>Adresse</h3>
-                            <Button title="Ajouter" className={""} />
-                        </div>
-                    }
                 </div>
                 {total > 0 && <div className='cart-summary'>
                     <h4>Résumé de votre commande</h4>
@@ -210,7 +180,6 @@ class Cart extends Component {
 
                     <Button title="Payer" className={"valid-button"} onClick={this.submit} />
                 </div>}
-                <div id="Zone_Widget"></div>
                 {this.state.error.length > 0 && <ErrorPopup error={this.state.error} onClose={() => {this.setState({error: ""})}} />}
             </div>
         );

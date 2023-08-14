@@ -36,25 +36,6 @@
     margin: 0.75rem 0px;
 }
 
-.cart-delivery {
-}
-
-.delivery-kinds {
-    display: flex;
-    flex-direction: column;
-    width: 40%;
-    max-width: 15rem;
-}
-
-.delivery-kind {
-    display: flex;
-    align-items: center;
-    margin: 0.5rem 0px;
-}
-
-.delivery-kind > * {
-    margin: 0px 0.5rem;
-}
 
 .cart-adress {
 
