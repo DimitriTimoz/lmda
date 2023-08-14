@@ -95,7 +95,7 @@ export default class Product extends React.Component {
                     <div className="product-block">
                         <div>
                             <h2>{this.product.name}</h2>
-                            <span className="price">{this.product.prices[0]} €</span>
+                            <span className="price">{parseFloat(this.product.prices[0])/100} €</span>
                             <span className="product-description">
                                 {this.product.description}
                             </span>
