@@ -32,8 +32,19 @@ async function paymentCanceled(stripe_id) {
     }
 }
         
+async function removeOrder(order_id) {
+    try {
+        const query = `DELETE FROM orders WHERE id = $1`;
+        await db.query(query, [order_id]);
+        return true;
+    } catch (error) {
+        console.error('Error getting images:', error.message);
+        return false;
+    }
+}
 
 module.exports = {
     validPayment,
-    paymentCanceled
+    paymentCanceled,
+    removeOrder,
 };
