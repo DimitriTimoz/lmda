@@ -39,69 +39,72 @@ router.get('/config', (req, res) => {
 });
 
 router.post('/create-payment-intent', async (req, res) => {
-    let { products, delivery, email, phone } = req.body;
-    if (!products || !delivery || !email || !phone) {
-        return res.status(400).json({ message: 'Infos manquantes, veuillez compléter tous les champs' });
+  let { products, delivery, email, phone } = req.body;
+  if (!products || !delivery || !email || !phone) {
+      return res.status(400).json({ message: 'Infos manquantes, veuillez compléter tous les champs' });
+  }
+
+  // Protect adress and email against SQL injections and XSS attacks  
+  if (!checkEmail(email)) {
+      return res.status(400).json({ message: 'Adresse email invalide.' });
+  }
+  email = req.sanitize(email.toLowerCase()); 
+
+  delivery.address = req.sanitize(delivery.address); // TODO Check address
+
+  if (!checkPhone(phone)) {
+      return res.status(400).json({ message: 'Numéro de téléphone invalide.' });
+  }
+  phone = req.sanitize(phone); 
+
+  let total = 0;
+  let user = null;
+  let order = null;
+
+  try {
+    // Créez un nouvel utilisateur ou trouvez un utilisateur existant
+    user = await db.query('SELECT * FROM users WHERE email = $1', [email]);
+    if (user.rows.length === 0) {
+        user = await db.query('INSERT INTO users (email, phone, address) VALUES ($1, $2, $3) RETURNING *', [email, phone, delivery.address]);
+    } else {
+        user = user.rows[0];
     }
 
-    // Protect adress and email against SQL injections and XSS attacks  
-    if (!checkEmail(email)) {
-        return res.status(400).json({ message: 'Adresse email invalide.' });
+    // Check that products are ids
+    if (products.some(id => isNaN(id))) {
+        return res.status(400).json({ message: 'Certains produits sont incorrects.' });
     }
-    email = req.sanitize(email.toLowerCase()); 
 
-    delivery.address = req.sanitize(delivery.address); // TODO Check address
-
-    if (!checkPhone(phone)) {
-        return res.status(400).json({ message: 'Numéro de téléphone invalide.' });
+    // Check that products are available
+    const productsDb = await db.query('SELECT * FROM products WHERE id = ANY($1) AND ordered = FALSE', [products]);
+    if (productsDb.rows.length !== products.length) {
+        return res.status(400).json({ message: 'Certains produits n\'existent pas ou sont déjà commandés.' });
     }
-    phone = req.sanitize(phone); 
 
-    let total = 0;
-    let user = null;
-    let order = null;
-    
-    try {
-      // Créez un nouvel utilisateur ou trouvez un utilisateur existant
-      user = await db.query('SELECT * FROM users WHERE email = $1', [email]);
-      if (user.rows.length === 0) {
-          user = await db.query('INSERT INTO users (email, phone, address) VALUES ($1, $2, $3) RETURNING *', [email, phone, delivery.address]);
-      } else {
-          user = user.rows[0];
-      }
+    // Compute the total price without delivery
+    for (let i = 0; i < productsDb.rows.length; i++) {
+        const product = productsDb.rows[i];
+        total += product.prices[0]
+    }
 
-      // Check that products are ids
-      if (products.some(id => isNaN(id))) {
-          return res.status(400).json({ message: 'Certains produits sont incorrects.' });
-      }
+    // Check that total is an acceptable amount
+    if (total < 50) {
+        return res.status(400).json({ message: 'Le montant total de votre commande est trop faible.' });
+    }
 
-      // Check that products are available
-      const productsDb = await db.query('SELECT * FROM products WHERE id = ANY($1) AND ordered = FALSE', [products]);
-      if (productsDb.rows.length !== products.length) {
-          return res.status(400).json({ message: 'Certains produits n\'existent pas ou sont déjà commandés.' });
-      }
-
-      // Compute the total price without delivery
-      for (let i = 0; i < productsDb.rows.length; i++) {
-          const product = productsDb.rows[i];
-          total += product.prices[0]
-      }
-
-      // Check that total is an acceptable amount
-      if (total < 50) {
-          return res.status(400).json({ message: 'Le montant total de votre commande est trop faible.' });
-      }
-
-      // Create the order
-      order = await db.query(
-          'INSERT INTO orders (user_id, products, date, total, status, address) VALUES ($1, $2, NOW(), $3, $4, $5) RETURNING *',
-          [user.id, products, total, 0, delivery.address]  
-      );
-
-      // Set products as ordered
-      for (let i = 0; i < products.length; i++) {
-          await db.query('UPDATE products SET ordered = TRUE WHERE id = $1', [products[i]]);
-      }
+    // Create the order
+    order = await db.query(
+        'INSERT INTO orders (user_id, products, date, total, status, address) VALUES ($1, $2, NOW(), $3, $4, $5) RETURNING id',
+        [user.id, products, total, 0, delivery.address]  
+    );
+    if (order.rows.length === 0) {
+        return res.status(500).json({ message: 'Une erreur est survenue, veuillez nous contacter pour régler cette erreur.' });
+    }
+    order = order.rows[0];
+    // Set products as ordered
+    for (let i = 0; i < products.length; i++) {
+        await db.query('UPDATE products SET ordered = TRUE WHERE id = $1', [products[i]]);
+    }
 
   } catch (error) {
       console.error(error);
@@ -124,8 +127,15 @@ router.post('/create-payment-intent', async (req, res) => {
       automatic_payment_methods: { enabled: true }
     });
     // Set the stripe payment intent id in the database
-    await db.query('UPDATE orders SET payment_intent_id = $1 WHERE id = $2', [paymentIntent.id, order.id]);
-
+    try {
+      await db.query('UPDATE orders SET payment_intent_id = $1 WHERE id = $2', [paymentIntent.id, order.id]);
+    } catch (error) {
+      console.error(error);
+      // Cancel the payment intent
+      await stripe.paymentIntents.cancel(paymentIntent.id);
+      
+      return res.status(500).json({ message: 'Une erreur est survenue, veuillez nous contacter pour régler cette erreur.' });
+    }
     // Send publishable key and PaymentIntent details to client
     res.send({
       clientSecret: paymentIntent.client_secret,
