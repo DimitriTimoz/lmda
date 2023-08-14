@@ -56,8 +56,8 @@ export default class Dashboard extends React.Component {
             console.log(ordersPaid);
             console.log(ordersShipped);
             this.setState({ 
-                        ordersPaid: ordersPaid,
-                        ordersShipped: ordersShipped    
+                    ordersPaid: ordersPaid,
+                    ordersShipped: ordersShipped    
             });
         });
     }
@@ -88,7 +88,7 @@ export default class Dashboard extends React.Component {
                         <h3>Recherche</h3>
                     </div>
                 </div>
-                {this.state.seeMore ? <Order onClose={this.closeSeeMore}/> : null}
+                {this.state.seeMore ? <Order onClose={this.closeSeeMore} order={this.state.order} /> : null}
                 
             </div>
         )
