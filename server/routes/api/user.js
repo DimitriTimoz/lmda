@@ -1,6 +1,5 @@
 var router = require('express').Router();
 const { getUser } = require('../../database/users');
-const db = require('../../db');
 
 router.get('/:id', async (req, res, next) => {
     // Check that the user is logged in
