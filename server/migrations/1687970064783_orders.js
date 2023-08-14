@@ -17,10 +17,6 @@ exports.up = pgm => {
             type: "varchar(255)",
             notNull: true,
         },
-        address : {
-            type: "text",
-            notNull: true,
-        },
     });
 
     pgm.createTable("orders", {

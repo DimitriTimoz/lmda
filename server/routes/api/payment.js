@@ -65,7 +65,7 @@ router.post('/create-payment-intent', async (req, res) => {
     // Créez un nouvel utilisateur ou trouvez un utilisateur existant
     user = await db.query('SELECT * FROM users WHERE email = $1', [email]);
     if (user.rows.length === 0) {
-        let query = await db.query('INSERT INTO users (email, phone, address) VALUES ($1, $2, $3) RETURNING *', [email, phone, delivery.address]);
+        let query = await db.query('INSERT INTO users (email, phone) VALUES ($1, $2, $3) RETURNING *', [email, phone]);
         user = query.rows[0];
     } else {
         user = user.rows[0];
