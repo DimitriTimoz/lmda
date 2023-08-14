@@ -1,6 +1,6 @@
 var router = require('express').Router();
 const env = require('dotenv').config({path: './.env'}).parsed;
-const { validPayment, paymentCanceled } = require('../../database/payment');
+const { validPayment, paymentCanceled, removeOrder } = require('../../database/payment');
 const db = require('../../db');
 const stripe = require('stripe')(env.STRIPE_SECRET_KEY, {
     apiVersion: '2022-11-15',
@@ -39,9 +39,18 @@ router.get('/config', (req, res) => {
 });
 
 router.post('/create-payment-intent', async (req, res) => {
-  let { products, delivery, email, phone } = req.body;
-  if (!products || !delivery || !email || !phone) {
-      return res.status(400).json({ message: 'Infos manquantes, veuillez compléter tous les champs' });
+  let { products, delivery, email, phone, name } = req.body;
+  if (!products || !delivery || !email || !phone || !name) {
+      return res.status(400).json({ message: 'Infos manquantes, veuillez compléter tous les champs.' });
+  }
+
+  // Check size to prevent ddos
+  if (products.length > 100) {
+    return res.status(400).json({ message: 'Trop de produits, veuillez réduire la taille du panier.' });
+  }
+
+  if (email.length > 100 || name.length > 100 || phone.length > 20) {
+    return res.status(400).json({ message: 'Trop de caractères, veuillez réduire la taille des champs.' });
   }
 
   // Protect adress and email against SQL injections and XSS attacks  
@@ -49,7 +58,7 @@ router.post('/create-payment-intent', async (req, res) => {
       return res.status(400).json({ message: 'Adresse email invalide.' });
   }
   email = req.sanitize(email.toLowerCase()); 
-
+  name = req.sanitize(name.toUpperCase());
   delivery.address = req.sanitize(delivery.address); // TODO Check address
 
   if (!checkPhone(phone)) {
@@ -65,7 +74,7 @@ router.post('/create-payment-intent', async (req, res) => {
     // Créez un nouvel utilisateur ou trouvez un utilisateur existant
     user = await db.query('SELECT * FROM users WHERE email = $1', [email]);
     if (user.rows.length === 0) {
-        let query = await db.query('INSERT INTO users (email, phone) VALUES ($1, $2, $3) RETURNING *', [email, phone]);
+        let query = await db.query('INSERT INTO users (email, phone, name) VALUES ($1, $2, $3) RETURNING *', [email, phone, name]);
         user = query.rows[0];
     } else {
         user = user.rows[0];
@@ -120,7 +129,7 @@ router.post('/create-payment-intent', async (req, res) => {
       shipping: {
         name: user.name,
         address: {
-          
+          line1: delivery.address,
         },
       },
       currency: 'eur',
@@ -134,6 +143,7 @@ router.post('/create-payment-intent', async (req, res) => {
       console.error(error);
       // Cancel the payment intent
       await stripe.paymentIntents.cancel(paymentIntent.id);
+      await removeOrder(order.id);
       
       return res.status(500).json({ message: 'Une erreur est survenue, veuillez nous contacter pour régler cette erreur.' });
     }
@@ -145,9 +155,10 @@ router.post('/create-payment-intent', async (req, res) => {
     });
   } catch (e) {
     console.log(e);
+    await removeOrder(order.id);
     return res.status(400).send({
       error: {
-        message: e.message,
+        message: "Impossible de soumettre une demande de paiement. Une erreur est survenue, veuillez nous contacter pour régler cette erreur."
       },
     });
   }
