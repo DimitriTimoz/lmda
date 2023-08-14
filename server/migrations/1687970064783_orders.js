@@ -9,6 +9,9 @@ exports.up = pgm => {
             primaryKey: true,
             unique: true
         },
+        name: {
+            type: "varchar(255)",
+        },
         email : {
             type: "varchar(255)",
             notNull: true,
