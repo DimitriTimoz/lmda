@@ -7,8 +7,8 @@ export default class Dashboard extends React.Component {
         super(props);
         this.state = {
             products_insell: [],
-            products_ordered: [],
-            products_shipped: [],
+            orders_paid: [],
+            orders_shipped: [],
         };
         
         this.updateProducts = this.updateProducts.bind(this);
@@ -20,23 +20,28 @@ export default class Dashboard extends React.Component {
 
     updateProducts = () => {
         // Fetch all products
-        axios.get("/api/products/admin/all/all").then((res) => {
+        axios.get("/api/products/all/all").then((res) => {
             let products = res.data.products;
+            this.setState({ products_insell: products,
+            });
+        });
+
+        // Fetch all orders
+        axios.get("/api/order/all").then((res) => {
+            let orders = res.data.orders;
             // Get ordrered products
-            let products_ordered = products.filter((product) => {
-                return product.ordered;
+            let orders_paid = orders.filter((order) => {
+                return order.paid;
             });
             // Get shipped products
-            let products_shipped = products.filter((product) => {
-                return product.shipped;
+            let orders_shipped = orders.filter((order) => {
+                return order.shipped;
             });
-            // Get products in sell
-            let products_insell = products.filter((product) => {
-                return !product.ordered && !product.shipped;
-            }); 
-            this.setState({ products_insell: products_insell,
-                        products_ordered: products_ordered,
-                        products_shipped: products_shipped    
+            console.log(orders_paid);
+            console.log(orders_shipped);
+            this.setState({ 
+                        orders_paid: orders_paid,
+                        orders_shipped: orders_shipped    
             });
         });
     }
@@ -51,15 +56,15 @@ export default class Dashboard extends React.Component {
                     })}
                 </div>
                 <div className="column">
-                    <h3>Commandés</h3>
-                    {this.state.products_ordered.map((product) => {
-                        return <RawPreview product={product} cancelOrder={true} admin={true} onChange={this.updateProducts}/>;
+                    <h3>Commandes en attente</h3>
+                    {this.state.orders_paid.map((order) => {
+                        return <RawPreview order={order} cancelOrder={true} admin={true} onChange={this.updateProducts}/>;
                     })}
                 </div>
                 <div className="column">
-                    <h3>Expédiés</h3>
-                    {this.state.products_shipped.map((product) => {
-                        return <RawPreview product={product} edit={false} onChange={this.updateProducts}/>;
+                    <h3>Commandes expédiés</h3>
+                    {this.state.orders_shipped.map((order) => {
+                        return <RawPreview order={order} edit={false} onChange={this.updateProducts}/>;
                     })}
                 </div>
                 <div className="column">
