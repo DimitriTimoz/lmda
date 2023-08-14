@@ -16,7 +16,7 @@ export default class RawPreview extends React.Component {
 
         this.removeFormCart = this.removeFormCart.bind(this);
         this.removeAction = this.removeAction.bind(this);
-        this.cancelOrder = this.cancelOrder.bind(this);
+        this.seeMore = this.seeMore.bind(this);
     }
 
     removeAction() {
@@ -71,6 +71,11 @@ export default class RawPreview extends React.Component {
         }
     }
 
+    seeMore() {
+        if (this.props.onSeeMore) {
+            this.props.onSeeMore(this.props.order.id);
+        }
+    }
 
     render() {
         if (!this.state.product && !this.props.order) {
@@ -96,7 +101,7 @@ export default class RawPreview extends React.Component {
                     }
                     <div className="buttons">
                         {this.state.edit ? <TxtButton title="Modifier" className="view-button" onClick={() => {window.location.href = "/admin/edit/" + this.state.product.id}} /> : null}
-                        {this.state.cancel_order ? <TxtButton title="Annuler" className="view-button" onClick={this.cancelOrder} /> : null}
+                        {this.state.cancel_order ? <TxtButton title="Voir plus" className="view-button" onClick={this.seeMore} /> : null}
                         <TxtButton title="Supprimer" className="view-button" onClick={this.removeAction} />
                     </div>
                 </div>
