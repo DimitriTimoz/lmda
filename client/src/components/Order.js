@@ -3,18 +3,26 @@ import "./Order.css";
 import axios from "axios";
 import RawPreview from "./products/RawPreview";
 import Button from "./Button";
-
+import ErrorPopup from "./ErrorPopup";
 export default class Order extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             products: [],
             user: null,
+            errorMessages: [],
         };
 
+        if (props.order) {
+            this.fetchProducts();
+            this.fetchUser();
+        }
+
+        this.shipOrder = this.shipOrder.bind(this);
+        this.cancelOrder = this.cancelOrder.bind(this);
     }
 
-    cancelOrder() {
+    cancelOrder = () => {
         // Ask for confirmation
         if (window.confirm("Voulez-vous vraiment annuler cette commande ?")) {
             // Cancel order
@@ -30,37 +38,77 @@ export default class Order extends React.Component {
         }
     }
 
-    shipOrder() {
+    shipOrder = () => {
+        if (!this.props.order) {
+            console.log("No order");
+            return;
+        }
+
         // Ask for confirmation
         if (window.confirm("Voulez-vous vraiment marquer cette commande comme expédiée ?")) {
             // Cancel order
-            axios.put("/api/order/" + this.state.product.id, { shipped: true }).then((res) => {
-                if (res.data.success) {
-                    // Remove from the page
-                    this.setState({
-                        product: null,
-                    });
-                    this.props.onChange();
-                }
+            axios.put("/api/order/" + this.props.order.id, { shipped: true }).then((res) => {
+                
             });
         }
     }
+
+    fetchProducts = () => {
+        // Fetch the products
+        for (let i = 0; i < this.props.order.products.length; i++) {
+            axios.get("/api/product/" + this.props.order.products[i]).then((res) => {
+                if (res.status === 200) {
+                    this.setState({
+                        products: [...this.state.products, res.data],
+                    });
+                }
+            }).catch((err) => {
+                this.setState({
+                    errorMessages: [...this.state.errorMessages, err.response.data.message],
+                });
+            });
+        }
+    }
+
+    fetchUser = () => {
+        // Fetch the user
+        axios.get("/api/user/" + this.props.order.user_id).then((res) => {
+            if (res.status === 200) {
+                let user = res.data;
+                this.setState({
+                    user: res.data,
+                });
+            }
+        }).catch((err) => {
+            this.setState({
+                errorMessages: [...this.state.errorMessages, err.response.data.message],
+            });
+        });
+    }
+
 
     render() {
         // A popup element to display the order details        
         const user = this.state.user;
         return (
             <div id="order">
+                {this.state.errorMessages.length > 0 ?
+                    <ErrorPopup
+                        messages={this.state.errorMessages.join("\n")}
+                        onClose={() => this.setState({ errorMessages: [] })}
+                    />
+                : null
+                }
                 <span className="close-btn" onClick={this.props.onClose}>Fermer</span>
             {this.props.order ?
                 <>
                 {this.state.user ? 
                     <div className="column">
                         <h2>{user.name}</h2>
-                        <p>{user.address.line1}</p>
-                        <p>{user.address.zip}</p>
-                        <p>{user.address.city}</p>
-                        <p>{user.address.country}</p>
+                        {user.address && <p>{user.address.line1}</p>}
+                        {user.address && <p>{user.address.zip}</p>}
+                        {user.address && <p>{user.address.city}</p>}
+                        {user.address && <p>{user.address.country}</p>}
                         <p>{user.phone}</p>
                         <p>{user.email}</p>
                         <Button title="Obtenir bordereau" />
@@ -82,11 +130,9 @@ export default class Order extends React.Component {
                     {this.state.products.length > 0 ?
                         <div className="product-list">
                             {this.state.products.map((product) => {
-                                <RawPreview
-                                    key={product.id}
+                                return (<RawPreview
                                     product={product}
-                                    onSeeMore={this.seeMore.bind(this)}
-                                />
+                                />);
                             })}
                         </div>
                     :
