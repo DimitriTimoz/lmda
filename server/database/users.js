@@ -23,7 +23,7 @@ async function addAdmin(email, password) {
       `;
   
       const { rows } = await pool.query(query, [email, hashedPassword]);
-      console.log('Admin added:', rows[0]);
+      console.log('Admin added:', rows[0].email);
       return rows[0];
     } catch (error) {
       console.error('Error adding admin:', error.message);
