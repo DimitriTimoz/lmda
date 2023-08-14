@@ -7,15 +7,30 @@ export default class Dashboard extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            products_insell: [],
-            orders_paid: [],
-            orders_shipped: [],
+            productsInsell: [],
+            ordersPaid: [],
+            ordersShipped: [],
+            seeMore: false,
+            order: null,
         };
         
         this.updateProducts = this.updateProducts.bind(this);
+        this.closeSeeMore = this.closeSeeMore.bind(this);
+    }   
+
+    closeSeeMore = () => {
+        this.setState({
+            seeMore: false,
+        });
     }
 
-    componentDidMount() {
+    seeMore = (order) => {
+        this.setState({
+            seeMore: true,
+            order: order,
+        });
+    }
+    componentDidMount = () => {
         this.updateProducts();
     }
 
@@ -23,7 +38,7 @@ export default class Dashboard extends React.Component {
         // Fetch all products
         axios.get("/api/products/all/all").then((res) => {
             let products = res.data.products;
-            this.setState({ products_insell: products,
+            this.setState({ productsInsell: products,
             });
         });
 
@@ -31,18 +46,18 @@ export default class Dashboard extends React.Component {
         axios.get("/api/order/all").then((res) => {
             let orders = res.data.orders;
             // Get ordrered products
-            let orders_paid = orders.filter((order) => {
+            let ordersPaid = orders.filter((order) => {
                 return order.paid;
             });
             // Get shipped products
-            let orders_shipped = orders.filter((order) => {
+            let ordersShipped = orders.filter((order) => {
                 return order.shipped;
             });
-            console.log(orders_paid);
-            console.log(orders_shipped);
+            console.log(ordersPaid);
+            console.log(ordersShipped);
             this.setState({ 
-                        orders_paid: orders_paid,
-                        orders_shipped: orders_shipped    
+                        ordersPaid: ordersPaid,
+                        ordersShipped: ordersShipped    
             });
         });
     }
@@ -53,27 +68,28 @@ export default class Dashboard extends React.Component {
                 <div id="dashboard">
                     <div className="column">
                         <h3>En vente</h3>
-                        {this.state.products_insell.map((product) => {
+                        {this.state.productsInsell.map((product) => {
                             return <RawPreview product={product} edit={true} admin={true} onChange={this.updateProducts}/>;
                         })}
                     </div>
                     <div className="column">
                         <h3>Commandes en attente</h3>
-                        {this.state.orders_paid.map((order) => {
-                            return <RawPreview order={order} cancelOrder={true} admin={true} onChange={this.updateProducts}/>;
+                        {this.state.ordersPaid.map((order) => {
+                            return <RawPreview order={order} cancelOrder={true} admin={true} onChange={this.updateProducts} onSeeMore={this.seeMore}/>;
                         })}
                     </div>
                     <div className="column">
                         <h3>Commandes expédiés</h3>
-                        {this.state.orders_shipped.map((order) => {
-                            return <RawPreview order={order} edit={false} onChange={this.updateProducts}/>;
+                        {this.state.ordersShipped.map((order) => {
+                            return <RawPreview order={order} edit={false} onChange={this.updateProducts} onSeeMore={this.seeMore}/>;
                         })}
                     </div>
                     <div className="column">
                         <h3>Recherche</h3>
                     </div>
                 </div>
-                <Order />
+                {this.state.seeMore ? <Order onClose={this.closeSeeMore}/> : null}
+                
             </div>
         )
     }

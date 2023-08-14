@@ -49,34 +49,38 @@ export default class Order extends React.Component {
         // A popup element to display the order details
         let popup = null;
         
-        return (this.props ?
+        return (
             <div id="order">
-            <div className="column">
-                <h2>Nom Prénom</h2>
-                <h3>Adresse</h3>
-                <h3>Code postal</h3>
-                <h3>Ville</h3>
-                <h3>Pays</h3>
-                <h3>Téléphone</h3>
-                <h3>Email</h3>
-                <Button tittle="Obtenir Bordereau" />
-            </div>
-            <div className="column">
-                <h2>Produits</h2>
-                <div className="product-list">
-                    {this.state.products.map((product) => {
-                        <RawPreview
-                            key={product.id}
-                            product={product}
-                            onSeeMore={this.seeMore.bind(this)}
-                        />
-                    })}
+                <span className="close-btn" onClick={this.props.onClose}>Fermer</span>
+            {this.props.order ?
+                <>
+                <div className="column">
+                    <h2>Nom Prénom</h2>
+                    <p>Adresse</p>
+                    <p>Code postal</p>
+                    <p>Ville</p>
+                    <p>Pays</p>
+                    <p>Téléphone</p>
+                    <p>Email</p>
+                    <Button title="Obtenir bordereau" />
                 </div>
-                <Button tittle="Marquer comme expédiée" onClick={this.shipOrder.bind(this)} />
-            </div>
-        </div>
-        :
-        <p>Chargement...</p>  
-        );
+                <div className="column">
+                    <h2>Produits</h2>
+                    <div className="product-list">
+                        {this.state.products.map((product) => {
+                            <RawPreview
+                                key={product.id}
+                                product={product}
+                                onSeeMore={this.seeMore.bind(this)}
+                            />
+                        })}
+                    </div>
+                    <Button title="Marquer comme expédiée" onClick={this.shipOrder.bind(this)} />
+                </div>
+            </>
+            :
+                <p>Chargement...</p>  
+            }
+        </div>);
     }
 }
