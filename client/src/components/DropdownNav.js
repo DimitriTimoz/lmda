@@ -93,9 +93,15 @@ class DropdownNav extends React.Component {
     }
 
     trigger = () => {
+        if (this.state.active) {
+            this.filter_level = 1;
+        }
         this.setState((prevState) => ({
             active: !prevState.active,
+            filter: prevState.active ? "" : prevState.filter,
         }));
+
+        
     }
 
     getList() {
