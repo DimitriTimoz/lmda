@@ -28,7 +28,7 @@ function Index() {
             <Route path="/favorites" element={<Favorites />} />
             <Route path="/cart" element={<Cart stripePromise={stripePromise} />} />
             <Route path="/product/:id" element={<Product/>} />
-            <Route path="/products/:category/:filter" element={<Products/>} />
+            <Route path="/products/:category/:filter?" element={<Products/>} />
             <Route path="/completion" element={<Completion stripePromise={stripePromise} />} />
         </Routes>
     </div>

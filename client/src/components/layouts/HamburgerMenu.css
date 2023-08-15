@@ -7,10 +7,12 @@
     background: var(--background-color);
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    text-align: center;
+    justify-content: start;
+    text-align: left;
 }
 
 #hambuger-menu > .menu-el {
     cursor: pointer;
+    font-size: 2rem;
+    margin: 1rem 3rem;
 }

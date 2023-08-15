@@ -41,7 +41,7 @@ export default class HamburgerMenu extends React.Component {
         let added = [];
         return (
             <div id="hambuger-menu">
-                {this.state.currentFilter.length > 0 && <Link className="menu-el" to={allLevelLink}>Tout</Link>}
+                {this.state.currentFilter.length > 0 && <Link className="menu-el" onClick={this.props.onClose} to={allLevelLink}>Tout</Link>}
 
                 {filters.map((filter) => {
                     filter = filter.split(":");
@@ -55,7 +55,7 @@ export default class HamburgerMenu extends React.Component {
                     added.push(filter);
                     return (
                         lastLevel ?
-                        <Link className="menu-el" to={trimMatchesFromEnd(levelLink + ":" + filter) }>{filterName}</Link>
+                        <Link className="menu-el" onClick={this.props.onClose} to={trimMatchesFromEnd(levelLink + ":" + filter) }>{filterName}</Link>
                         :
                         <span className="menu-el" onClick={async () => {this.increment(filter)}}>{filterName + " >"}</span>
                     );

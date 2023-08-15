@@ -30,14 +30,13 @@ export default class Header extends React.Component {
   componentDidMount() {
     window.addEventListener('resize', this.updateDimensions);
   }
+
   componentWillUnmount() {
     window.removeEventListener('resize', this.updateDimensions);
   }
 
-
   render() {
     let burgerMenuSrc = "";
-    let no_overflow = <></>;
     if (this.state.isBurgerMenuOpen) {
       burgerMenuSrc = '/icons/burger-menu-unfold.svg';
     } else {
@@ -62,9 +61,11 @@ export default class Header extends React.Component {
         <DropdownNav elements={CAREGORIES_HOMMES} category="hommes" selector={ false } placeholder={"hommes"} />
         <DropdownNav elements={CAREGORIES_ENFANTS} category="enfants"selector={ false } placeholder={"enfants"} />
       </nav>
-      <nav className="hide-desktop"> 
-        <HamburgerMenu/>
-      </nav>
+      {this.state.isBurgerMenuOpen &&
+        <nav className="hide-desktop"> 
+            <HamburgerMenu onClose={this.triggerMenu}/>
+        </nav>
+      }
     </div>
     );
   }
