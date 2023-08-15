@@ -142,7 +142,7 @@ class DropdownNav extends React.Component {
             const level = filter.split(":").length + this.filter_level - 1;
             return level > max ? level : max;
         }, 0);
-        console.log(maxLevel);
+
         const filters = range.map((i) => {
             const [items, prefilter] = this.getFiltersAtLevel(i + 1);
             let prefilter_final = prefilter;
