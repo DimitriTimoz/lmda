@@ -2,13 +2,15 @@ import './Header.css';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import DropdownNav from '../DropdownNav';
-import {CAREGORIES_HOMMES, CAREGORIES_FEMMES} from '../../data/index';
+import {CAREGORIES_HOMMES, CAREGORIES_FEMMES, CAREGORIES_ENFANTS} from '../../data/index';
+import HamburgerMenu from './HamburgerMenu';
 
 export default class Header extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isBurgerMenuOpen: false
+      isBurgerMenuOpen: false,
+      phone: false,
     }
 
     this.triggerMenu = this.triggerMenu.bind(this);
@@ -18,33 +20,30 @@ export default class Header extends React.Component {
     this.setState({isBurgerMenuOpen: !this.state.isBurgerMenuOpen});
   }
 
+  updateDimensions = () => {
+    this.setState({phone: window.innerWidth < 700});
+    if (window.innerWidth < 700) {
+      window.scrollTo(0, 0);
+    }
+  };
+
+  componentDidMount() {
+    window.addEventListener('resize', this.updateDimensions);
+  }
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.updateDimensions);
+  }
+
+
   render() {
-    
     let burgerMenuSrc = "";
-    let hideMobile = "hide-mobile";
     let no_overflow = <></>;
     if (this.state.isBurgerMenuOpen) {
       burgerMenuSrc = '/icons/burger-menu-unfold.svg';
-      hideMobile = "";
-      if (window.innerWidth < 700) {
-        no_overflow = <style>{'body {overflow: hidden;}'}</style>;
-        window.scrollTo(0, 0);
-      }
-  
     } else {
       burgerMenuSrc = '/icons/burger-menu.svg';
     }
     
-    let nav;
-    if (this.props.isAdmin) {
-      nav = <nav></nav>
-    } else {
-      nav = <nav className={hideMobile}>
-              <DropdownNav elements={CAREGORIES_FEMMES} category="femmes" selector={ false } placeholder={"femmes"} />
-              <DropdownNav elements={CAREGORIES_HOMMES} category="hommes" selector={ false } placeholder={"hommes"} />
-              <DropdownNav elements={CAREGORIES_HOMMES} category="enfants"selector={ false } placeholder={"enfants"} />
-            </nav>
-    }
     return (
      <div>
       <header>
@@ -58,8 +57,14 @@ export default class Header extends React.Component {
             <Link to="/cart"><img alt="cart" src='/icons/basket.svg'/></Link>
         </div>
       </header>
-      {nav}
-      {no_overflow}
+      <nav className="hide-mobile">
+        <DropdownNav elements={CAREGORIES_FEMMES} category="femmes" selector={ false } placeholder={"femmes"} />
+        <DropdownNav elements={CAREGORIES_HOMMES} category="hommes" selector={ false } placeholder={"hommes"} />
+        <DropdownNav elements={CAREGORIES_ENFANTS} category="enfants"selector={ false } placeholder={"enfants"} />
+      </nav>
+      <nav className="hide-desktop"> 
+        <HamburgerMenu/>
+      </nav>
     </div>
     );
   }
