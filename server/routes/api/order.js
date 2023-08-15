@@ -9,15 +9,18 @@ router.delete('/:id', async (req, res) => {
     if (!req.session.uid) {
         return res.status(401).json({ error: 'Vous devez être connecté pour effectuer cette action.' });
     }
-    // TODO: refund the user and send an email
     // Cancel the order. Set ordered to false for each product in the order by getting the order with one product id
     try {
-        await db.query('UPDATE products SET ordered = FALSE FROM orders CROSS JOIN LATERAL unnest(orders.products) AS product WHERE product = $1 AND products.id = product', [id]);
-        return res.json({ success: 'Commande annulée avec succès.' });
+        // Set products in order to not ordered
+        await db.query('UPDATE products SET ordered = false WHERE id IN (SELECT unnest(products) FROM orders WHERE id = $1);', [id]);
+        await db.query('DELETE FROM orders WHERE id = $1', [id]);
     } catch (err) {
         console.error(err);
         return res.status(500).json({ error: 'Une erreur est survenue lors de l\'annulation de la commande. Veuillez contacter le support.' });
     }
+    // TODO: refund the user and send an email
+    return res.json({ success: 'Commande annulée avec succès.' });
+
 });
 
 router.get("/all", async (req, res) => {

@@ -60,7 +60,7 @@ async function isProductOrdered(pid) {
     if (rows.length === 0) {
       throw new "Product not found"
     }
-    return rows[0].ordered;
+    return rows[0];
   } catch (err) {
     throw err;
   }
