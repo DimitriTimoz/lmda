@@ -204,7 +204,25 @@ const CAREGORIES_FEMMES = [
   
 ];
 
+const CAREGORIES_ENFANTS = CAREGORIES_HOMMES;
+const ALL = [
+  {
+    filter: "Femmes",
+    subs: CAREGORIES_FEMMES
+  },
+  {
+    filter: "Hommes",
+    subs: CAREGORIES_HOMMES
+  },
+  {
+    filter: "Enfants",
+    subs: CAREGORIES_ENFANTS
+  }
+]
+
 module.exports = {
   CAREGORIES_HOMMES,
-  CAREGORIES_FEMMES
+  CAREGORIES_FEMMES,
+  CAREGORIES_ENFANTS,
+  ALL
 };
