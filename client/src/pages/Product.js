@@ -63,10 +63,10 @@ export default class Product extends React.Component {
                 inCart = true;
             }
         }
-        this.addTocart = this.addTocart.bind(this);
+        this.addToCart = this.addToCart.bind(this);
         this.viewCart = this.viewCart.bind(this);
 
-        this.setState({inCart: inCart});
+        this.state.inCart = inCart;
     }
 
     fetchProduct = (pid) => {
@@ -92,7 +92,7 @@ export default class Product extends React.Component {
         window.location.href = "/cart";
     }
 
-    addTocart = () => {
+    addToCart = () => {
         const cart = localStorage.getItem("cart");
         if (this.state.product) {
             if (cart) {
@@ -135,7 +135,7 @@ export default class Product extends React.Component {
                             {this.state.inCart ? 
                                 <Button title="Voir mon pannier" className="" onClick={this.viewCart} />
                                 : 
-                                <Button title="Acheter" className="" onClick={this.addTocart} />}
+                                <Button title="Acheter" className="" onClick={this.addToCart} />}
                             
                             <LikeBtn pid={this.state.product.id} className="product-like" />
                             <table className="product-details">
