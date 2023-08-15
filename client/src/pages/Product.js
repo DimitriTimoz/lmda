@@ -2,6 +2,7 @@ import React from "react";
 import Button from "../components/Button";
 import LikeBtn from "../components/LikeBtn";
 import ImageCarrousel from "../components/products/ImageCarrousel";
+import axios from "axios";
 import "./Product.css";
 
 function formatDate(date) {
@@ -22,69 +23,99 @@ export default class Product extends React.Component {
     constructor(props) {
         super(props); 
 
+        this.state = {
+            product: null,
+            inCart: false,
+        };
+
         // Get the product from the local storage
         let product_id = window.location.pathname.split("/")[2];
         if (isNaN(product_id)) {
             window.location.href = "/";
         }
         product_id = parseInt(product_id);
+
         const products = localStorage.getItem("products");
+
         if (products) {
-            this.product = JSON.parse(products).find(
+            let prod = JSON.parse(products).find(
                 (p) => p.id === product_id
             );
-            console.log(this.product);
+            
+            if (prod) {
+                this.state.product = prod;
+            } else {
+                this.fetchProduct(product_id);
+                return;
+            }
         } else {
-            this.product = null;
+            this.fetchProduct(product_id);
+            return;
         }
 
         // Check if the product is in the cart
-        let in_cart = false;
+        let inCart = false;
         const cart = localStorage.getItem("cart");
         if (cart) {
             const cartItems = JSON.parse(cart);
-            // If is in set in_cart to true
+            // If is in set inCart to true
             if (cartItems.find((p) => p === product_id)) {
-                in_cart = true;
+                inCart = true;
             }
         }
         this.addTocart = this.addTocart.bind(this);
         this.viewCart = this.viewCart.bind(this);
 
-        this.state = {
-            in_cart: in_cart,
-        };
+        this.setState({inCart: inCart});
+    }
+
+    fetchProduct = (pid) => {
+        axios.get('/api/product/' + pid)
+            .then(res => {
+                if (res.data) {
+                    // Check if the product is in the cart
+                    let inCart = false;
+                    const cart = localStorage.getItem("cart");
+                    if (cart) {
+                        const cartItems = JSON.parse(cart);
+                        // If is in set inCart to true
+                        if (cartItems.find((p) => p === pid)) {
+                            inCart = true;
+                        }
+                    }
+                    this.setState({product: res.data, inCart: inCart});
+                }
+            });
     }
 
     viewCart() {
         window.location.href = "/cart";
     }
 
-    addTocart() {
+    addTocart = () => {
         const cart = localStorage.getItem("cart");
-        if (this.product) {
+        if (this.state.product) {
             if (cart) {
                 const cartItems = JSON.parse(cart);
                 // Check if the product is already in the cart
-                if (cartItems.find((p) => p === this.product.id)) {
+                if (cartItems.find((p) => p === this.state.product.id)) {
                     return;
                 }
-                cartItems.push(this.product.id);
+                cartItems.push(this.state.product.id);
                 localStorage.setItem("cart", JSON.stringify(cartItems));
             } else {
-                localStorage.setItem("cart", JSON.stringify([this.product.id]));
+                localStorage.setItem("cart", JSON.stringify([this.state.product.id]));
             }
-            this.setState({ in_cart: true });
+            this.setState({ inCart: true });
         }
     }
     
 
     render() {
-        if (!this.product) {
-            // TODO: Get the product from the API
+        if (!this.state.product) {
             return <div>Produit introuvable</div>;
         }
-        let photos = this.product.photos.slice(1);
+        let photos = this.state.product.photos.slice(1);
         let photos_paths = photos.map((photo) => {
             return '/uploads/' + photo;
         });
@@ -94,31 +125,31 @@ export default class Product extends React.Component {
                     <ImageCarrousel enable={true} photos={photos_paths}/>
                     <div className="product-block">
                         <div>
-                            <h2>{this.product.name}</h2>
-                            <span className="price">{parseFloat(this.product.prices[0])/100} €</span>
+                            <h2>{this.state.product.name}</h2>
+                            <span className="price">{parseFloat(this.state.product.prices[0])/100} €</span>
                             <span className="product-description">
-                                {this.product.description}
+                                {this.state.product.description}
                             </span>
                         </div>
                         <div>
-                            {this.state.in_cart ? 
+                            {this.state.inCart ? 
                                 <Button title="Voir mon pannier" className="" onClick={this.viewCart} />
                                 : 
                                 <Button title="Acheter" className="" onClick={this.addTocart} />}
                             
-                            <LikeBtn pid={this.product.id} className="product-like" />
+                            <LikeBtn pid={this.state.product.id} className="product-like" />
                             <table className="product-details">
                                 <tr>
                                     <td>TAILLE</td>
-                                    <td>{this.product.size}</td>
+                                    <td>{this.state.product.size}</td>
                                 </tr>
                                 <tr>
                                     <td>ÉTAT</td>
-                                    <td>{this.product.state}</td>
+                                    <td>{this.state.product.state}</td>
                                 </tr>
                                 <tr>
                                     <td>Date d'ajout</td>
-                                    <td>{formatDate(this.product.date)}</td>
+                                    <td>{formatDate(this.state.product.date)}</td>
                                 </tr>
                             </table>
                         </div>
