@@ -3,10 +3,7 @@ import { useParams, useLocation } from "react-router-dom";
 import Preview from "../components/products/Preview";
 import "./Products.css";
 
-function ProductsBase({ products, getProducts, category }) {
-    useEffect(() => {
-        getProducts();
-    }, [getProducts]);
+function ProductsBase({ products, category }) {
 
     const [productState, setProductState] = useState({
         state: "0",
@@ -69,14 +66,14 @@ function Products(props) {
                 localStorage.setItem("products", JSON.stringify(data.products));
                 setProducts(data.products);
             });
-    });
+    }, [category, filter]);
 
     // Trigger getProducts only when location changes
     useEffect(() => {
         getProducts();
-    }, [location, getProducts]);
+    }, [location]);
 
-    return <ProductsBase products={products} getProducts={getProducts} category={categ_name} />;
+    return <ProductsBase products={products} category={categ_name} />;
 }
 
 export default Products;
