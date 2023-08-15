@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useParams, useLocation } from "react-router-dom";
 import Preview from "../components/products/Preview";
 import "./Products.css";
+import { trimMatchesFromEnd } from "../utils";
 
 function ProductsBase({ products, category }) {
 
@@ -48,6 +49,7 @@ function Products(props) {
 
     let filter_arg = filter || "all";
     let category_arg = category || "all";
+    filter_arg = trimMatchesFromEnd(filter_arg, ":");
     let categ_name = "Tous les produits";
     if (category_arg !== "all") {
         if (filter_arg !== "all") {
