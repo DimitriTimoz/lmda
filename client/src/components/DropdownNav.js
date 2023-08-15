@@ -3,26 +3,40 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 class DropdownNav extends React.Component {
-    static get_filters(elements, prefilter = "", classicDpd = false) {
+    static getFilters(elements, prefilter = "") {
+        // Filtre actuel + variations
+        prefilter = prefilter.toLowerCase();
         let filters = [];
         for (let i = 0; i < elements.length; i++) {
-            // If element is an object, it has subs
-            if (classicDpd) {
-                filters.push(elements[i]);
-            } else {
-                let currentFilter = elements[i].filter;
-                if (prefilter !== "") {
-                    currentFilter = prefilter + ":" + currentFilter;
-                }
-                if (Array.isArray(elements[i].subs)) {
-                    let subsFilters = DropdownNav.get_filters(elements[i].subs, currentFilter);
-                    filters = filters.concat(subsFilters);
-                } else {
-                    filters.push(prefilter + ":" + elements[i]);
-                }
+            let element = elements[i];
+            let currentFilter = element.filter;
+            if (prefilter !== "") {
+                currentFilter = prefilter + ":" + currentFilter;
             }
+            if (Array.isArray(element.subs)) {
+                let subsFilters = DropdownNav.getFilters(element.subs, currentFilter);
+                filters = filters.concat(subsFilters);
+            } else {
+                filters.push(prefilter + ":" + element);
+            }
+            
         }
         return filters;
+    }
+
+    static getAllMatchingFilters = (filters, filter) => {
+        let items = [];
+        // Extract all filters from elements
+        for (let i = 0; i < filters.length; i++) {
+            // femmes:vêtements:jean
+            // -> vêtements:jean if filter is "femmes"
+            if (filters[i].startsWith(filter + ":")) {
+                items.push(filters[i].slice(filter.length + 1));
+            } else if (filter === "") {
+                items.push(filters[i]);
+            }
+        }
+        return items;
     }
 
     constructor(props) {
@@ -85,7 +99,7 @@ class DropdownNav extends React.Component {
     }
 
     getList() {
-        return DropdownNav.get_filters(this.props.elements, "", this.props.classicDpd);
+        return DropdownNav.getFilters(this.props.elements, "");
     }
 
     getFiltersAtLevel(level) {
@@ -112,23 +126,6 @@ class DropdownNav extends React.Component {
             }
         }
         return [items, prefilter];
-    }
-
-    getAllMatchingFilters = () => {
-        let items = [];
-        const list = this.getList();
-        // Extract all filters from elements
-        console.log("filters: " + this.state.filter);
-        for (let i = 0; i < list.length; i++) {
-            // femmes:vêtements:jean
-            // -> vêtements:jean if filter is "femmes"
-            if (list[i].startsWith(this.state.filter + ":")) {
-                items.push(list[i].slice(this.state.filter.length + 1));
-            } else if (this.state.filter === "") {
-                items.push(list[i]);
-            }
-        }
-        return items;
     }
 
     render() {
@@ -181,7 +178,6 @@ class DropdownNav extends React.Component {
 }
 
 DropdownNav.defaultProps = {
-    classicDpd: false,
     elements: [],
     placeholder: "Select an item",
     selector: false,
