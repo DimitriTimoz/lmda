@@ -7,49 +7,30 @@ export default class RawPreview extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            order_mode: this.props.order || false,
-            product: this.props.product,
             edit: this.props.edit || false,
-            cancel_order: this.props.cancelOrder || false,
-            deliver: this.props.deliver || false,
+            order: this.props.order || false,
+            cart: this.props.cart || false,
         };
 
         this.removeFormCart = this.removeFormCart.bind(this);
-        this.removeAction = this.removeAction.bind(this);
         this.seeMore = this.seeMore.bind(this);
-    }
-
-    removeAction() {
-        // Ask for confirmation
-        if (window.confirm("Voulez-vous vraiment supprimer ce produit ?")) {
-            if (this.props.admin) {
-                // Remove from database
-                axios.delete("/api/product/" + this.state.product.id).then((res) => {
-                    if (res.data.success) {
-                        // Remove from the page
-                        this.setState({
-                            product: null,
-                        });
-                        this.props.onChange();
-                    }
-                });
-            } else {
-                // Remove from cart
-                this.removeFormCart();
-                this.props.onChange();
-            }
-        }
+        this.cancelOrder = this.cancelOrder.bind(this);
     }
 
     removeFormCart() {
         const cart = localStorage.getItem("cart");
-        if (this.state.product) {
+        if (!window.confirm("Voulez-vous vraiment supprimer ce produit du panier ?")) {
+            return;
+        }
+
+        if (this.props.product) {
             if (cart) {
                 const cartItems = JSON.parse(cart);
                 // Check if the product is already in the cart
-                if (cartItems.find((p) => p.id === this.state.product.id)) {
-                    cartItems.splice(cartItems.indexOf(this.state.product), 1);
+                if (cartItems.find((p) => p === this.props.product.id)) {
+                    cartItems.splice(cartItems.indexOf(this.props.product.id), 1);
                     localStorage.setItem("cart", JSON.stringify(cartItems));
+                    this.props.onChange();
                 }
             }
         }
@@ -59,8 +40,8 @@ export default class RawPreview extends React.Component {
         // Ask for confirmation
         if (window.confirm("Voulez-vous vraiment annuler cette commande ?")) {
             // Remove from database
-            axios.delete("/api/order/" + this.props.product.id).then((res) => {
-                if (res.data.success) {
+            axios.delete("/api/order/" + this.props.order.id).then((res) => {
+                if (res.status === 200) {
                     // Remove from the page
                     this.setState({
                         product: null,
@@ -78,7 +59,7 @@ export default class RawPreview extends React.Component {
     }
 
     render() {
-        if (!this.state.product && !this.props.order) {
+        if (!this.props.product && !this.props.order) {
             return null;
         }
         return (
@@ -86,29 +67,30 @@ export default class RawPreview extends React.Component {
                 {this.props.order ?
                     null
                 :
-                    <img src={"/uploads/" + this.state.product.photos[0]} alt={this.state.product.name} className="raw-preview-image"/>
+                    <img src={"/uploads/" + this.props.product.photos[0]} alt={this.props.product.name} className="raw-preview-image"/>
                 }
                 <div className="raw-preview-left">
                     {this.props.order ?
                         <h4 className="p-name" >{"Nom Prénom"}</h4>
                     :
-                        <h4 className="p-name" >{this.state.product.name}</h4>
+                        <h4 className="p-name" >{this.props.product.name}</h4>
                     }
                     {this.props.order ?
                         <span className="p-details" >{this.props.order.products.length + " Produit(s)"}</span>
                         :
-                        <span className="p-details" >{this.state.product.size + " - " + this.state.product.state}</span>
+                        <span className="p-details" >{this.props.product.size + " - " + this.props.product.state}</span>
                     }
                     <div className="buttons">
-                        {this.state.edit ? <TxtButton title="Modifier" className="view-button" onClick={() => {window.location.href = "/admin/edit/" + this.state.product.id}} /> : null}
-                        {this.state.cancel_order ? <TxtButton title="Voir plus" className="view-button" onClick={this.seeMore} /> : null}
-                        <TxtButton title="Supprimer" className="view-button" onClick={this.removeAction} />
+                        {this.state.edit ? <TxtButton title="Modifier" className="view-button" onClick={() => {window.location.href = "/admin/edit/" + this.props.product.id}} /> : null}
+                        {this.state.cart && <TxtButton title="Supprimer" className="view-button" onClick={this.removeFormCart} /> }
+                        {this.state.order ? <TxtButton title="Voir plus" className="view-button" onClick={this.seeMore} /> : null}
+                        {this.state.order ? <TxtButton title="Annuler" className="view-button" onClick={this.cancelOrder} /> : null}
                     </div>
                 </div>
                 {this.props.order ?
-                    <span className="price" >{parseFloat(this.props.order.amount / 100)}&nbsp;€</span>
+                    <span className="price" >{parseFloat(this.props.order.amount)/100}&nbsp;€</span>
                 :
-                    <span className="price" >{parseFloat(this.state.product.prices[0])/100}&nbsp;€</span>
+                    <span className="price" >{parseFloat(this.props.product.prices[0])/100}&nbsp;€</span>
                 }
             </div>
         );
