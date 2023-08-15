@@ -40,20 +40,21 @@ class Cart extends Component {
         if (cart) {
             products = JSON.parse(cart);
         } 
+        let confirmed = [];
         // Check if the product is available
         products.forEach((product) => {
-            axios.get("/api/product/" + product.id)
+            axios.get("/api/product/" + product)
             .then((res) => {
                 if (res.status === 200) {
                     // Check if the product is still available
-                    if (res.data.ordered) {
-                        let products = JSON.parse(localStorage.getItem("cart"));
-                        let index = products.indexOf(product);
-                        products.splice(index, 1);
+                    if (!res.data.ordered) {
+                        confirmed.push(res.data);
+                        // Save the products in the local storage
+                        localStorage.setItem("cart", JSON.stringify(confirmed.map((product) => product.id)));
+
                         this.setState({
-                            products: products,
+                            products: confirmed,
                         });
-                        localStorage.setItem("cart", JSON.stringify(products));
                     }
                 }
             }).catch((err) => {
@@ -62,10 +63,7 @@ class Cart extends Component {
                 });
             });
         });
-    
-        this.setState({
-            products: products,
-        });
+        
     }
 
     openDeliveryMenu() {
@@ -95,18 +93,13 @@ class Cart extends Component {
         }
 
         // Get the IDs of the products
-        let products_ids = [];
-        products.forEach((product) => {
-            products_ids.push(product.id);
-        });
-
         let address = "temp adress";
         let email = "temp.email@example.com";
         let phone = "0123456789";
         // Send the order to the server
         let body = {
             name: "Foo Bar", 
-            products: products_ids,
+            products: products,
             delivery: {
                 address: address,
             },
@@ -184,7 +177,7 @@ class Cart extends Component {
 
                     <Button title="Payer" className={"valid-button"} onClick={this.submit} />
                 </div>}
-                {this.state.error.length > 0 && <ErrorPopup error={this.state.error} onClose={() => {this.setState({error: ""})}} />}
+                {this.state.error.length > 0 && <ErrorPopup error={this.state.error} onClose={() => {window.location.reload(); this.setState({error: ""})}} />}
             </div>
         );
     }

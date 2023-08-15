@@ -44,7 +44,7 @@ export default class Product extends React.Component {
         if (cart) {
             const cartItems = JSON.parse(cart);
             // If is in set in_cart to true
-            if (cartItems.find((p) => p.id === product_id)) {
+            if (cartItems.find((p) => p === product_id)) {
                 in_cart = true;
             }
         }
@@ -66,13 +66,13 @@ export default class Product extends React.Component {
             if (cart) {
                 const cartItems = JSON.parse(cart);
                 // Check if the product is already in the cart
-                if (cartItems.find((p) => p.id === this.product.id)) {
+                if (cartItems.find((p) => p === this.product.id)) {
                     return;
                 }
-                cartItems.push(this.product);
+                cartItems.push(this.product.id);
                 localStorage.setItem("cart", JSON.stringify(cartItems));
             } else {
-                localStorage.setItem("cart", JSON.stringify([this.product]));
+                localStorage.setItem("cart", JSON.stringify([this.product.id]));
             }
             this.setState({ in_cart: true });
         }
