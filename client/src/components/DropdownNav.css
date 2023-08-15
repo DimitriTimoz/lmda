@@ -62,8 +62,4 @@
         justify-content: start;
         z-index: 9999;
     }
-
-    nav > * {
-        margin: 1rem 0px;
-    }
 }
