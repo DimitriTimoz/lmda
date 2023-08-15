@@ -64,6 +64,11 @@ class Cart extends Component {
             });
         });
         
+        if (products.length === 0) {
+            this.setState({
+                products: [],
+            });
+        }
     }
 
     openDeliveryMenu() {
@@ -112,11 +117,11 @@ class Cart extends Component {
                 if (res.status === 200) {
                     this.setState({secret: res.data.clientSecret})
                 } else {
-                    this.throwError("Une erreur est survenue lors de la création de la commande: " + res.data.message);
+                    this.setState({error: res.data.message})
                 }
             }).catch((err) => {
                 err = err.response.data.message;
-                this.throwError("Une erreur est survenue lors de la création de la commande: " + err);
+                this.setState({error: "Une erreur est survenue lors de la création de la commande: " + err});
             });
     }
     
@@ -137,7 +142,7 @@ class Cart extends Component {
                     <div className='cart-products'>
                         <h3>Commande</h3> 
                         {this.state.products.map((product) => (
-                            <RawPreview product={product} onChange={this.handleProductUpdate}/>
+                            <RawPreview cart={true} product={product} onChange={this.handleProductUpdate}/>
                         ))}
                         {this.state.products.length === 0 &&
                             <span>Votre panier est vide</span>
