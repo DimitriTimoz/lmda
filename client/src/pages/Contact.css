@@ -1,0 +1,26 @@
+.contact-form {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    width: 50%;
+    margin: auto;
+}
+
+.contact-form > * {
+    margin: 0.25rem 0px;
+}
+
+.contact-form textarea {
+    resize: vertical;
+}
+
+.contact h3 {
+    font-family: 'Roboto' sans-serif;
+    font-weight: 500;
+    font-size: 1.5rem;
+    color: var(--dark-green);
+    text-align: center;
+    margin: 1.2rem;
+    font-size: 2rem;
+}
+

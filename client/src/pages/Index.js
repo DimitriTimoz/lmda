@@ -9,6 +9,7 @@ import Products from './Products';
 import {loadStripe} from '@stripe/stripe-js';
 import {useEffect, useState} from 'react';
 import Completion from './Completion';
+import Contact from './Contact';
 
 function Index() {
   const [ stripePromise, setStripePromise ] = useState(null);
@@ -30,6 +31,7 @@ function Index() {
             <Route path="/product/:id" element={<Product/>} />
             <Route path="/products/:category/:filter?" element={<Products/>} />
             <Route path="/completion" element={<Completion stripePromise={stripePromise} />} />
+            <Route path="/contact" element={<Contact/>} />
         </Routes>
     </div>
   );
