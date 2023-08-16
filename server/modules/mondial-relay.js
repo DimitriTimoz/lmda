@@ -8,8 +8,6 @@ const securityKey = mondialRelay.securityKey;
 const axios = require('axios');
 const parser = require('xml2json');
 
-
-
 async function creationExpedition(args) {
     args.Security = securityKey(Object.values(args));
     const client = await soap.createClientAsync(apiUrl);
@@ -37,8 +35,14 @@ async function creationExpedition(args) {
     } catch (err) {
         throw err;
     }
-    
-    return obj["soap:Envelope"]["soap:Body"].WSI2_CreationExpeditionResponse;
+    let response = obj["soap:Envelope"]["soap:Body"].WSI2_CreationExpeditionResponse;
+
+    // Check status code
+    if (response.WSI2_CreationExpeditionResult.STAT  !== "0") {
+        throw statusCodes[response.WSI2_CreationExpeditionResult.STAT];
+    }
+    // Get Url and num
+    return response.WSI2_CreationExpeditionResult;
 }
   
 
@@ -69,10 +73,68 @@ async function creationEtiquette(args) {
     } catch (err) {
         throw err;
     }
-    
-    return obj["soap:Envelope"]["soap:Body"].WSI2_CreationEtiquetteResponse;
+    let response = obj["soap:Envelope"]["soap:Body"].WSI2_CreationEtiquetteResponse;
+
+    // Check status code
+    if (response.WSI2_CreationEtiquetteResult.STAT  !== "0") {
+        throw statusCodes[response.WSI2_CreationEtiquetteResult.STAT];
+    }
+
+    // Get Url and num
+    return {
+        url: response.WSI2_CreationEtiquetteResult.URL_Etiquette,
+        num: response.WSI2_CreationEtiquetteResult.NumExpedition
+    }
 }
-  
+
+const BaseProd = {
+    Enseigne: "BDTEST13",
+    ModeCol: "REL",
+    ModeLiv: "24R",
+    NDossier: "",
+    NClient: "",
+    Expe_Langage: "FR",
+    Expe_Ad1: "MME",
+    Expe_Ad2: "",
+    Expe_Ad3: "74 rue de l’ancienne poste ",
+    Expe_Ad4: "",
+    Expe_Ville: "Franqueville saint pierre",
+    Expe_CP: "76520",
+    Expe_Pays: "FR",
+    Expe_Tel1: "+33643281434",
+    Expe_Tel2: "",
+    Expe_Mail: "",
+    Dest_Langage: "FR",
+    Dest_Ad1: "MR",
+    Dest_Ad2: "",
+    Dest_Ad3: "10 Rue de la Paix",
+    Dest_Ad4: "",
+    Dest_Ville: "PARIS",
+    Dest_CP: "75001",
+    Dest_Pays: "FR",
+    Dest_Tel1: "+33187653015",
+    Dest_Tel2: "",
+    Dest_Mail: "",
+    Poids: "10",
+    Longueur: "",
+    Taille: "",
+    NbColis: "1",
+    CRT_Valeur: "0",
+    CRT_Devise: "",
+    Exp_Valeur: "",
+    Exp_Devise: "",
+    COL_Rel_Pays: "FR",
+    COL_Rel: "AUTO",
+    LIV_Rel_Pays: "FR",
+    LIV_Rel: "FR-013840",
+    TAvisage: "",
+    TReprise: "",
+    Montage: "",
+    TRDV: "",
+    Assurance: "",
+    Instructions: "",
+    Texte: ""
+}
 
 const fakeLabel = {
     Enseigne: "BDTEST13",
@@ -106,14 +168,12 @@ const fakeLabel = {
     Longueur: "",
     Taille: "",
     NbColis: "1",
-    CRT_Valeur: "100",
+    CRT_Valeur: "0",
     CRT_Devise: "",
-    Exp_Valeur: "",
-    Exp_Devise: "",
     COL_Rel_Pays: "FR",
     COL_Rel: "AUTO",
     LIV_Rel_Pays: "FR",
-    LIV_Rel: "FR-62049",
+    LIV_Rel: "FR-013840",
     TAvisage: "",
     TReprise: "",
     Montage: "",
@@ -121,7 +181,7 @@ const fakeLabel = {
     Assurance: "",
     Instructions: "",
     Texte: ""
-  }
+}
 
 module.exports = {
     creationExpedition,
