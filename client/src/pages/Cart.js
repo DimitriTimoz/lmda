@@ -10,17 +10,20 @@ import ErrorPopup from '../components/ErrorPopup';
 class Cart extends Component {
     constructor(props) {
         super(props);
+        this.loadStateLocalStorage();
 
-        this.state = {
-            products: [],
-            secret: "",
-            error: "",
-            openned: false,
-        };
+        this.state.error = "";
         
         this.handleProductUpdate = this.handleProductUpdate.bind(this);
         this.submit = this.submit.bind(this);
         this.openDeliveryMenu = this.openDeliveryMenu.bind(this);
+        this.setEmail = this.setEmail.bind(this);
+    }
+
+    setEmail = (email) => {
+        this.setState({
+            email: email,
+        });
     }
 
     throwError = (error) => {
@@ -28,6 +31,28 @@ class Cart extends Component {
             error: error,
         });
     }
+
+    loadStateLocalStorage = () => {
+        const state = localStorage.getItem("state");
+        if (state) {
+            this.state = JSON.parse(state);
+            if (this.state.openned) {
+                this.openDeliveryMenu();
+            }
+        }
+    }
+
+
+    saveStateLocalStorage = () => {
+        const toSaveState = {
+            products: this.state.products,
+            secret: this.state.secret,
+            openned: this.state.openned,
+            email: this.state.email,
+        };
+        localStorage.setItem("state", JSON.stringify(toSaveState));
+    }
+    
 
     componentDidMount() {
         this.handleProductUpdate();    
@@ -75,7 +100,7 @@ class Cart extends Component {
         }
     }
 
-    openDeliveryMenu() {
+    openDeliveryMenu = () => {
         if (this.state.products.length === 0) {
             console.log("No products in the cart");
             return;
@@ -103,7 +128,6 @@ class Cart extends Component {
 
         // Get the IDs of the products
         let address = "temp adress";
-        let email = "temp.email@example.com";
         let phone = "0123456789";
         // Send the order to the server
         let body = {
@@ -113,7 +137,7 @@ class Cart extends Component {
                 address: address,
             },
             phone: phone,
-            email: email,
+            email: this.state.email,
         };
         // Create PaymentIntent as soon as the page loads
         axios.post("/api/payment/create-payment-intent", body)
@@ -139,7 +163,7 @@ class Cart extends Component {
 
         const clientSecret = this.state.secret;
         let total = productsTotal + massTotal * 0.01;
-
+        this.saveStateLocalStorage();
         return (
             <div className="cart">
                 <div className='cart-details'>
@@ -180,12 +204,14 @@ class Cart extends Component {
                     </table>
                     {clientSecret && this.props.stripePromise && (
                         <Elements stripe={this.props.stripePromise} options={{ clientSecret }}>
-                            <CheckoutForm />
+                            <CheckoutForm setEmail={this.setEmail} />
                         </Elements>
                     )}
 
                     <Button title="Payer" className={"valid-button"} onClick={this.submit} />
                 </div>}
+                <input type="hidden" id="ParcelShopCode" name="ParcelShopCode" />
+
                 {this.state.error.length > 0 && <ErrorPopup error={this.state.error} onClose={() => {window.location.reload(); this.setState({error: ""})}} />}
             </div>
         );
