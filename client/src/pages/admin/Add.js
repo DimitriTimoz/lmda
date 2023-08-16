@@ -37,7 +37,7 @@ const Add = (props) => {
                 .then(response => {
                     // Use the existing item data to set our state
                     const item = response.data;
-                    setProductState(prevState => ({ 
+                    setProductState(({ 
                         id: item.id,
                         name: item.name,
                         description: item.description,
@@ -49,10 +49,11 @@ const Add = (props) => {
                         photosSrc: item.photos,
                         state: item.state,
                         size: item.size,
+                        message: "",
                     }));
                 })
                 .catch(error => {
-                    setProductState( prevState => ({ ...prevState, message: error.response.data.error }));
+                    setProductState({message: error.response.data.error });
                     console.log(error.response.data.error)
                 });
         }
@@ -72,15 +73,13 @@ const Add = (props) => {
         let newPhotoIds = [...productState.photosIds]; // copy the array
         newPhotoIds[index] = value.target.value; // replace the value at index
     
-        setProductState(prevState => ({
-            ...prevState,
+        setProductState(({
             photosIds: newPhotoIds
         }));
     };
 
     const closePopup = () => {
-        setProductState(prevState => ({
-            ...prevState,
+        setProductState(({
             message: ""
         }));
     }
@@ -178,7 +177,7 @@ const Add = (props) => {
                 <Button className={"submit-btn"} type="submit" title={"Envoyer"}/>
             </form>
             {productState.message.length > 0  &&
-                <ErrorPopup message={productState.error} onClose={closePopup} />
+                <ErrorPopup message={productState.message} onClose={closePopup} />
             }
         </div>
     )
