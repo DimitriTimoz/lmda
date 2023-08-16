@@ -42,13 +42,6 @@ router.get('/config', (req, res) => {
 });
 
 router.post('/create-payment-intent', async (req, res) => {
-  try {
-    let answer = await myMondialRelay.creationExpedition(myMondialRelay.fakeLabel);
-    console.log(answer);
-  } catch (error) {
-    console.log(error);
-    return res.status(400).json({ message: 'Erreur lors de la création de l\'expédition.' });
-  }
   let { products, delivery, email, phone, name } = req.body;
   if (!products || !delivery || !email || !phone || !name) {
       return res.status(400).json({ message: 'Infos manquantes, veuillez compléter tous les champs.' });
@@ -200,7 +193,7 @@ router.post('/webhook', async (req, res) => {
       data = req.body.data;
       eventType = req.body.type;
     }
-  
+    console.log("🔔  event: ", eventType);
     if (eventType === 'payment_intent.succeeded') {
       // Funds have been captured
       // Fulfill any orders, e-mail receipts, etc
