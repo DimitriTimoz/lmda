@@ -14,6 +14,7 @@
   "author": "Dimitri Timoz",
   "license": "ISC",
   "dependencies": {
+    "axios": "^1.4.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
@@ -21,11 +22,13 @@
     "express": "^4.18.2",
     "express-sanitizer": "^1.0.6",
     "express-session": "^1.17.3",
+    "mondial-relay": "^1.0.1",
     "multer": "^1.4.5-lts.1",
     "pg": "^8.10.0",
     "sharp": "^0.32.1",
     "stripe": "^12.17.0",
-    "validator": "^13.9.0"
+    "validator": "^13.9.0",
+    "xml2json": "^0.12.0"
   },
   "devDependencies": {
     "node-pg-migrate": "^6.2.2",

@@ -6,6 +6,9 @@ const stripe = require('stripe')(env.STRIPE_SECRET_KEY, {
     apiVersion: '2022-11-15',
 });
 
+const mondialRelay = require("mondial-relay")
+const myMondialRelay = require("../../modules/mondial-relay")
+
 function checkEmail(email) {
   return email.match(
     /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
@@ -39,6 +42,13 @@ router.get('/config', (req, res) => {
 });
 
 router.post('/create-payment-intent', async (req, res) => {
+  try {
+    let answer = await myMondialRelay.creationExpedition(myMondialRelay.fakeLabel);
+    console.log(answer);
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({ message: 'Erreur lors de la création de l\'expédition.' });
+  }
   let { products, delivery, email, phone, name } = req.body;
   if (!products || !delivery || !email || !phone || !name) {
       return res.status(400).json({ message: 'Infos manquantes, veuillez compléter tous les champs.' });
