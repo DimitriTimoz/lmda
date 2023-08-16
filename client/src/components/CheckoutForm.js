@@ -15,8 +15,6 @@ import {
       e.preventDefault();
   
       if (!stripe || !elements) {
-        // Stripe.js has not yet loaded.
-        // Make sure to disable form submission until Stripe.js has loaded.
         return;
       }
   
@@ -47,13 +45,9 @@ import {
     return (
       <form id="payment-form" onSubmit={handleSubmit}>
         <LinkAuthenticationElement id="link-authentication-element"
-          // Access the email value like so:
-          // onChange={(event) => {
-          //  setEmail(event.value.email);
-          // }}
-          //
-          // Prefill the email field like so:
-          // options={{defaultValues: {email: 'foo@bar.com'}}}
+          onChange={(event) => {
+            this.props.setEmail(event.value.email);
+          }}
           />
         <PaymentElement id="payment-element" />
         <button disabled={isLoading || !stripe || !elements} id="submit">
