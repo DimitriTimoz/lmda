@@ -4,7 +4,11 @@ const db = require('../db');
 async function validPayment(stripe_id) {
     try {
         const query = `UPDATE orders SET paid = TRUE WHERE payment_intent_id = $1`;
-        await db.query(query, [stripe_id]);
+        let res = await db.query(query, [stripe_id]);
+        if (res.rows.length !== 1) {
+            return false;
+        }
+
         return true;
     } catch (error) {
         console.error('Error getting images:', error.message);
