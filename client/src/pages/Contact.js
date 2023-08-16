@@ -50,9 +50,9 @@ export default class Contact extends React.Component {
                 <h3>Contact</h3>
                 <form className="contact-form">
                     <label>Nom Prénom</label>
-                    <Input type="text" placeholder={"Nom"} value={this.state.name} onChange={this.updateName.bind(this)} required={true}/>
+                    <Input type="text" placeholder={"Nom Prénom"} value={this.state.name} onChange={this.updateName.bind(this)} required={true}/>
                     <label>Email</label>
-                    <Input type="email" placeholder={"Email"} value={this.state.email} onChange={this.updateEmail.bind(this)} required={true}/>
+                    <Input type="email" placeholder={"nom.prenom@example.com"} value={this.state.email} onChange={this.updateEmail.bind(this)} required={true}/>
                     <label>Message</label>
                     <textarea className="input" type="textarea" placeholder={"Message"} value={this.state.message} onChange={this.updateMessage.bind(this)} required/>
                     <Button onClick={this.sendEmail} className={"submit-btn"} type="submit" title={"Envoyer"}/>
