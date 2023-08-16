@@ -50,26 +50,27 @@ async function creationEtiquette(args) {
     const data = `<?xml version="1.0" encoding="utf-8"?>
     <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
       <soap:Body>
-        <WSI2_CreationExpedition xmlns="http://www.mondialrelay.fr/webservice/">
-    ${objectBody}</WSI2_CreationExpedition>
+        <WSI2_CreationEtiquette xmlns="http://www.mondialrelay.fr/webservice/">
+    ${objectBody}</WSI2_CreationEtiquette>
     </soap:Body>
   </soap:Envelope>`;
     
     const res = await axios.post(apiUrl, data, {
       headers: {
         'Content-Type': 'text/xml',
-        "SOAPAction": "http://www.mondialrelay.fr/webservice/WSI2_CreationExpedition"
+        "SOAPAction": "http://www.mondialrelay.fr/webservice/WSI2_CreationEtiquette"
       }
     });
 
     
+    let obj;
     try {
-        const obj = parser.toJson(res.data, { object: true });
+        obj = parser.toJson(res.data, { object: true });
     } catch (err) {
         throw err;
     }
     
-    return obj["soap:Envelope"]["soap:Body"].WSI2_CreationExpeditionResponse;
+    return obj["soap:Envelope"]["soap:Body"].WSI2_CreationEtiquetteResponse;
 }
   
 
