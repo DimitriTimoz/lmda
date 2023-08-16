@@ -74,6 +74,28 @@
     margin-top: 1rem;
 }
 
+.relay-popup {
+    padding: 1rem;
+    background: var(--background-color);
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    height: 80%;
+    display: flex;
+    flex-direction: column;
+    margin: 1rem;
+}
+
+#Zone_Widget {
+    height: 90%;
+}
+
+#Zone_Widget button {
+    height: 100%;
+}
+
 @media screen and (max-width: 700px) {
     .cart {
         flex-direction: column;

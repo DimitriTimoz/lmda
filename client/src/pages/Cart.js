@@ -7,16 +7,23 @@ import axios from 'axios';
 
 import "./Cart.css"
 import ErrorPopup from '../components/ErrorPopup';
+import AddressForm from '../components/AddressForm';
 class Cart extends Component {
     constructor(props) {
         super(props);
-        this.loadStateLocalStorage();
-
-        this.state.error = "";
+        this.state = {
+            products: [],
+            secret: "",
+            opennedRelay: false,
+            opennedAddress: false,
+            email: "",
+            error: "",
+        };
         
         this.handleProductUpdate = this.handleProductUpdate.bind(this);
         this.submit = this.submit.bind(this);
-        this.openDeliveryMenu = this.openDeliveryMenu.bind(this);
+        this.triggerDeliveryMenu = this.triggerDeliveryMenu.bind(this);
+        this.triggerAddressMenu = this.triggerAddressMenu.bind(this);
         this.setEmail = this.setEmail.bind(this);
     }
 
@@ -31,28 +38,6 @@ class Cart extends Component {
             error: error,
         });
     }
-
-    loadStateLocalStorage = () => {
-        const state = localStorage.getItem("state");
-        if (state) {
-            this.state = JSON.parse(state);
-            if (this.state.openned) {
-                this.openDeliveryMenu();
-            }
-        }
-    }
-
-
-    saveStateLocalStorage = () => {
-        const toSaveState = {
-            products: this.state.products,
-            secret: this.state.secret,
-            openned: this.state.openned,
-            email: this.state.email,
-        };
-        localStorage.setItem("state", JSON.stringify(toSaveState));
-    }
-    
 
     componentDidMount() {
         this.handleProductUpdate();    
@@ -100,22 +85,25 @@ class Cart extends Component {
         }
     }
 
-    openDeliveryMenu = () => {
+    triggerDeliveryMenu = () => {
+        if (this.state.products.length === 0) {
+            return;
+        }
+
+        this.setState({
+            opennedRelay: !this.state.opennedRelay,
+        });
+    }
+
+    triggerAddressMenu = () => {
         if (this.state.products.length === 0) {
             console.log("No products in the cart");
             return;
         }
 
         this.setState({
-            openned: true,
+            opennedAddress: !this.state.opennedAddress,
         });
-        // Load the script for the relay
-        const script = document.createElement("script");
-
-        script.src = "/scripts/ralay.js";
-        script.async = true;
-    
-        document.getElementsByTagName("head")[0].appendChild(script);
     }
     
     submit = () => {
@@ -163,7 +151,22 @@ class Cart extends Component {
 
         const clientSecret = this.state.secret;
         let total = productsTotal + massTotal * 0.01;
-        this.saveStateLocalStorage();
+
+        if (this.state.opennedRelay) {
+            if (!document.getElementById("relay-script")) {
+                let script = document.createElement("script");
+                script.id = "relay-script";
+                script.src = "/scripts/ralay.js";
+                script.async = true;
+            
+                document.getElementsByTagName("head")[0].appendChild(script);    
+            }
+        } else {
+            if (document.getElementById("relay-script")) {
+                document.getElementById("relay-script").remove();
+            }
+        }
+
         return (
             <div className="cart">
                 <div className='cart-details'>
@@ -177,13 +180,26 @@ class Cart extends Component {
                         }
 
                     </div>
-                    <div className='cart-delivery'>
-                        <h3>Livraison</h3>
-                        {this.state.openned ?
-                            <div id="Zone_Widget"></div>
-                            :
-                            <Button title="Ajouter" onClick={this.openDeliveryMenu} />
+                    <div className='address'>
+                        <h3>Adresse</h3>
+                        {this.state.opennedAddress &&
+                            <div className='relay-popup shadow'>
+                                <AddressForm />
+                                <Button title="Confirmer" onClick={this.triggerAddressMenu} />
+                            </div>
                         }
+                        <Button title="Ajouter" onClick={this.triggerAddressMenu} />
+
+                    </div>
+                    <div className='cart-delivery'>
+                        <h3>Point Relay</h3>
+                        {this.state.opennedRelay &&
+                            <div className='relay-popup shadow'>
+                                <div id="Zone_Widget"></div>
+                                <Button title="Confirmer" onClick={this.triggerDeliveryMenu} />
+                            </div>
+                        }
+                        <Button title="Ajouter" onClick={this.triggerDeliveryMenu} />
                     </div>
                 </div>
                 {total > 0 && <div className='cart-summary'>
