@@ -25,7 +25,7 @@ const Add = (props) => {
         photosIds: ["", "", "", ""],
         photosSrc: [],
         size: "",
-        state: "0",
+        state: "1",
         message: "",
     });
     
@@ -37,7 +37,9 @@ const Add = (props) => {
                 .then(response => {
                     // Use the existing item data to set our state
                     const item = response.data;
-                    setProductState(({ 
+                    setProductState(prevState => {
+                        return {
+                        ...prevState,
                         id: item.id,
                         name: item.name,
                         description: item.description,
@@ -50,10 +52,13 @@ const Add = (props) => {
                         state: item.state,
                         size: item.size,
                         message: "",
-                    }));
+                    }});
                 })
                 .catch(error => {
-                    setProductState({message: error.response.data.error });
+                    setProductState(prevState => ({
+                        ...prevState,
+                        message: error.response.data.error,
+                    }));
                     console.log(error.response.data.error)
                 });
         }
@@ -74,12 +79,14 @@ const Add = (props) => {
         newPhotoIds[index] = value.target.value; // replace the value at index
     
         setProductState(({
+            ...productState,
             photosIds: newPhotoIds
         }));
     };
 
     const closePopup = () => {
         setProductState(({
+            ...productState,
             message: ""
         }));
     }
@@ -107,7 +114,7 @@ const Add = (props) => {
                     alert("Produit mis à jour avec succès !");
                 } else {
                     // Display error message
-                    this.setState({message: response.data.message});
+                    setProductState( prevState => ({...prevState, message: response.data.error }));
                 }
                 
             })
