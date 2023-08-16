@@ -55,7 +55,11 @@ class Cart extends Component {
                         this.setState({
                             products: confirmed,
                         });
-                    }
+                    } 
+                } else {
+                    this.setState({
+                        error: res.data.message,
+                    });
                 }
             }).catch((err) => {
                 this.setState({
