@@ -31,32 +31,47 @@ async function creationExpedition(args) {
     });
 
     
-    const obj = parser.toJson(res.data, { object: true });
-
-    console.log(obj["soap:Envelope"]["soap:Body"].WSI2_CreationEtiquetteResponse);
-    return obj;
-  }
-  
-
-  /*
-const creationExpedition = async (args) => {
+    let obj;
     try {
-        const client = await soap.createClientAsync(apiUrl);
-        args.Security = securityKey(Object.values(args));
-        
-        const result = await client.WSI2_CreationExpedition(args);
-        console.log(result);
-
-        if (validateStatusCode(result.WSI2_CreationExpeditionResult.STAT)) {
-            return result.WSI2_CreationExpeditionResult;
-        } else {
-            throw new Error(statusCodes[result.WSI2_CreationExpeditionResult.STAT]);
-        }
+        obj = parser.toJson(res.data, { object: true });
     } catch (err) {
         throw err;
     }
+    
+    return obj["soap:Envelope"]["soap:Body"].WSI2_CreationExpeditionResponse;
 }
-*/
+  
+
+async function creationEtiquette(args) {
+    args.Security = securityKey(Object.values(args));
+    const client = await soap.createClientAsync(apiUrl);
+    
+    const objectBody = client.wsdl.objectToXML(args, 'ProspectType', '', '');
+    const data = `<?xml version="1.0" encoding="utf-8"?>
+    <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+      <soap:Body>
+        <WSI2_CreationExpedition xmlns="http://www.mondialrelay.fr/webservice/">
+    ${objectBody}</WSI2_CreationExpedition>
+    </soap:Body>
+  </soap:Envelope>`;
+    
+    const res = await axios.post(apiUrl, data, {
+      headers: {
+        'Content-Type': 'text/xml',
+        "SOAPAction": "http://www.mondialrelay.fr/webservice/WSI2_CreationExpedition"
+      }
+    });
+
+    
+    try {
+        const obj = parser.toJson(res.data, { object: true });
+    } catch (err) {
+        throw err;
+    }
+    
+    return obj["soap:Envelope"]["soap:Body"].WSI2_CreationExpeditionResponse;
+}
+  
 
 const fakeLabel = {
     Enseigne: "BDTEST13",
@@ -109,5 +124,6 @@ const fakeLabel = {
 
 module.exports = {
     creationExpedition,
+    creationEtiquette,
     fakeLabel
 };
