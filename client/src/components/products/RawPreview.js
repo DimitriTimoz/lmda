@@ -11,12 +11,26 @@ export default class RawPreview extends React.Component {
             edit: this.props.edit || false,
             order: this.props.order || false,
             cart: this.props.cart || false,
+            delete: this.props.delete || false,
         };
 
         this.removeFormCart = this.removeFormCart.bind(this);
         this.seeMore = this.seeMore.bind(this);
         this.cancelOrder = this.cancelOrder.bind(this);
+        this.removeProduct = this.removeProduct.bind(this);
     }
+
+    removeProduct = () => {
+        if(!window.confirm("Voulez-vous vraiment supprimer définitivement ce produit ?")) {
+            return;
+        }
+        axios.delete("/api/product/" + this.props.product.id).then((res) => {
+            if (res.data.success) {
+                this.props.onChange();
+            }
+        });
+    }
+
 
     removeFormCart() {
         const cart = localStorage.getItem("cart");
@@ -84,6 +98,7 @@ export default class RawPreview extends React.Component {
                     <div className="buttons">
                         {this.state.edit ? <TxtButton title="Modifier" className="view-button" onClick={() => {window.location.href = "/admin/edit/" + this.props.product.id}} /> : null}
                         {this.state.cart && <TxtButton title="Supprimer" className="view-button" onClick={this.removeFormCart} /> }
+                        {this.state.delete && <TxtButton title="Supprimer" className="view-button" onClick={this.removeProduct} /> }
                         {this.state.order ? <TxtButton title="Voir plus" className="view-button" onClick={this.seeMore} /> : null}
                         {this.state.order ? <TxtButton title="Annuler" className="view-button" onClick={this.cancelOrder} /> : null}
                     </div>
