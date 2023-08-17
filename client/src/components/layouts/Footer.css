@@ -2,6 +2,7 @@
     display: flex;
     justify-content: center;
     border-top: solid 2px var(--dark-green);
+    background-color: var(--background-color);
     position: fixed;
     left: 0;
     bottom: 0;
