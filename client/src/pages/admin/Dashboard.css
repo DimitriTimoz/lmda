@@ -1,7 +1,7 @@
 #dashboard {
     display: flex;
     justify-content: space-between;
-    margin-top: 1rem;
+    margin: 1rem;
 }
 #dashboard .column {
     width: 100%;

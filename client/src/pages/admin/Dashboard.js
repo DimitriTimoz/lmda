@@ -67,7 +67,7 @@ export default class Dashboard extends React.Component {
                     <div className="column">
                         <h3>En vente</h3>
                         {this.state.productsInsell.map((product) => {
-                            return <RawPreview product={product} edit={true} admin={true} onChange={this.updateProducts}/>;
+                            return <RawPreview product={product} edit={true} delete={true} admin={true} onChange={this.updateProducts}/>;
                         })}
                     </div>
                     <div className="column">
