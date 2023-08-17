@@ -13,6 +13,7 @@
     width: 50%;
     display: flex;
     flex-direction: column;
+    margin: 0.5rem 0;
 }
 
 .full-field input {
