@@ -38,6 +38,21 @@ router.get("/all", async (req, res) => {
     }
 });
 
+// Get my order if id and stripe payment intent id match
+router.post('/get', async (req, res) => {
+    const { id, paymentIntentId } = req.body;
+    // Get the order
+    try {
+        const result = await db.query('SELECT products FROM orders WHERE id = $1 AND payment_intent_id = $2 AND paid = FALSE', [id, paymentIntentId]);
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Commande introuvable ou déjà payée.'});
+        }
+        return res.json({ order: result.rows[0] });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Une erreur est survenue lors de la récupération de la commande. Veuillez contacter le support.' });
+    }
+});
 
 
 module.exports = router;
