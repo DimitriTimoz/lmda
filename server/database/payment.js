@@ -11,7 +11,7 @@ async function validPayment(stripe_id) {
 
         return true;
     } catch (error) {
-        console.error('Error getting images:', error.message);
+        console.error('Error updating orders as paid:', error.message);
         return false;
     }
 }
@@ -31,7 +31,7 @@ async function paymentCanceled(stripe_id) {
         }
         return true;
     } catch (error) {
-        console.error('Error getting images:', error.message);
+        console.error('Error setting payment canceled:', error.message);
         return false;
     }
 }
@@ -42,13 +42,44 @@ async function removeOrder(order_id) {
         await db.query(query, [order_id]);
         return true;
     } catch (error) {
-        console.error('Error getting images:', error.message);
+        console.error('Error removing order:', error.message);
         return false;
     }
 }
+
+async function checkExpiredOrders() {
+    try {
+        const INTERVAL = '1 minute'; // Remove the single quotes here
+
+        const query = `SELECT * FROM orders WHERE paid = FALSE AND created_at < NOW() - INTERVAL '${INTERVAL}'`;
+        const { rows } = await db.query(query);
+
+        if (rows.length === 0) {
+            return true;
+        }
+
+        for (let i = 0; i < rows.length; i++) {
+            const order = rows[i];
+            const products = order.products;
+
+            for (let j = 0; j < products.length; j++) {
+                await db.query('UPDATE products SET ordered = FALSE WHERE id = $1', [products[j]]);
+                // TODO: Send an email to the user to inform them that their order has been canceled
+            }
+        }
+
+        await db.query(`DELETE FROM orders WHERE paid = FALSE AND created_at < NOW() - INTERVAL '${INTERVAL}'`);
+        return true;
+    } catch (error) {
+        console.error('Error checking if order expired:', error.message);
+        return false;
+    }
+}
+
 
 module.exports = {
     validPayment,
     paymentCanceled,
     removeOrder,
+    checkExpiredOrders,
 };

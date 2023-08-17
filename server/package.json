@@ -24,6 +24,7 @@
     "express-session": "^1.17.3",
     "mondial-relay": "^1.0.1",
     "multer": "^1.4.5-lts.1",
+    "node-schedule": "^2.1.1",
     "pg": "^8.10.0",
     "sharp": "^0.32.1",
     "stripe": "^12.17.0",

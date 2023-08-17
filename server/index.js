@@ -2,7 +2,8 @@ const express = require('express');
 const app = express();
 const session = require('express-session');
 const expressSanitizer = require('express-sanitizer');
-
+const schedule = require('node-schedule');
+const paymentDB = require('./database/payment');
 // Serve the static files from the React app
 const path = require('path');
 app.use(express.static(path.join(__dirname, '../client/build')));
@@ -60,7 +61,7 @@ app.get('/uploads/:filename', (req, res) => {
     }
   });
 });  
-  
+
 const port = process.env.PORT || 5001;
 app.listen(port);
 
@@ -84,4 +85,10 @@ pool.connect((connectErr, client, release) => {
 
     console.log('Current timestamp:', res.rows[0].now);
   });
+});
+
+const job = schedule.scheduleJob('*/1 * * * *', function(fireDate){
+  if(!paymentDB.checkExpiredOrders()) {
+    console.error("Error checking for expired orders");
+  }
 });
