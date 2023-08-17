@@ -49,7 +49,7 @@ async function removeOrder(order_id) {
 
 async function checkExpiredOrders() {
     try {
-        const INTERVAL = '1 minute'; // Remove the single quotes here
+        const INTERVAL = '10 minutes'; // Remove the single quotes here
 
         const query = `SELECT * FROM orders WHERE paid = FALSE AND created_at < NOW() - INTERVAL '${INTERVAL}'`;
         const { rows } = await db.query(query);

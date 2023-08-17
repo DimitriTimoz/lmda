@@ -10,15 +10,23 @@ const mondialRelay = require("mondial-relay")
 const myMondialRelay = require("../../modules/mondial-relay")
 
 function checkEmail(email) {
-  return email.match(
+  match =  email.match(
     /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
   );
+  if (!match) {
+    return false;
+  }
+  return true;
 };
 
 function checkPhone(phone) {
-  return phone.match(
+  match = phone.match(
     /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im
   );
+  if (!match) {
+    return false;
+  }
+  return true;
 };
 
 async function computeDeliveryPrice(products) {
@@ -60,10 +68,11 @@ router.post('/create-payment-intent', async (req, res) => {
   if (!checkEmail(email)) {
       return res.status(400).json({ message: 'Adresse email invalide.' });
   }
-  email = req.sanitize(email.toLowerCase()); 
+  email = req.sanitize(email.toLowerCase().replace(/\s/g, '')); 
   name = req.sanitize(name.toUpperCase());
-  delivery.address = req.sanitize(delivery.address); // TODO Check address
+  delivery.address = req.sanitize(delivery.address); 
 
+  phone = phone.replace(/\s/g, '');
   if (!checkPhone(phone)) {
       return res.status(400).json({ message: 'Numéro de téléphone invalide.' });
   }
@@ -155,14 +164,14 @@ router.post('/create-payment-intent', async (req, res) => {
       clientSecret: paymentIntent.client_secret,
       deliveryPrice: deliveryPrice,
       total: total,
+      orderId: order.id
     });
   } catch (e) {
     console.log(e);
     await removeOrder(order.id);
     return res.status(400).send({
-      error: {
         message: "Impossible de soumettre une demande de paiement. Une erreur est survenue, veuillez nous contacter pour régler cette erreur."
-      },
+      
     });
   }
 });
