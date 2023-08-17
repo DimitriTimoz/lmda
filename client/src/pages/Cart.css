@@ -32,14 +32,19 @@
     height: fit-content;
 }
 
-.cart-products > * {
-    margin: 0.75rem 0px;
-}
-
-
 .popup-confirm {
     margin-top: 2rem;
 }
+
+.in-cart {
+    max-height: 13.5rem;
+    overflow: auto;
+}
+
+.in-cart > * {
+    margin: 0.75rem 0px;
+}
+
 
 /* Summary */
 
@@ -71,7 +76,7 @@
 }
 
 
-.relay-popup, .address-popup {
+.relay-popup, .address-popup, .infos-popup {
     background: var(--background-color);
     position: fixed;
     top: 50%;
@@ -88,9 +93,32 @@
     padding: 4rem 2rem;
 
 }
+
 .relay-popup {
     padding: 2rem 2rem;
     height: 80%;
+}
+
+.infos-popup {
+    padding: 4rem 2rem;
+}
+
+.infos-view{
+    display: flex;
+    flex-direction: column;
+    border: 1px solid;
+    padding: 1rem;
+    border-radius: 1rem;
+    cursor: pointer;
+}
+
+.infos-view span {
+    margin: 0.1rem 0px;
+}
+
+.infos-view:hover {
+    cursor: pointer;
+    background-color: var(--light-gray);
 }
 
 #Zone_Widget {
