@@ -5,7 +5,7 @@ import {
   import {useState} from 'react'
   import {useStripe, useElements} from '@stripe/react-stripe-js';
   
-  export default function CheckoutForm() {
+  export default function CheckoutForm(props) {
     const stripe = useStripe();
     const elements = useElements();
     const [message, setMessage] = useState(null);
@@ -45,9 +45,7 @@ import {
     return (
       <form id="payment-form" onSubmit={handleSubmit}>
         <LinkAuthenticationElement id="link-authentication-element"
-          onChange={(event) => {
-            this.props.setEmail(event.value.email);
-          }}
+          options={{defaultValues: {email: props.email}}}
           />
         <PaymentElement id="payment-element" />
         <button disabled={isLoading || !stripe || !elements} id="submit">
