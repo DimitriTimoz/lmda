@@ -37,12 +37,8 @@
 }
 
 
-.cart-adress {
-
-}
-
-.cart-payment {
-
+.popup-confirm {
+    margin-top: 2rem;
 }
 
 /* Summary */
@@ -74,19 +70,27 @@
     margin-top: 1rem;
 }
 
-.relay-popup {
-    padding: 2rem;
+
+.relay-popup, .address-popup {
     background: var(--background-color);
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     width: 80%;
-    height: 80%;
     display: flex;
     flex-direction: column;
     margin: 1rem;
     border-radius: 1rem;
+}
+
+.address-popup {
+    padding: 4rem 2rem;
+
+}
+.relay-popup {
+    padding: 2rem 2rem;
+    height: 80%;
 }
 
 #Zone_Widget {

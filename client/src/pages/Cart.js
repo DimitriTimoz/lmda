@@ -104,6 +104,10 @@ class Cart extends Component {
             return;
         }
 
+        if (this.state.opennedRelay) {
+            // Save the relay point
+        }
+
         this.setState({
             opennedRelay: !this.state.opennedRelay,
         });
@@ -116,6 +120,11 @@ class Cart extends Component {
 
         if (this.state.products.length === 0) {
             return;
+        }
+
+        if (this.state.opennedAddress) {
+            // Save the address
+
         }
 
         this.setState({
@@ -206,9 +215,9 @@ class Cart extends Component {
                     <div className='address'>
                         <h3>Adresse</h3>
                         {this.state.opennedAddress &&
-                            <div className='relay-popup shadow'>
+                            <div className='address-popup shadow'>
                                 <AddressForm address={this.state.address} setAddress={this.setAddress}/>
-                                <Button title="Confirmer" onClick={this.triggerAddressMenu} />
+                                <Button title="Confirmer" className={"popup-confirm"} onClick={this.triggerAddressMenu} />
                             </div>
                         }
                         <Button title="Ajouter" onClick={this.triggerAddressMenu} />
@@ -219,7 +228,7 @@ class Cart extends Component {
                         {this.state.opennedRelay &&
                             <div className='relay-popup shadow'>
                                 <div id="Zone_Widget"></div>
-                                <Button title="Confirmer" onClick={this.triggerDeliveryMenu} />
+                                <Button title="Confirmer" className={"popup-confirm"} onClick={this.triggerDeliveryMenu} />
                             </div>
                         }
                         <Button title="Ajouter" onClick={this.triggerDeliveryMenu} />
