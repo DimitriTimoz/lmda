@@ -2,6 +2,7 @@ import React from "react";
 import "./RawPreview.css";
 import TxtButton from "../TxtButton";
 import axios from "axios";
+import { toState } from "../../utils";
 
 export default class RawPreview extends React.Component {
     constructor(props) {
@@ -78,7 +79,7 @@ export default class RawPreview extends React.Component {
                     {this.props.order ?
                         <span className="p-details" >{this.props.order.products.length + " Produit(s)"}</span>
                         :
-                        <span className="p-details" >{this.props.product.size + " - " + this.props.product.state}</span>
+                        <span className="p-details" >{this.props.product.size + " - " + toState(this.props.product.state).toUpperCase()}</span>
                     }
                     <div className="buttons">
                         {this.state.edit ? <TxtButton title="Modifier" className="view-button" onClick={() => {window.location.href = "/admin/edit/" + this.props.product.id}} /> : null}

@@ -4,6 +4,7 @@ import LikeBtn from "../components/LikeBtn";
 import ImageCarrousel from "../components/products/ImageCarrousel";
 import axios from "axios";
 import "./Product.css";
+import { toState } from "../utils";
 
 function formatDate(date) {
     var d = new Date(date),
@@ -145,7 +146,7 @@ export default class Product extends React.Component {
                                 </tr>
                                 <tr>
                                     <td>ÉTAT</td>
-                                    <td>{this.state.product.state}</td>
+                                    <td>{toState(this.state.product.state).toUpperCase()}</td>
                                 </tr>
                                 <tr>
                                     <td>Date d'ajout</td>

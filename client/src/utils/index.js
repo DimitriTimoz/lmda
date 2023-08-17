@@ -12,7 +12,25 @@ function countOccurrences(mainString, subString) {
     return matches ? matches.length : 0;
 }
 
+function toState(state) {
+    switch (state) {
+        case 1:
+            return 'très bon';
+        case 2:
+            return 'bon';
+        case 3:
+            return 'correct';
+        case 4:
+            return 'mauvais';
+        case 5:
+            return 'très mauvais';
+        default:
+            return 'inconnu';
+    }
+}
+
 module.exports = {
     trimMatchesFromEnd,
-    countOccurrences
+    countOccurrences,
+    toState,
 }
