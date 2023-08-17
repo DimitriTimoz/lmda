@@ -18,15 +18,9 @@ class Cart extends Component {
             opennedAddress: false,
             email: "",
             error: "",
-            address: {
-                firstName: "",
-                lastName: "",
-                address1: "",
-                address2: "",
-                city: "",
-                zipCode: "",
-                country: "",
-            },
+            address: {},
+            relay: {},
+            personalInfo: {},
         };
         
         this.handleProductUpdate = this.handleProductUpdate.bind(this);
@@ -49,7 +43,34 @@ class Cart extends Component {
         });
     }
 
+    loadState = () => {
+        // Load the address if it exists
+        const address = localStorage.getItem("address");
+        if (address) {
+            this.setState({
+                address: JSON.parse(address),
+            });
+        }
+
+        // Load the relay if it exists
+        const relay = localStorage.getItem("relay");
+        if (relay) {
+            this.setState({
+                relay: JSON.parse(relay),
+            });
+        }
+
+        // Load the personal info if it exists
+        const personalInfo = localStorage.getItem("personalInfo");
+        if (personalInfo) {
+            this.setState({
+                personalInfo: JSON.parse(personalInfo),
+            });
+        }
+    }
+
     componentDidMount() {
+        this.loadState();
         this.handleProductUpdate();    
     }
 
@@ -104,8 +125,9 @@ class Cart extends Component {
             return;
         }
 
-        if (this.state.opennedRelay) {
-            // Save the relay point
+        if (this.state.opennedRelay && this.state.relay) {
+            // Save the relay
+            localStorage.setItem("relay", JSON.stringify(this.state.relay));
         }
 
         this.setState({
@@ -122,8 +144,9 @@ class Cart extends Component {
             return;
         }
 
-        if (this.state.opennedAddress) {
+        if (this.state.opennedAddress && this.state.address) {
             // Save the address
+            localStorage.setItem("address", JSON.stringify(this.state.address));
 
         }
 
@@ -148,7 +171,7 @@ class Cart extends Component {
             name: "Foo Bar", 
             products: products,
             delivery: {
-                address: address,
+                address: this.state.address,
             },
             phone: phone,
             email: this.state.email,
@@ -210,7 +233,6 @@ class Cart extends Component {
                         {this.state.products.length === 0 &&
                             <span>Votre panier est vide</span>
                         }
-
                     </div>
                     <div className='address'>
                         <h3>Adresse</h3>
@@ -221,7 +243,6 @@ class Cart extends Component {
                             </div>
                         }
                         <Button title="Ajouter" onClick={this.triggerAddressMenu} />
-
                     </div>
                     <div className='cart-delivery'>
                         <h3>Point Relay</h3>
@@ -255,7 +276,6 @@ class Cart extends Component {
                             <CheckoutForm setEmail={this.setEmail} />
                         </Elements>
                     )}
-
                     <Button title="Payer" className={"valid-button"} onClick={this.submit} />
                 </div>}
                 <input type="hidden" id="ParcelShopCode" name="ParcelShopCode" />
