@@ -18,6 +18,15 @@ class Cart extends Component {
             opennedAddress: false,
             email: "",
             error: "",
+            address: {
+                firstName: "",
+                lastName: "",
+                address1: "",
+                address2: "",
+                city: "",
+                zipCode: "",
+                country: "",
+            },
         };
         
         this.handleProductUpdate = this.handleProductUpdate.bind(this);
@@ -25,6 +34,7 @@ class Cart extends Component {
         this.triggerDeliveryMenu = this.triggerDeliveryMenu.bind(this);
         this.triggerAddressMenu = this.triggerAddressMenu.bind(this);
         this.setEmail = this.setEmail.bind(this);
+        this.setAddress = this.setAddress.bind(this);
     }
 
     setEmail = (email) => {
@@ -86,6 +96,10 @@ class Cart extends Component {
     }
 
     triggerDeliveryMenu = () => {
+        if (this.state.opennedAddress) {
+            return;
+        }
+
         if (this.state.products.length === 0) {
             return;
         }
@@ -96,8 +110,11 @@ class Cart extends Component {
     }
 
     triggerAddressMenu = () => {
+        if (this.state.opennedRelay) {
+            return;
+        }
+
         if (this.state.products.length === 0) {
-            console.log("No products in the cart");
             return;
         }
 
@@ -139,6 +156,12 @@ class Cart extends Component {
                 err = err.response.data.message;
                 this.setState({error: "Une erreur est survenue lors de la création de la commande: " + err});
             });
+    }
+
+    setAddress = (address) => {
+        this.setState({
+            address: address,
+        });
     }
     
     render() {
@@ -184,7 +207,7 @@ class Cart extends Component {
                         <h3>Adresse</h3>
                         {this.state.opennedAddress &&
                             <div className='relay-popup shadow'>
-                                <AddressForm />
+                                <AddressForm address={this.state.address} setAddress={this.setAddress}/>
                                 <Button title="Confirmer" onClick={this.triggerAddressMenu} />
                             </div>
                         }

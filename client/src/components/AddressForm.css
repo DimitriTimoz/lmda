@@ -1,0 +1,24 @@
+.address-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.full-field {
+    display: flex;
+    flex-direction: column;
+    margin: 0.5rem 0;
+}
+
+.slim-field-left, .slim-field-right {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+}
+
+.full-field input {
+
+}
+
+.form-label {
+    font-size: 1.3rem;
+}
