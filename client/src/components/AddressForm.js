@@ -24,7 +24,7 @@ export default function AddressForm(props) {
             <label class="full-field">
                 <span class="form-label">Address*</span>
                 <Input
-                    id="ship-address"
+                    id="address1"
                     name="address1"
                     required
                     autocomplete="off"
