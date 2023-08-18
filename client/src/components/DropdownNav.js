@@ -77,7 +77,7 @@ class DropdownNav extends React.Component {
     incrementFilter = (e) => {
         e.preventDefault();
         let level = parseInt(e.target.getAttribute("level"));
-        let filter = e.target.innerText;
+        let filter = e.target.innerText.toLowerCase();
         this.filter_level = level + 1;
         let filter_final = this.state.filter.split(":").slice(0, level - 1).join(":");
 
@@ -164,22 +164,19 @@ class DropdownNav extends React.Component {
                             {!this.props.selector && <li>
                                 <Link to={"/products/" + this.props.category + "/" + (level === 0 ? "all" : prefilter.toLocaleLowerCase().replace(" ", "-"))}>Tout</Link>
                             </li>}
-                            {items.map((element) => {
-                                element = element.charAt(0).toUpperCase() + element.slice(1);
-                                return (
-                                    <li key={element} className='dp-element'>
-                                        {!last_level || this.props.selector ?
-                                            <div level={level} onClick={this.incrementFilter} className="dropdown-link">
-                                                {element} 
-                                            </div>
-                                            :
-                                            <Link to={"/products/" + this.props.category + "/" + prefilter.toLocaleLowerCase().replace(" ", "-") + ":" + element.toLocaleLowerCase().replace(" ", "-")} className="dropdown-link">
-                                                {element}
-                                            </Link>}
-                                            
-                                    </li>
-                                )
-                            })}
+                            {items.map((element) => (
+                                <li key={element} className='dp-element'>
+                                    {!last_level || this.props.selector ?
+                                        <div level={level} onClick={this.incrementFilter} className="dropdown-link">
+                                            {element[0].toUpperCase() + element.slice(1)} 
+                                        </div>
+                                        :
+                                        <Link to={"/products/" + this.props.category + "/" + prefilter.toLocaleLowerCase().replace(" ", "-") + ":" + element.toLocaleLowerCase().replace(" ", "-")} className="dropdown-link">
+                                            {element[0].toUpperCase() + element.slice(1)}
+                                        </Link>}
+                                        
+                                </li>
+                            ))}
                         </ul>))}
                 </div>
             </div>
