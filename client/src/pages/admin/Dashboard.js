@@ -47,11 +47,11 @@ export default class Dashboard extends React.Component {
             let orders = res.data.orders;
             // Get ordrered products
             let ordersPaid = orders.filter((order) => {
-                return order.paid;
+                return order.paid && order.status === 0;
             });
             // Get shipped products
             let ordersShipped = orders.filter((order) => {
-                return order.shipped;
+                return order.status > 0;
             });
             this.setState({ 
                     ordersPaid: ordersPaid,
@@ -79,14 +79,14 @@ export default class Dashboard extends React.Component {
                     <div className="column">
                         <h3>Commandes expédiés</h3>
                         {this.state.ordersShipped.map((order) => {
-                            return <RawPreview order={order} edit={false} onChange={this.updateProducts} onSeeMore={this.seeMore}/>;
+                            return <RawPreview order={order} edit={false} admin={false} delete={false} onSeeMore={this.seeMore}/>;
                         })}
                     </div>
                     <div className="column">
                         <h3>Recherche</h3>
                     </div>
                 </div>
-                {this.state.seeMore ? <Order onClose={this.closeSeeMore} order={this.state.order} /> : null}
+                {this.state.seeMore ? <Order onClose={this.closeSeeMore} order={this.state.order} onChange={this.updateProducts}  /> : null}
                 
             </div>
         )
