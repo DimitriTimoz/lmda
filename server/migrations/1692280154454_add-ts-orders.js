@@ -13,5 +13,5 @@ exports.up = pgm => {
 };
 
 exports.down = pgm => {
-    pgm.dropColumn('orders', 'created_at');
+    pgm.dropColumn('orders', ['created_at']);
 };

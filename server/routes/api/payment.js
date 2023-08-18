@@ -130,10 +130,10 @@ router.post('/create-payment-intent', async (req, res) => {
     // Créez un nouvel utilisateur ou trouvez un utilisateur existant
     user = await db.query('SELECT * FROM users WHERE email = $1', [infos.email]);
     if (user.rows.length === 0) {
-      let query = await db.query('INSERT INTO users (email, phone, name) VALUES ($1, $2, $3) RETURNING *', [infos.email, infos.tel, infos.name]);
+      let query = await db.query('INSERT INTO users (email, phone, name, gender) VALUES ($1, $2, $3, $4) RETURNING *', [infos.email, infos.tel, infos.name, infos.gender]);
       user = query.rows[0];
     } else {
-      let query = await db.query('UPDATE users SET phone = $1, name = $2 WHERE email = $3 RETURNING *', [infos.tel, infos.name, infos.email]);
+      let query = await db.query('UPDATE users SET phone = $1, name = $2, gender = $3 WHERE email = $3 RETURNING *', [infos.tel, infos.name, infos.email, infos.gender]);
       user = query.rows[0];
     }
 
@@ -161,8 +161,8 @@ router.post('/create-payment-intent', async (req, res) => {
 
     // Create the order
     order = await db.query(
-        'INSERT INTO orders (user_id, products, date, total, status, address) VALUES ($1, $2, NOW(), $3, $4, $5) RETURNING id',
-        [user.id, products, total, 0, JSON.stringify(address)]  
+        'INSERT INTO orders (user_id, products, date, total, status, address, delivery) VALUES ($1, $2, NOW(), $3, $4, $5, $6) RETURNING id',
+        [user.id, products, total, 0, JSON.stringify(address), JSON.stringify(delivery)]  
     );
 
     if (order.rows.length === 0) {

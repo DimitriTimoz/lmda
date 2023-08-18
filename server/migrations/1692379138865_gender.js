@@ -3,15 +3,16 @@
 exports.shorthands = undefined;
 
 exports.up = pgm => {
-    pgm.addColumns('orders', {
-        delivery: {
-            type: 'jsonb',
+    pgm.addColumns('users', {
+        gender: {
+            type: 'varchar(10)',
             notNull: true,
+            default: 'M.'   
         }
     });
-
 };
 
 exports.down = pgm => {
-    pgm.dropColumns('orders', ['delivery']);
+    pgm.dropColumns('users', ["gender"]);
+
 };

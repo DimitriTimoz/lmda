@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
-
+const mondialRelay = require("../../modules/mondial-relay");
 const db = require('../../db');
+const { getUser } = require('../../database/users');
 
 router.delete('/:id', async (req, res) => {
     const { id } = req.params;
@@ -57,6 +58,46 @@ router.post('/get', async (req, res) => {
         return res.status(500).json({ error: 'Une erreur est survenue lors de la récupération de la commande. Veuillez contacter le support.' });
     }
 });
+
+router.get("/bordereau/:id", async (req, res) => {
+    // Check if the user is logged in
+    if (!req.session.uid) {
+        return res.status(401).json({ error: 'Vous devez être connecté pour effectuer cette action.' });
+    }
+    const { id } = req.params;
+    // Get the order
+    try {
+        const result = await db.query('SELECT * FROM orders WHERE id = $1', [id]);
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Commande introuvable.'});
+        }
+        let user = await getUser(result.rows[0].user_id);
+        if (user.length == 0) {
+            return res.status(404).json({ error: 'Utilisateur introuvable.'});
+        }
+        user = user[0];
+
+        // Parse addresses
+        let delivery = result.rows[0].delivery;
+        let body = mondialRelay.body;
+        body.Dest_Ad1 = user.gender + " " + user.name;
+        /*body.Dest_Ad3 = address.address1;
+        body.Dest_Ad4 = address.address2;
+        body.Dest_CP = address.zipCode;
+        body.Dest_Ville = address.city;*/
+        body.Dest_Tel1 = user.tel;
+        body.LIV_Rel = delivery.parcelShopCode;
+
+        let label = await mondialRelay.creationEtiquette(body);
+        
+
+        return res.json({ label });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Une erreur est survenue lors de la récupération de la commande. Veuillez contacter le support.' });
+    }
+});
+    
 
 
 module.exports = router;

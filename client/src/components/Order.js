@@ -76,7 +76,6 @@ export default class Order extends React.Component {
         // Fetch the user
         axios.get("/api/user/" + this.props.order.user_id).then((res) => {
             if (res.status === 200) {
-                let user = res.data;
                 this.setState({
                     user: res.data,
                 });
@@ -89,6 +88,15 @@ export default class Order extends React.Component {
     }
 
     getBordereau = () => {
+        axios.get("/api/order/bordereau/" + this.props.order.id ).then((res) => {
+            if (res.status === 200) {
+                console.log(res.data);
+            }
+        }).catch((err) => {
+            this.setState({
+                errorMessages: [...this.state.errorMessages, err.response.data.message],
+            });
+        })
     }
 
     render() {
@@ -129,7 +137,6 @@ export default class Order extends React.Component {
                         <p>Email</p>
                     </div>
                 }
-                
                 <div className="column">
                     <h2>Produits</h2>
                     {this.state.products.length > 0 ?
