@@ -48,7 +48,6 @@ export default class Order extends React.Component {
         if (window.confirm("Voulez-vous vraiment marquer cette commande comme expédiée ?")) {
             axios.put("/api/order/" + this.props.order.id, { shipped: true }).then((res) => {
                 if (res.data.success) {
-                    // Remove from the page
                     this.props.onChange();
                 }
             });
@@ -125,6 +124,7 @@ export default class Order extends React.Component {
                         {order.address && <p>{order.address.country}</p>}
                         <p>{user.phone}</p>
                         <p>{user.email}</p>
+                        <p>{"Commandée le: " + (new Date(order.created_at)).toLocaleDateString('fr-fr')}</p>
                         <Button title="Obtenir bordereau" onClick={this.getBordereau} />
                     </div>
                 :
