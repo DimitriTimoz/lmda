@@ -9,15 +9,10 @@ exports.up = pgm => {
             default: false,
             notNull: true
         },
-        shipped: {
-            type: 'boolean',
-            default: false,
-            notNull: true
-        },
     })
 
 };
 
 exports.down = pgm => {
-    pgm.dropColumns('products', ['ordered', 'shipped'])
+    pgm.dropColumns('products', ['ordered'])
 };
