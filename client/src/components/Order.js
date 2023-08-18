@@ -91,6 +91,7 @@ export default class Order extends React.Component {
         axios.get("/api/order/bordereau/" + this.props.order.id ).then((res) => {
             if (res.status === 200) {
                 console.log(res.data);
+                window.open("https://www.mondialrelay.fr/" + res.data.label.url, "_blank");
             }
         }).catch((err) => {
             this.setState({
