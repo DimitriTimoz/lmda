@@ -97,7 +97,36 @@ router.get("/bordereau/:id", async (req, res) => {
         return res.status(500).json({ error: 'Une erreur est survenue lors de la récupération de la commande. Veuillez contacter le support.' });
     }
 });
-    
+
+router.put("/:id", async (req, res) => {
+    // Check if the user is logged in
+    if (!req.session.uid) {
+        return res.status(401).json({ error: 'Vous devez être connecté pour effectuer cette action.' });
+    }
+
+    const { id } = req.params;
+
+    // Check the parameters
+    const { shipped } = req.body;
+    if (shipped === undefined) {
+        return res.status(400).json({ error: 'Paramètres invalides.' });
+    }
+
+    // Update the order
+    try {
+        let status = 0;
+        if (shipped) {
+            status = 1;
+        }
+        
+        await db.query('UPDATE orders SET status = $1 WHERE id = $2', [status, id]);
+        return res.json({ success: 'Commande mise à jour avec succès.' });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Une erreur est survenue lors de la mise à jour de la commande. Veuillez contacter le support.' });
+    }
+});
+
 
 
 module.exports = router;
