@@ -12,6 +12,7 @@ export default class RawPreview extends React.Component {
             order: this.props.order || false,
             cart: this.props.cart || false,
             delete: this.props.delete || false,
+            cancel: this.props.cancel || false,
         };
 
         this.removeFormCart = this.removeFormCart.bind(this);
@@ -100,7 +101,7 @@ export default class RawPreview extends React.Component {
                         {this.state.cart && <TxtButton title="Supprimer" className="view-button" onClick={this.removeFormCart} /> }
                         {this.state.delete && <TxtButton title="Supprimer" className="view-button" onClick={this.removeProduct} /> }
                         {this.state.order ? <TxtButton title="Voir plus" className="view-button" onClick={this.seeMore} /> : null}
-                        {this.state.order ? <TxtButton title="Annuler" className="view-button" onClick={this.cancelOrder} /> : null}
+                        {this.state.order && !this.state.cancel ? <TxtButton title="Annuler" className="view-button" onClick={this.cancelOrder} /> : null}
                     </div>
                 </div>
                 {this.props.order ?
