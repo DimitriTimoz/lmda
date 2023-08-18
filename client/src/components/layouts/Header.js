@@ -51,17 +51,27 @@ export default class Header extends React.Component {
         </div> 
         <Link to="/"><img id="app-logo" alt="logo" src="/logo.png"/></Link>
         <Link to="/" className='app-name-container'><h1>Le monde d'Anna</h1></Link>
-        <div className="personnal-nav">
-            <Link to="/favorites"><img alt="favorites" src='/icons/heart.svg'/></Link>
-            <Link to="/cart"><img alt="cart" src='/icons/basket.svg'/></Link>
-        </div>
+        {this.props.isAdmin ?
+          <div className="personnal-nav">
+              <Link to="/admin/add"><img alt="admin add item" src='/icons/add.svg'/></Link>
+          </div>
+        :
+          <div className="personnal-nav">
+              <Link to="/favorites"><img alt="favorites" src='/icons/heart.svg'/></Link>
+              <Link to="/cart"><img alt="cart" src='/icons/basket.svg'/></Link>
+          </div>
+        }
+        
       </header>
-      <nav className="hide-mobile">
-        <DropdownNav elements={CAREGORIES_FEMMES} category="femmes" selector={ false } placeholder={"femmes"} />
-        <DropdownNav elements={CAREGORIES_HOMMES} category="hommes" selector={ false } placeholder={"hommes"} />
-        <DropdownNav elements={CAREGORIES_ENFANTS} category="enfants"selector={ false } placeholder={"enfants"} />
-      </nav>
-      {this.state.isBurgerMenuOpen &&
+      {!this.props.isAdmin &&
+        <nav className="hide-mobile">
+          <DropdownNav elements={CAREGORIES_FEMMES} category="femmes" selector={ false } placeholder={"femmes"} />
+          <DropdownNav elements={CAREGORIES_HOMMES} category="hommes" selector={ false } placeholder={"hommes"} />
+          <DropdownNav elements={CAREGORIES_ENFANTS} category="enfants"selector={ false } placeholder={"enfants"} />
+        </nav>
+      }
+      
+      {this.state.isBurgerMenuOpen && !this.props.isAdmin &&
         <nav className="hide-desktop"> 
             <HamburgerMenu onClose={this.triggerMenu}/>
         </nav>
