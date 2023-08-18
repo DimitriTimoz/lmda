@@ -9,7 +9,7 @@ router.get('/:id', async (req, res, next) => {
 
     // Get the user
     try {
-        let user = await getUser(req.session.uid);
+        let user = await getUser(req.params.id);
         if (user.length === 0) {
             return res.status(404).json({ error: 'Utilisateur introuvable.' });
         }

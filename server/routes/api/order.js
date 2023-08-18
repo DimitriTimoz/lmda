@@ -31,6 +31,10 @@ router.get("/all", async (req, res) => {
     // Get all orders
     try {
         const result = await db.query('SELECT * FROM orders');
+        // Parse addresses
+        for (let i = 0; i < result.rows.length; i++) {
+            result.rows[i].address = JSON.parse(result.rows[i].address);
+        }
         return res.json({ orders: result.rows });
     } catch (err) {
         console.error(err);

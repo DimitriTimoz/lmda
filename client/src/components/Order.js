@@ -46,9 +46,11 @@ export default class Order extends React.Component {
 
         // Ask for confirmation
         if (window.confirm("Voulez-vous vraiment marquer cette commande comme expédiée ?")) {
-            // Cancel order
             axios.put("/api/order/" + this.props.order.id, { shipped: true }).then((res) => {
-                
+                if (res.data.success) {
+                    // Remove from the page
+                    this.props.onChange();
+                }
             });
         }
     }
@@ -86,10 +88,13 @@ export default class Order extends React.Component {
         });
     }
 
+    getBordereau = () => {
+    }
 
     render() {
         // A popup element to display the order details        
         const user = this.state.user;
+        const order = this.props.order;
         return (
             <div id="order">
                 {this.state.errorMessages.length > 0 ?
@@ -105,13 +110,13 @@ export default class Order extends React.Component {
                 {this.state.user ? 
                     <div className="column">
                         <h2>{user.name}</h2>
-                        {user.address && <p>{user.address.address1}</p>}
-                        {user.address && <p>{user.address.address2}</p>}
-                        {user.address && <p>{user.address.zipCode}</p>}
-                        {user.address && <p>{user.address.country}</p>}
+                        {order.address && <p>{order.address.address1}</p>}
+                        {order.address && <p>{order.address.address2}</p>}
+                        {order.address && <p>{order.address.zipCode + " " + order.address.city}</p>}
+                        {order.address && <p>{order.address.country}</p>}
                         <p>{user.phone}</p>
                         <p>{user.email}</p>
-                        <Button title="Obtenir bordereau" />
+                        <Button title="Obtenir bordereau" onClick={this.getBordereau} />
                     </div>
                 :
                     <div className="column">
