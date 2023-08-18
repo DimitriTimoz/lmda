@@ -42,6 +42,72 @@ async function computeDeliveryPrice(products) {
   return price
 }
 
+function checkAndFormatInput(body) {
+  let infos = body.infos;
+  let products = body.products;
+  let address = body.delivery.address;
+  let delivery = body.delivery.delivery;
+
+  if (!infos || !products || !address || !delivery) {
+      return { error: 'Infos manquantes, veuillez compléter tous les champs.' };
+  }
+
+  if (!delivery.id || !delivery.name || !delivery.country || !delivery.address1 || !delivery.city || !delivery.zipCode || !delivery.parcelShopCode) {
+    return { error: 'Infos de livraison manquantes, veuillez choisir un point relais valide.' };
+  }
+
+  if (!infos.email || !infos.name || !infos.gender || !infos.tel) {
+      return { error: 'Infos personnelles manquantes, veuillez compléter tous les champs.' };
+  }
+
+  if (!address.address1 || !address.city || !address.zipCode || !address.country) {
+      return { error: 'Adresse manquante, veuillez compléter tous les champs.' };
+  }
+
+  // Check size to prevent ddos
+  if (products.length > 100) {
+    return { error: 'Trop de produits, veuillez réduire la taille du panier.' };
+  }
+
+  if (products.length === 0) {
+    return { error: 'Panier vide, veuillez ajouter des produits.' };
+  }
+
+  if (infos.email.length > 100 || infos.name.length > 100 || infos.tel.length > 20 || infos.gender.length > 4) {
+    return { error: 'Un ou plusieurs champs de vois vos informations personnelles contiennent trop de caractères, veuillez réduire la taille de ces champs.' };
+  }
+
+  infos.email = infos.email.toUpperCase().replace(/\s/g, '')
+  infos.tel = infos.tel.toUpperCase().replace(/\s/g, '')
+  // Check email
+  if (!checkEmail(infos.email)) {
+    return { error: 'Email invalide.' };
+  }
+
+  // Check phone
+  if (!checkPhone(infos.tel)) {
+    return { error: 'Téléphone invalide.' };
+  }
+
+  // Check address
+  if (address.address1.length > 100 || (address.address2 && address.address2.length > 100) || address.city.length > 100 || address.zipCode.length > 10) {
+    return { error: 'Trop de caractères dans votre adresse, veuillez réduire la taille des champs.' };
+  }
+
+  address.address1 = address.address1.toUpperCase()
+  if (address.address2) {
+    address.address2 = address.address2.toUpperCase()
+  }
+  address.city = address.city.toUpperCase()
+  address.zipCode = address.zipCode.toUpperCase().replace(/\s/g, '')
+
+  // Check delivery
+  if (delivery.id.length > 10 || delivery.name.length > 100 || delivery.country.length > 100 || delivery.address1.length > 100 || delivery.city.length > 100 || delivery.zipCode.length > 10 || delivery.parcelShopCode.length > 100) {
+    return { error: 'Trop de caractères dans votre point relais, veuillez réduire la taille des champs.' };
+  }
+  
+  return { infos, products, address, delivery };
+}
 
 router.get('/config', (req, res) => {
     res.status(200).json({
@@ -50,33 +116,11 @@ router.get('/config', (req, res) => {
 });
 
 router.post('/create-payment-intent', async (req, res) => {
-  let { products, delivery, email, phone, name } = req.body;
-  if (!products || !delivery || !email || !phone || !name) {
-      return res.status(400).json({ message: 'Infos manquantes, veuillez compléter tous les champs.' });
+  let body = checkAndFormatInput(req.body);
+  if (body.error) {
+    return res.status(400).json({ message: body.error });
   }
-
-  // Check size to prevent ddos
-  if (products.length > 100) {
-    return res.status(400).json({ message: 'Trop de produits, veuillez réduire la taille du panier.' });
-  }
-
-  if (email.length > 100 || name.length > 100 || phone.length > 20) {
-    return res.status(400).json({ message: 'Trop de caractères, veuillez réduire la taille des champs.' });
-  }
-
-  // Protect adress and email against SQL injections and XSS attacks  
-  if (!checkEmail(email)) {
-      return res.status(400).json({ message: 'Adresse email invalide.' });
-  }
-  email = req.sanitize(email.toLowerCase().replace(/\s/g, '')); 
-  name = req.sanitize(name.toUpperCase());
-  delivery.address = req.sanitize(delivery.address); 
-
-  phone = phone.replace(/\s/g, '');
-  if (!checkPhone(phone)) {
-      return res.status(400).json({ message: 'Numéro de téléphone invalide.' });
-  }
-  phone = req.sanitize(phone); 
+  const { infos, products, address, delivery } = body;
 
   let total = 0;
   let user = null;
@@ -84,14 +128,15 @@ router.post('/create-payment-intent', async (req, res) => {
 
   try {
     // Créez un nouvel utilisateur ou trouvez un utilisateur existant
-    user = await db.query('SELECT * FROM users WHERE email = $1', [email]);
+    user = await db.query('SELECT * FROM users WHERE email = $1', [infos.email]);
     if (user.rows.length === 0) {
-      let query = await db.query('INSERT INTO users (email, phone, name) VALUES ($1, $2, $3) RETURNING *', [email, phone, name]);
+      let query = await db.query('INSERT INTO users (email, phone, name) VALUES ($1, $2, $3) RETURNING *', [infos.email, infos.tel, infos.name]);
       user = query.rows[0];
     } else {
-      let query = await db.query('UPDATE users SET phone = $1, name = $2 WHERE email = $3 RETURNING *', [phone, name, email]);
+      let query = await db.query('UPDATE users SET phone = $1, name = $2 WHERE email = $3 RETURNING *', [infos.tel, infos.name, infos.email]);
       user = query.rows[0];
     }
+
     // Check that products are ids
     if (products.some(id => isNaN(id))) {
         return res.status(400).json({ message: 'Certains produits sont incorrects.' });
@@ -117,7 +162,7 @@ router.post('/create-payment-intent', async (req, res) => {
     // Create the order
     order = await db.query(
         'INSERT INTO orders (user_id, products, date, total, status, address) VALUES ($1, $2, NOW(), $3, $4, $5) RETURNING id',
-        [user.id, products, total, 0, delivery.address]  
+        [user.id, products, total, 0, JSON.stringify(address)]  
     );
 
     if (order.rows.length === 0) {
@@ -142,7 +187,7 @@ router.post('/create-payment-intent', async (req, res) => {
       shipping: {
         name: user.name,
         address: {
-          line1: delivery.address,
+          line1: delivery.address1,
         },
       },
       currency: 'eur',

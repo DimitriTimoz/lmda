@@ -22,6 +22,13 @@ export default function PersonalForm(props) {
     return (
         <div className="infos-form">
             <label class="full-field">
+                <select className="select-container select-dropdown" name="gender" onChange={updateField} value={infos.gender}>
+                    <option value="MR">MR</option>
+                    <option value="M.">M.</option>
+                    <option value="MME">MME</option>
+                    <option value="MLE">MLE</option>
+                    <option value="MLLE">MLLE</option>
+                </select>
                 <span class="form-label">Nom Prénom</span>
                 <Input
                     name="name"

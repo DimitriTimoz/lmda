@@ -222,13 +222,12 @@ class Cart extends Component {
 
         // Send the order to the server
         let body = {
-            name: this.state.infos.name,
+            infos: this.state.infos,
             products: products,
             delivery: {
                 address: this.state.address,
+                delivery: this.state.delivery,
             },
-            phone: this.state.infos.tel,
-            email: this.state.infos.email,
         };
         // Create PaymentIntent as soon as the page loads
         axios.post("/api/payment/create-payment-intent", body)
@@ -269,7 +268,6 @@ class Cart extends Component {
             .then((res) => {
                 if (res.status === 200) {
                     // Set the current order
-                    console.log("setting states");
                     this.setState({
                         cart: res.data.order.products,
                         secret: stripeId,
