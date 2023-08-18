@@ -133,7 +133,7 @@ router.post('/create-payment-intent', async (req, res) => {
       let query = await db.query('INSERT INTO users (email, phone, name, gender) VALUES ($1, $2, $3, $4) RETURNING *', [infos.email, infos.tel, infos.name, infos.gender]);
       user = query.rows[0];
     } else {
-      let query = await db.query('UPDATE users SET phone = $1, name = $2, gender = $3 WHERE email = $3 RETURNING *', [infos.tel, infos.name, infos.email, infos.gender]);
+      let query = await db.query('UPDATE users SET phone = $1, name = $2, gender = $3 WHERE email = $4 RETURNING *', [infos.tel, infos.name, infos.gender, infos.email]);
       user = query.rows[0];
     }
 
