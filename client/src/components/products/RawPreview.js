@@ -86,8 +86,8 @@ export default class RawPreview extends React.Component {
                 }
                 <div className="raw-preview-left">
                     {this.props.order ?
-                        <h4 className="p-name" >{"Nom Prénom"}</h4>
-                    :
+                        <h4 className="p-name" >{this.props.order.delivery.name}</h4>
+                        :
                         <h4 className="p-name" >{this.props.product.name}</h4>
                     }
                     {this.props.order ?
@@ -104,7 +104,7 @@ export default class RawPreview extends React.Component {
                     </div>
                 </div>
                 {this.props.order ?
-                    <span className="price" >{parseFloat(this.props.order.amount)/100}&nbsp;€</span>
+                    <span className="price" >{parseFloat(this.props.order.total)/100}&nbsp;€</span>
                 :
                     <span className="price" >{parseFloat(this.props.product.prices[0])/100}&nbsp;€</span>
                 }
