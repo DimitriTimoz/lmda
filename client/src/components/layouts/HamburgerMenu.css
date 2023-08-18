@@ -1,14 +1,13 @@
 #hambuger-menu {
-    position: absolute;
-    transform: translateY(-50%);
-    top: 50%;
+    position: relative;
     width: 100%;
-    height: 100%;
     background: var(--background-color);
     display: flex;
     flex-direction: column;
     justify-content: start;
     text-align: left;
+    z-index: 9999999;
+    height: 999999999rem;
 }
 
 #hambuger-menu > .menu-el {

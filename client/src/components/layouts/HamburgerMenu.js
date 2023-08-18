@@ -41,6 +41,11 @@ export default class HamburgerMenu extends React.Component {
         let added = [];
         return (
             <div id="hambuger-menu">
+                <style>
+                    {`body {
+                        overflow: hidden;
+                    }`}
+                </style>
                 {this.state.currentFilter.length > 0 && <Link className="menu-el" onClick={this.props.onClose} to={allLevelLink}>Tout</Link>}
 
                 {filters.map((filter) => {
