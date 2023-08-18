@@ -267,14 +267,15 @@ class Cart extends Component {
             axios.post("/api/order/get", {id : orderId, paymentIntentId: stripeId.split("_secret")[0]})
             .then((res) => {
                 if (res.status === 200) {
+                    // Save the cart
+                    localStorage.setItem("cart", JSON.stringify(res.data.order.products));
+
                     // Set the current order
                     this.setState({
                         cart: res.data.order.products,
                         secret: stripeId,
                         ordered: true,
                     }, this.handleProductUpdate);
-                    // Save the cart
-                    localStorage.setItem("cart", JSON.stringify(res.data.products.map((id) => id)));
 
                 } else {
                     this.handleProductUpdate();

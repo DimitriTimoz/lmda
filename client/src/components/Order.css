@@ -19,7 +19,7 @@
 }
 
 #order .column > * {
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
 }
 
 .close-btn {
@@ -29,4 +29,13 @@
     font-size: 1rem;
     color: var(--primary-color);
     cursor: pointer;
+}
+
+.product-list {
+    margin-bottom: 0.5rem;
+}
+
+.product-list {
+    max-height: calc((6rem + 0.5rem)*2);
+    overflow-y: auto;
 }
