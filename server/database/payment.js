@@ -4,9 +4,8 @@ const db = require('../db');
 async function validPayment(stripe_id) {
     try {
         const query = `UPDATE orders SET paid = TRUE WHERE payment_intent_id = $1`;
-        let res = await db.query(query, [stripe_id]);
-     
-        return true;
+        let res = await db.query(query, [stripe_id]);;
+        return res.rowCount === 1;
     } catch (error) {
         console.error('Error updating orders as paid:', error.message);
         return false;

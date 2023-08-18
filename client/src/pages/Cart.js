@@ -16,17 +16,18 @@ class Cart extends Component {
         this.state = {
             products: [],
             secret: "",
-            opennedRelay: false,
+            opennedDelivery: false,
             opennedAddress: false,
             opennedInfos: false,
             email: "",
             error: "",
             address: {},
-            relay: {},
+            delivery: {},
             infos: {},
             checked: false,
             ordered: false,
-            cart: []
+            cart: [],
+            delivery: {}
         };
         
         this.handleProductUpdate = this.handleProductUpdate.bind(this);
@@ -34,9 +35,9 @@ class Cart extends Component {
         this.submit = this.submit.bind(this);
         this.triggerDeliveryMenu = this.triggerDeliveryMenu.bind(this);
         this.triggerAddressMenu = this.triggerAddressMenu.bind(this);
+        this.triggerInfosMenu = this.triggerInfosMenu.bind(this);
         this.setAddress = this.setAddress.bind(this);
         this.setInfos = this.setInfos.bind(this);
-        this.triggerInfosMenu = this.triggerInfosMenu.bind(this);
     }
 
     throwError = (error) => {
@@ -54,11 +55,11 @@ class Cart extends Component {
             });
         }
 
-        // Load the relay if it exists
-        const relay = localStorage.getItem("relay");
-        if (relay) {
+        // Load the delivery if it exists
+        const delivery = localStorage.getItem("delivery");
+        if (delivery) {
             this.setState({
-                relay: JSON.parse(relay),
+                delivery: JSON.parse(delivery),
             });
         }
 
@@ -135,18 +136,33 @@ class Cart extends Component {
             return;
         }
 
-        if (this.state.opennedRelay && this.state.relay) {
-            // Save the relay
-            localStorage.setItem("relay", JSON.stringify(this.state.relay));
+        if (this.state.opennedDelivery) {
+            // Set deliveries states
+            this.setState({
+                delivery: {
+                    id: document.getElementById("cb_ID").value,
+                    name: document.getElementById("cb_Nom").value,
+                    address1: document.getElementById("cb_Adresse1").value,        
+                    address2: document.getElementById("cb_Adresse2").value,
+                    city: document.getElementById("cb_Ville").value,
+                    zipCode: document.getElementById("cb_CP").value,       
+                    country: document.getElementById("cb_Pays").value,
+                    parcelShopCode: document.getElementById("ParcelShopCode").value,     
+                }
+            }, function() { 
+                if (this.hasFullDelivery()) {
+                    localStorage.setItem("delivery", JSON.stringify(this.state.delivery));
+                }
+            });
         }
 
         this.setState({
-            opennedRelay: !this.state.opennedRelay,
+            opennedDelivery: !this.state.opennedDelivery,
         });
     }
 
     triggerAddressMenu = () => {
-        if (this.state.opennedRelay || this.state.opennedInfos) {
+        if (this.state.opennedDelivery || this.state.opennedInfos) {
             return;
         }
 
@@ -166,7 +182,7 @@ class Cart extends Component {
     }
 
     triggerInfosMenu = () => {
-        if (this.state.opennedRelay || this.state.opennedAddress) {
+        if (this.state.opennedDelivery || this.state.opennedAddress) {
             return;
         }
 
@@ -191,7 +207,11 @@ class Cart extends Component {
     hasFullInfos = () => {
         return this.state.infos && this.state.infos.name && this.state.infos.email && this.state.infos.tel;
     }
-    
+
+    hasFullDelivery = () => {
+        return this.state.delivery && this.state.delivery.id && this.state.delivery.name && this.state.delivery.address1 && this.state.delivery.zipCode && this.state.delivery.city && this.state.delivery.country && this.state.delivery.parcelShopCode;
+    }
+
     submit = () => {
         // Get the products from the local storage in the cart
         const cart = localStorage.getItem("cart");
@@ -268,6 +288,7 @@ class Cart extends Component {
             this.handleProductUpdate();
         }
     }
+
     
     render() {
         // Calculate new totals
@@ -280,18 +301,18 @@ class Cart extends Component {
         const clientSecret = this.state.secret;
         let total = productsTotal + massTotal * 0.01;
 
-        if (this.state.opennedRelay) {
-            if (!document.getElementById("relay-script")) {
+        if (this.state.opennedDelivery) {
+            if (!document.getElementById("delivery-script")) {
                 let script = document.createElement("script");
-                script.id = "relay-script";
+                script.id = "delivery-script";
                 script.src = "/scripts/ralay.js";
                 script.async = true;
             
                 document.getElementsByTagName("head")[0].appendChild(script);    
             }
         } else {
-            if (document.getElementById("relay-script")) {
-                document.getElementById("relay-script").remove();
+            if (document.getElementById("delivery-script")) {
+                document.getElementById("delivery-script").remove();
             }
         }
 
@@ -328,14 +349,23 @@ class Cart extends Component {
                         }                        
                     </div>
                     <div className='cart-delivery'>
-                        <h3>Point Relay</h3>
-                        {this.state.opennedRelay &&
-                            <div className='relay-popup shadow'>
+                        <h3>Point relais</h3>
+                        {this.state.opennedDelivery &&
+                            <div className='delivery-popup shadow'>
                                 <div id="Zone_Widget"></div>
                                 <Button title="Confirmer" className={"popup-confirm"} onClick={this.triggerDeliveryMenu} />
                             </div>
                         }
-                        <Button title="Ajouter" onClick={this.triggerDeliveryMenu} />
+                        {this.hasFullDelivery() ?
+                            <div className='infos-view' onClick={this.triggerDeliveryMenu}>
+                                <span className='bold'>{this.state.delivery.name}</span>
+                                <span>{this.state.delivery.address}</span>
+                                <span>{this.state.delivery.zipCode} {this.state.delivery.city}</span>
+                                <span>{this.state.delivery.country}</span>
+                            </div>
+                        :
+                            <Button title="Ajouter" onClick={this.triggerDeliveryMenu} />
+                        }
                     </div>
                     <div className='cart-delivery'>
                         <h3>Informations personnelles</h3>
@@ -379,8 +409,14 @@ class Cart extends Component {
                     )}
                     <Button title="Payer" className={"valid-button"} onClick={this.submit} />
                 </div>}
-                <input type="hidden" id="ParcelShopCode" name="ParcelShopCode" />
-
+                <input type="hidden" id="ParcelShopCode" name="ParcelShopCode" value={this.state.delivery.parcelShopCode} />
+                <input type="hidden" id="cb_ID" name="cb_ID" value={this.state.delivery.ID} />
+                <input type="hidden" id="cb_Nom" name="cb_Nom" value={this.state.delivery.name} />
+                <input type="hidden" id="cb_Adresse1" name="cb_Adresse1" value={this.state.delivery.address1} />
+                <input type="hidden" id="cb_Adresse2" name="cb_Adresse2" value={this.state.delivery.address2} />
+                <input type="hidden" id="cb_CP" name="cb_CP" value={this.state.delivery.zipCode} />
+                <input type="hidden" id="cb_Ville" name="cb_Ville" value={this.state.delivery.city} />
+                <input type="hidden" id="cb_Pays" name="cb_Pays" value={this.state.delivery.country} />
                 {this.state.error.length > 0 && <ErrorPopup error={this.state.error} onClose={() => {window.location.reload(); this.setState({error: ""})}} />}
             </div>
         );

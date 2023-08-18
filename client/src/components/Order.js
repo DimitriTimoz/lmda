@@ -105,9 +105,9 @@ export default class Order extends React.Component {
                 {this.state.user ? 
                     <div className="column">
                         <h2>{user.name}</h2>
-                        {user.address && <p>{user.address.line1}</p>}
-                        {user.address && <p>{user.address.zip}</p>}
-                        {user.address && <p>{user.address.city}</p>}
+                        {user.address && <p>{user.address.address1}</p>}
+                        {user.address && <p>{user.address.address2}</p>}
+                        {user.address && <p>{user.address.zipCode}</p>}
                         {user.address && <p>{user.address.country}</p>}
                         <p>{user.phone}</p>
                         <p>{user.email}</p>

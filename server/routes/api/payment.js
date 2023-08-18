@@ -86,10 +86,11 @@ router.post('/create-payment-intent', async (req, res) => {
     // Créez un nouvel utilisateur ou trouvez un utilisateur existant
     user = await db.query('SELECT * FROM users WHERE email = $1', [email]);
     if (user.rows.length === 0) {
-        let query = await db.query('INSERT INTO users (email, phone, name) VALUES ($1, $2, $3) RETURNING *', [email, phone, name]);
-        user = query.rows[0];
+      let query = await db.query('INSERT INTO users (email, phone, name) VALUES ($1, $2, $3) RETURNING *', [email, phone, name]);
+      user = query.rows[0];
     } else {
-        user = user.rows[0];
+      let query = await db.query('UPDATE users SET phone = $1, name = $2 WHERE email = $3 RETURNING *', [phone, name, email]);
+      user = query.rows[0];
     }
     // Check that products are ids
     if (products.some(id => isNaN(id))) {
@@ -211,6 +212,7 @@ router.post('/webhook', async (req, res) => {
         console.log("✅ order paid. Stripe payment intent id: " + data.object.id);
       } else {
         console.log("❌ order doesn't exists. Stripe payment intent id: " + data.object.id);
+        res.sendStatus(400);
       }
     } else if (eventType === 'payment_intent.payment_failed') {
         if (await paymentCanceled(data.object.id)) {

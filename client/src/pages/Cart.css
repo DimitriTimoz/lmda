@@ -76,7 +76,7 @@
 }
 
 
-.relay-popup, .address-popup, .infos-popup {
+.delivery-popup, .address-popup, .infos-popup {
     background: var(--background-color);
     position: fixed;
     top: 50%;
@@ -94,7 +94,7 @@
 
 }
 
-.relay-popup {
+.delivery-popup {
     padding: 2rem 2rem;
     height: 80%;
 }
@@ -127,6 +127,10 @@
 
 #Zone_Widget button {
     height: 100%;
+}
+
+#payment-form {
+    width: 100%;
 }
 
 @media screen and (max-width: 700px) {
