@@ -1,0 +1,11 @@
+Bonjour {{name}},
+
+Nous tenons à vous informer que malheureusement, votre commande en cours n'a pas été payée dans les délais requis, ce qui nous a conduits à devoir l'annuler automatiquement.
+
+Nous comprenons que des imprévus peuvent survenir, et nous serions ravis de vous assister dans le processus de passer une nouvelle commande sur notre site. Si vous avez des questions ou besoin d'aide, n'hésitez pas à nous contacter à contact@le-monde-de-anna.com
+
+Nous vous remercions de votre compréhension et de votre intérêt pour nos produits. Nous espérons avoir l'opportunité de vous servir à nouveau.
+
+Cordialement,
+
+Le Monde d'Anna
