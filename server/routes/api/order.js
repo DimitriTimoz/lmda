@@ -108,7 +108,6 @@ router.get("/bordereau/:id", async (req, res) => {
         body.Dest_Ville = noAccents(address.city);
         //body.Dest_Tel1 = user.phone;
         body.LIV_Rel = delivery.parcelShopCode;
-        console.log(body);
         let label = await myMondialRelay.creationEtiquette(body);
         
 
