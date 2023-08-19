@@ -3,28 +3,28 @@ const { getImagesFilenames } = require('../../database/images');
 const pool = require('../../db');
 
 const selectAll = async (admin, k = null) => {
-    try {
-      let query = "SELECT id, name, description, prices, size, kind, \"specifyCategory\", state, photos, date, mass FROM products WHERE ordered = false AND shipped = false";
-      if (admin) {
-        query = "SELECT * FROM products";
-      }
-      if (k) {
-        query += ` ORDER BY date ASC LIMIT ${k}`;
-      }
-      const result = await pool.query(query);
-      rows = result.rows;
-      for (let i = 0; i < rows.length; i++) {
-        if (rows[i].photos === null) {
-          rows[i].photos = [];
-        } else {
-          rows[i].photos = await getImagesFilenames(rows[i].photos);
-        }
-      }
-      return rows;
-    } catch (err) {
-      console.error("error", err);
-      return [];
+  try {
+    let query = "SELECT id, name, description, prices, size, kind, \"specifyCategory\", state, photos, date, mass FROM products WHERE ordered = false AND shipped = false";
+    if (admin) {
+      query = "SELECT * FROM products";
     }
+    if (k) {
+      query += ` ORDER BY date ASC LIMIT ${k}`;
+    }
+    const result = await pool.query(query);
+    rows = result.rows;
+    for (let i = 0; i < rows.length; i++) {
+      if (rows[i].photos === null) {
+        rows[i].photos = [];
+      } else {
+        rows[i].photos = await getImagesFilenames(rows[i].photos);
+      }
+    }
+    return rows;
+  } catch (err) {
+    console.error("error", err);
+    return [];
+  }
 };
   
 
