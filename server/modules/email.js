@@ -24,7 +24,7 @@ async function sendEmail(email, subject, template, params = {}) {
     };
 
     const formData = new FormData();
-    formData.append('from', 'Le Monde d\'Anna <mailgun@le-monde-de-anna.com>');
+    formData.append('from', 'Le Monde d\'Anna <no-reply@le-monde-de-anna.com>');
     formData.append('to', email);
     formData.append('subject', subject);
     formData.append('text', text);
