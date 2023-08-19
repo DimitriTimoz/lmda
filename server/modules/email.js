@@ -14,7 +14,6 @@ async function sendEmail(email, subject, template, params = {}) {
     let html = templateFile;
     let text = textFile;
     for (const [key, value] of Object.entries(params)) {
-        console.log(key, value);
         html = html.replace(`{{${key}}}`, value);
         text = text.replace(`{{${key}}}`, value);
     }
@@ -39,6 +38,7 @@ async function sendEmail(email, subject, template, params = {}) {
         return response.data.message == 'Queued. Thank you.';
     } catch (error) {
         console.error('Error sending email:', error.message);
+        return false;
     }
 }
 
