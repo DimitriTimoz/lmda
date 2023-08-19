@@ -103,7 +103,7 @@ class Home extends Component {
             <h3>Enfants</h3>
             <TxtButton title="Voir plus" link="/products/enfants/all"/>
           </div>
-          <RawPreviews products={childs} />
+          <RawPreviews maxRows={1} maxRowsMobile={3} products={childs} />
         </div>
       </div>
     );
