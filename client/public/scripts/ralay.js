@@ -3,7 +3,7 @@
   $(document).ready(function () {  
     $("#Zone_Widget").MR_ParcelShopPicker({  
       Target: "#ParcelShopCode",
-      Brand: "BDTEST  ", // PROD: change it
+      Brand: "CC22UXT2", // PROD: change it
       Country: "FR" ,
       Responsive: true,  
       ColLivMod: "24R",
