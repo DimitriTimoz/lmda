@@ -88,7 +88,7 @@ async function creationEtiquette(args) {
 }
 
 const BaseProd = {
-    Enseigne: "BDTEST13",
+    Enseigne: "CC22UXT2",
     ModeCol: "REL",
     ModeLiv: "24R",
     NDossier: "",
@@ -96,7 +96,7 @@ const BaseProd = {
     Expe_Langage: "FR",
     Expe_Ad1: "MME",
     Expe_Ad2: "",
-    Expe_Ad3: "74 rue de l’ancienne poste ",
+    Expe_Ad3: "74 rue de l'ancienne poste ",
     Expe_Ad4: "",
     Expe_Ville: "Franqueville saint pierre",
     Expe_CP: "76520",
@@ -107,10 +107,10 @@ const BaseProd = {
     Dest_Langage: "FR",
     Dest_Ad1: "MR",
     Dest_Ad2: "",
-    Dest_Ad3: "10 Rue de la Paix",
+    Dest_Ad3: "",
     Dest_Ad4: "",
-    Dest_Ville: "PARIS",
-    Dest_CP: "75001",
+    Dest_Ville: "",
+    Dest_CP: "",
     Dest_Pays: "FR",
     Dest_Tel1: "+33187653015",
     Dest_Tel2: "",
@@ -137,34 +137,34 @@ const BaseProd = {
 }
 
 let fakeLabel = {
-  Enseigne: "BDTEST13",
+  Enseigne: "CC22UXT2",
   ModeCol: "REL",
   ModeLiv: "24R",
   NDossier: "",
   NClient: "",
   Expe_Langage: "FR",
-  Expe_Ad1: "MR",
+  Expe_Ad1: "Mme",
   Expe_Ad2: "",
-  Expe_Ad3: "10 Rue de la Paix",
+  Expe_Ad3: "74 rue de l'ancienne poste",
   Expe_Ad4: "",
-  Expe_Ville: "PARIS",
-  Expe_CP: "75001",
+  Expe_Ville: "Franqueville saint pierre",
+  Expe_CP: "76520",
   Expe_Pays: "FR",
   Expe_Tel1: "+33187653015",
   Expe_Tel2: "",
   Expe_Mail: "",
   Dest_Langage: "FR",
-  Dest_Ad1: "MR",
+  Dest_Ad1: "",
   Dest_Ad2: "",
-  Dest_Ad3: "10 Rue de la Paix",
+  Dest_Ad3: "",
   Dest_Ad4: "",
-  Dest_Ville: "PARIS",
-  Dest_CP: "75001",
+  Dest_Ville: "",
+  Dest_CP: "",
   Dest_Pays: "FR",
-  Dest_Tel1: "+33187653015",
+  Dest_Tel1: "",
   Dest_Tel2: "",
   Dest_Mail: "",
-  Poids: "10",
+  Poids: "100",
   Longueur: "",
   Taille: "",
   NbColis: "1",
@@ -184,10 +184,25 @@ let fakeLabel = {
   Instructions: "",
   Texte: ""
 }
-const body = fakeLabel;
+const bodyLabel = fakeLabel;
+
+let fakeTracking = {
+  Enseigne: 'BDTEST13',
+  Expedition: '31236944',
+  Langue: 'FR'
+}
+
+let prodTracking = {
+  Enseigne: 'CC22UXT2',
+  Expedition: '31236944',
+  Langue: 'FR'
+}
+
+const bodyTracking = prodTracking;
 
 module.exports = {
     creationExpedition,
     creationEtiquette,
-    body
+    bodyLabel,
+    bodyTracking
 };
