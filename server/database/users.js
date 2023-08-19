@@ -59,11 +59,43 @@ async function getEmail(uid) {
   }
 }
 
+async function changePassword(username, password, newPassword) {
+  try {
+    const query = `
+      SELECT password FROM users
+      WHERE username = $1;
+    `;
+    const { rows } = await pool.query(query, [username]);
+    if (rows.length === 0) {
+      return false;
+    }
+    
+    const result = await comparePassword(password, rows[0].password);
+    if (result) {
+      const hashedPassword = await hashPassword(newPassword);
+      const query = `
+        UPDATE users
+        SET password = $1
+        WHERE username = $2;
+      `;
+      await pool.query(query, [hashedPassword, username]);
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.error('Error changing password:', error.message);
+    throw error;
+  }
+}
+
+
 module.exports = {
     hashPassword,
     comparePassword,
     addAdmin,
     getUser,
-    getEmail
+    getEmail, 
+    changePassword
 };
 
