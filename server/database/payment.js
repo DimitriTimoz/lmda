@@ -1,6 +1,6 @@
 const db = require('../db');
 const { sendEmail } = require('../modules/email');
-
+const { getEmail } = require('./users');
 // Update the order to mark it as paid
 async function validPayment(stripe_id) {
     try {
@@ -63,8 +63,7 @@ async function checkExpiredOrders() {
                 await db.query('UPDATE products SET ordered = FALSE WHERE id = $1', [products[j]]);
             }
 
-            const user = await db.query('SELECT * FROM users WHERE id = $1', [order.user_id]);
-            const email = user.rows[0].email;
+            const email = await getEmail(order.user_id);
             if (!await sendEmail(email, "Commande expirée", 'expired', { name: user.rows[0].name })) {
                 console.error('Error sending email to user:', email);
             }
