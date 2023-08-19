@@ -38,9 +38,8 @@ export default class RawPreviews extends React.Component {
        
         if (this.state.maxRows > 0 || this.state.maxRowsMobile > 0) {
             let n_elements_per_row = Math.floor(this.Conversion(this.state.width) / (7 + this.Conversion(10)));
-            if (this.state.mobile) {
-                if (this.state.maxRowsMobile > 0)
-                    products = products.slice(0, this.state.maxRowsMobile * n_elements_per_row);
+            if (this.state.mobile && this.state.maxRowsMobile > 0) {
+                products = products.slice(0, this.state.maxRowsMobile * n_elements_per_row);
             } else if (this.state.maxRows > 0) {
                 products = products.slice(0, this.state.maxRows * n_elements_per_row);
             }        
