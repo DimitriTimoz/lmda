@@ -1,4 +1,5 @@
 const db = require('../db');
+const { sendEmail } = require('../modules/email');
 
 // Update the order to mark it as paid
 async function validPayment(stripe_id) {
@@ -60,8 +61,14 @@ async function checkExpiredOrders() {
 
             for (let j = 0; j < products.length; j++) {
                 await db.query('UPDATE products SET ordered = FALSE WHERE id = $1', [products[j]]);
-                // TODO: Send an email to the user to inform them that their order has been canceled
             }
+
+            const user = await db.query('SELECT * FROM users WHERE id = $1', [order.user_id]);
+            const email = user.rows[0].email;
+            if (!await sendEmail(email, "Commande expirée", 'expired', { name: user.rows[0].name })) {
+                console.error('Error sending email to user:', email);
+            }
+
         }
 
         await db.query(`DELETE FROM orders WHERE paid = FALSE AND created_at < NOW() - INTERVAL '${INTERVAL}'`);
