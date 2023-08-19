@@ -1,8 +1,14 @@
 const express = require('express');
 const router = express.Router();
-const mondialRelay = require("../../modules/mondial-relay");
+const myMondialRelay = require("../../modules/mondial-relay");
+const mondialRelay = require("mondial-relay");
 const db = require('../../db');
-const { getUser } = require('../../database/users');
+const { getUser, getEmail } = require('../../database/users');
+const { sendEmail } = require('../../modules/email');
+
+function noAccents(str) {
+    return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
 
 router.delete('/:id', async (req, res) => {
     const { id } = req.params;
@@ -10,6 +16,17 @@ router.delete('/:id', async (req, res) => {
     if (!req.session.uid) {
         return res.status(401).json({ error: 'Vous devez être connecté pour effectuer cette action.' });
     }
+    // Check if the order is shipped
+    try {
+        const result = await db.query('SELECT status FROM orders WHERE id = $1', [id]);
+        if (result.rows[0].status > 0) {
+            return res.status(400).json({ error: 'Vous ne pouvez pas annuler une commande marquée comme expédiée.' });
+        }
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Une erreur est survenue lors de la récupération de la commande. Veuillez contacter le support.' });
+    }
+
     // Cancel the order. Set ordered to false for each product in the order by getting the order with one product id
     try {
         // Set products in order to not ordered
@@ -59,42 +76,46 @@ router.post('/get', async (req, res) => {
     }
 });
 
+
+
 router.get("/bordereau/:id", async (req, res) => {
     // Check if the user is logged in
     if (!req.session.uid) {
         return res.status(401).json({ error: 'Vous devez être connecté pour effectuer cette action.' });
     }
+    
     const { id } = req.params;
     // Get the order
     try {
-        const result = await db.query('SELECT * FROM orders WHERE id = $1', [id]);
-        if (result.rows.length === 0) {
+        const order = await db.query('SELECT * FROM orders WHERE id = $1', [id]);
+        if (order.rows.length === 0) {
             return res.status(404).json({ error: 'Commande introuvable.'});
         }
-        let user = await getUser(result.rows[0].user_id);
+        let user = await getUser(order.rows[0].user_id);
         if (user.length == 0) {
             return res.status(404).json({ error: 'Utilisateur introuvable.'});
         }
         user = user[0];
 
         // Parse addresses
-        let delivery = result.rows[0].delivery;
-        let body = mondialRelay.body;
-        body.Dest_Ad1 = user.gender + " " + user.name;
-        /*body.Dest_Ad3 = address.address1;
-        body.Dest_Ad4 = address.address2;
-        body.Dest_CP = address.zipCode;
-        body.Dest_Ville = address.city;*/
-        body.Dest_Tel1 = user.tel;
+        let delivery = order.rows[0].delivery;
+        let address = JSON.parse(order.rows[0].address);
+        let body = myMondialRelay.bodyLabel;
+        body.Dest_Ad1 = noAccents(user.gender + " " + user.name);
+        body.Dest_Ad3 = noAccents(address.address1);
+        body.Dest_Ad4 = noAccents(address.address2 || "");
+        body.Dest_CP = noAccents(address.zipCode);
+        body.Dest_Ville = noAccents(address.city);
+        //body.Dest_Tel1 = user.phone;
         body.LIV_Rel = delivery.parcelShopCode;
-
-        let label = await mondialRelay.creationEtiquette(body);
+        console.log(body);
+        let label = await myMondialRelay.creationEtiquette(body);
         
 
         return res.json({ label });
     } catch (err) {
         console.error(err);
-        return res.status(500).json({ error: 'Une erreur est survenue lors de la récupération de la commande. Veuillez contacter le support.' });
+        return res.status(500).json({ error: 'Une erreur est survenue lors de la récupération de la commande ou la création de l\'étiquette. Veuillez contacter le support.' });
     }
 });
 
@@ -111,6 +132,7 @@ router.put("/:id", async (req, res) => {
     if (shipped === undefined) {
         return res.status(400).json({ error: 'Paramètres invalides.' });
     }
+    // TODO check if we can buy a product already bought
 
     // Update the order
     try {
@@ -119,11 +141,21 @@ router.put("/:id", async (req, res) => {
             status = 1;
         }
         
-        await db.query('UPDATE orders SET status = $1 WHERE id = $2', [status, id]);
+        if (status === 1) {
+            // Get tracking number
+            let body = myMondialRelay.bodyTracking;
+            let email = await getEmail(id);
+            let rsult = await mondialRelay.getTracking(body);
+            console.log(rsult);
+            /*if (!await sendEmail(email, "Commande traitée")) {
+                return res.status(500).json({ error: 'Une erreur est survenue lors de l\'envoi de l\'email.' });
+            }*/
+        }
+        await db.query('UPDATE orders SET status = $1 WHERE id = $2 AND paid = TRUE', [status, id]);
         return res.json({ success: 'Commande mise à jour avec succès.' });
     } catch (err) {
         console.error(err);
-        return res.status(500).json({ error: 'Une erreur est survenue lors de la mise à jour de la commande. Veuillez contacter le support.' });
+        return res.status(500).json({ error: 'Une erreur est survenue lors de la mise à jour de la commande.' });
     }
 });
 
