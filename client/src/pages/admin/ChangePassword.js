@@ -1,10 +1,15 @@
 import React from "react";
 import "./ChangePassword.css";
+import './Login.css';
+import Input from "../../components/Input";
+import Button from "../../components/Button";
+import axios from "axios";
 
-class ChangePassword extends React.Component {
+export default class ChangePassword extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            email: "",
             password: "",
             newPassword: "",
             newPasswordConfirm: "",
@@ -24,16 +29,7 @@ class ChangePassword extends React.Component {
             this.setState({ error: "Les mots de passe ne correspondent pas" });
             return;
         }
-        const response = await fetch("/api/users/changePassword", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                password: this.state.password,
-                newPassword: this.state.newPassword,
-            }),
-        });
+        const response = await axios.post("/api/user/change-password", this.state);
         const body = await response.json();
         if (response.status !== 200) {
             this.setState({ error: body.error });
@@ -45,15 +41,17 @@ class ChangePassword extends React.Component {
     render() {
         return (
             <div className="ChangePassword">
-                <form onSubmit={this.handleSubmit}>
-                    <h1>Changer le mot de passe</h1>
+                <form className="login-form" onSubmit={this.handleSubmit}>
+                    <h3>Changer le mot de passe</h3>
+                    <label htmlFor="password">Email</label>
+                    <Input type="email" name="email" id="email" value={this.state.email} onChange={this.handleChange} />
                     <label htmlFor="password">Mot de passe actuel</label>
-                    <input type="password" name="password" id="password" value={this.state.password} onChange={this.handleChange} />
+                    <Input type="password" name="password" id="password" value={this.state.password} onChange={this.handleChange} />
                     <label htmlFor="newPassword">Nouveau mot de passe</label>
-                    <input type="password" name="newPassword" id="newPassword" value={this.state.newPassword} onChange={this.handleChange} />
+                    <Input type="password" name="newPassword" id="newPassword" value={this.state.newPassword} onChange={this.handleChange} />
                     <label htmlFor="newPasswordConfirm">Confirmer le nouveau mot de passe</label>
-                    <input type="password" name="newPasswordConfirm" id="newPasswordConfirm" value={this.state.newPasswordConfirm} onChange={this.handleChange} />
-                    <input type="submit" value="Changer le mot de passe" />
+                    <Input type="password" name="newPasswordConfirm" id="newPasswordConfirm" value={this.state.newPasswordConfirm} onChange={this.handleChange} />
+                    <Button type="submit" title="Changer le mot de passe" onClick={this.handleSubmit} />
                     <p className="error">{this.state.error}</p>
                     <p className="success">{this.state.success}</p>
                 </form>

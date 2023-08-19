@@ -59,26 +59,26 @@ async function getEmail(uid) {
   }
 }
 
-async function changePassword(username, password, newPassword) {
+async function changePassword(email, password, newPassword) {
   try {
     const query = `
-      SELECT password FROM users
-      WHERE username = $1;
+      SELECT password FROM admins
+      WHERE email = $1;
     `;
-    const { rows } = await pool.query(query, [username]);
+    const { rows } = await pool.query(query, [email]);
     if (rows.length === 0) {
       return false;
     }
-    
+
     const result = await comparePassword(password, rows[0].password);
     if (result) {
       const hashedPassword = await hashPassword(newPassword);
       const query = `
-        UPDATE users
+        UPDATE admins
         SET password = $1
-        WHERE username = $2;
+        WHERE email = $2;
       `;
-      await pool.query(query, [hashedPassword, username]);
+      await pool.query(query, [hashedPassword, email]);
       return true;
     } else {
       return false;
