@@ -45,10 +45,25 @@ async function getUser(uid) {
   }
 }
 
+async function getEmail(uid) {
+  try {
+    const query = `
+      SELECT email FROM users
+      WHERE id = $1;
+    `;
+    const { rows } = await pool.query(query, [uid]);
+    return rows;
+  } catch (error) {
+    console.error('Error getting user email:', error.message);
+    throw error;
+  }
+}
+
 module.exports = {
     hashPassword,
     comparePassword,
     addAdmin,
     getUser,
+    getEmail
 };
 
