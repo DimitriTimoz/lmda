@@ -34,7 +34,12 @@ export default class Order extends React.Component {
                     });
                     this.props.onChange();
                 }
-            });
+            }).catch((err) => {
+                this.setState({
+                    errorMessages: [...this.state.errorMessages, err.response.data.error],
+                });
+            }
+            );
         }
     }
 
@@ -50,7 +55,12 @@ export default class Order extends React.Component {
                 if (res.data.success) {
                     this.props.onChange();
                 }
-            });
+            }).catch((err) => {
+                this.setState({
+                    errorMessages: [...this.state.errorMessages, err.response.data.error],
+                });
+            }
+            );
         }
     }
 
@@ -65,7 +75,7 @@ export default class Order extends React.Component {
                 }
             }).catch((err) => {
                 this.setState({
-                    errorMessages: [...this.state.errorMessages, err.response.data.message],
+                    errorMessages: [...this.state.errorMessages, err.response.data.error],
                 });
             });
         }
@@ -81,7 +91,7 @@ export default class Order extends React.Component {
             }
         }).catch((err) => {
             this.setState({
-                errorMessages: [...this.state.errorMessages, err.response.data.message],
+                errorMessages: [...this.state.errorMessages, err.response.data.error],
             });
         });
     }
@@ -94,7 +104,7 @@ export default class Order extends React.Component {
             }
         }).catch((err) => {
             this.setState({
-                errorMessages: [...this.state.errorMessages, err.response.data.message],
+                errorMessages: [...this.state.errorMessages, err.response.data.error],
             });
         })
     }
@@ -103,11 +113,12 @@ export default class Order extends React.Component {
         // A popup element to display the order details        
         const user = this.state.user;
         const order = this.props.order;
+        const massTotal = this.state.products.reduce((acc, product) => { return acc + product.mass; }, 0);
         return (
             <div id="order">
                 {this.state.errorMessages.length > 0 ?
                     <ErrorPopup
-                        messages={this.state.errorMessages.join("\n")}
+                        error={this.state.errorMessages.join("\n")}
                         onClose={() => this.setState({ errorMessages: [] })}
                     />
                 : null
@@ -124,6 +135,8 @@ export default class Order extends React.Component {
                         {order.address && <p>{order.address.country}</p>}
                         <p>{user.phone}</p>
                         <p>{user.email}</p>
+                        <p>{"Point relai: " + order.delivery.parcelShopCode }</p>
+                        {order.exp_number && <p>{"Numéro d'expédition: " + order.exp_number }</p> }
                         <p>{"Commandée le: " + (new Date(order.created_at)).toLocaleDateString('fr-fr')}</p>
                         <Button title="Obtenir bordereau" onClick={this.getBordereau} />
                     </div>
@@ -153,6 +166,7 @@ export default class Order extends React.Component {
                             <p>Chargement...</p>
                         </div>
                     }
+                    {this.state.products.length > 0 && <p>{"Masse totale: " + massTotal + " g"}</p>}
                     <Button title="Marquer comme expédiée" onClick={this.shipOrder.bind(this)} />
                 </div>
             </>
@@ -162,3 +176,4 @@ export default class Order extends React.Component {
         </div>);
     }
 }
+// Can't order more than kg 
