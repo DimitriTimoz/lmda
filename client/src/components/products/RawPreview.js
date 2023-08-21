@@ -87,9 +87,12 @@ export default class RawPreview extends React.Component {
                 }
                 <div className="raw-preview-left">
                     {this.props.order ?
-                        <h4 className="p-name" >{this.props.order.delivery.name}</h4>
+                        <h4 className="p-name" >Id: {this.props.order.id}</h4>
                         :
                         <h4 className="p-name" >{this.props.product.name}</h4>
+                    }
+                    {this.props.order && 
+                        <p>{"Le: " + (new Date(this.props.order.created_at)).toLocaleDateString('fr-fr')}</p>
                     }
                     {this.props.order ?
                         <span className="p-details" >{this.props.order.products.length + " Produit(s)"}</span>
