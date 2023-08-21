@@ -5,6 +5,10 @@ const mondialRelay = require("mondial-relay");
 const db = require('../../db');
 const { getUser, getEmail } = require('../../database/users');
 const { sendEmail } = require('../../modules/email');
+const env = require('dotenv').config({path: './.env'}).parsed;
+const stripe = require('stripe')(env.STRIPE_SECRET_KEY, {
+    apiVersion: '2022-11-15',
+});
 
 function noAccents(str) {
     return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
@@ -16,29 +20,46 @@ router.delete('/:id', async (req, res) => {
     if (!req.session.uid) {
         return res.status(401).json({ error: 'Vous devez être connecté pour effectuer cette action.' });
     }
+
+    let intentId;
+    let amount;
+    let userId;
+    let date;
     // Check if the order is shipped
     try {
-        const result = await db.query('SELECT status FROM orders WHERE id = $1', [id]);
+        const result = await db.query('SELECT status, payment_intent_id, total, user_id, created_at FROM orders WHERE id = $1', [id]);
         if (result.rows[0].status > 0) {
             return res.status(400).json({ error: 'Vous ne pouvez pas annuler une commande marquée comme expédiée.' });
         }
+        intentId = result.rows[0].payment_intent_id;
+        amount = result.rows[0].total;
+        userId = result.rows[0].user_id;
+        date = result.rows[0].created_at;
     } catch (err) {
         console.error(err);
         return res.status(500).json({ error: 'Une erreur est survenue lors de la récupération de la commande. Veuillez contacter le support.' });
     }
-
+    // TODO: refund the user and send an email
+    const refund = await stripe.refunds.create({
+        payment_intent: intentId,
+    });
+    // Send an email to the user
+    const email = await getEmail(userId)[0];
+    if (!await sendEmail(email, 'Commande annulée', `canceled_order`), { order_id: id, amount: amount, date: date }) {
+        console.error('Error sending email to announce canceled order to ' + email);
+    }
+    
     // Cancel the order. Set ordered to false for each product in the order by getting the order with one product id
     try {
         // Set products in order to not ordered
-        await db.query('UPDATE products SET ordered = false WHERE id IN (SELECT unnest(products) FROM orders WHERE id = $1);', [id]);
         await db.query('DELETE FROM orders WHERE id = $1', [id]);
+        await db.query('UPDATE products SET ordered = false WHERE id IN (SELECT unnest(products) FROM orders WHERE id = $1);', [id]);
     } catch (err) {
         console.error(err);
         return res.status(500).json({ error: 'Une erreur est survenue lors de l\'annulation de la commande. Veuillez contacter le support.' });
     }
-    // TODO: refund the user and send an email
-    return res.json({ success: 'Commande annulée avec succès.' });
 
+    return res.json({ success: 'Commande annulée avec succès.' });
 });
 
 router.get("/all", async (req, res) => {
