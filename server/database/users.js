@@ -1,6 +1,7 @@
 
 const bcrypt = require('bcryptjs');
 const pool = require("../db");
+const env = require('dotenv').config({path: './.env'}).parsed;
 
 async function hashPassword(plaintextPassword) {
     const hash = await bcrypt.hash(plaintextPassword, 10);
@@ -89,6 +90,9 @@ async function changePassword(email, password, newPassword) {
   }
 }
 
+function getAdminEmails() {
+  return env.ADMIN_IDS.split(',');
+}
 
 module.exports = {
     hashPassword,
@@ -96,6 +100,7 @@ module.exports = {
     addAdmin,
     getUser,
     getEmail, 
-    changePassword
+    changePassword,
+    getAdminEmails
 };
 
