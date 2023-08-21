@@ -39,7 +39,8 @@ router.delete('/:id', async (req, res) => {
         console.error(err);
         return res.status(500).json({ error: 'Une erreur est survenue lors de la récupération de la commande. Veuillez contacter le support.' });
     }
-    // TODO: refund the user and send an email
+
+    // Refund the order
     const refund = await stripe.refunds.create({
         payment_intent: intentId,
     });
