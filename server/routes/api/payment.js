@@ -8,6 +8,35 @@ const stripe = require('stripe')(env.STRIPE_SECRET_KEY, {
     apiVersion: '2022-11-15',
 });
 
+function getDeliveryPrice(mass, iso) {
+  let isos = [['FR'], ['BE', 'LU'], ['NL'], ['ES', 'PT'], ['DE'], [], ['IT', 'AT']];
+  let indexOfCountry = isos.findIndex((element) => element.includes(iso));
+  if (mass < 500)
+    return [440, 460, 555, 680, 1150, 1290, 1450][indexOfCountry];
+  else if (mass < 1000)
+    return [490, 540, 605, 720, 1150, 1290, 1450][indexOfCountry];
+  else if (mass < 2000)
+    return [650, 680, 705, 810, 1290, 1350, 1550][indexOfCountry]; 
+  else if (mass < 3000)
+    return [705, 750, 830, 950, 1290, 1750, 1790][indexOfCountry];
+  else if (mass < 4000)
+    return [730, 830, 890, 1050, 1490, 1790, 1850][indexOfCountry];
+  else if (mass < 5000)
+    return [1150, 1190, 1190, 1140, 1490, 1820, 1990][indexOfCountry];
+  else if (mass < 7000)
+    return [1390, 1430, 1430, 1360, 1750, 2490, 2550][indexOfCountry];
+  else if (mass < 10000)
+    return [1490, 1540, 1540, 1640, 2290, 2550, 2590][indexOfCountry];
+  else if (mass < 15000)
+    return [2190, 2250, 2250, 2190, 2290, 3390, 3390][indexOfCountry];
+  else if (mass < 20000)
+    return [2490, 2750, 2750, 2890, 3090, 4590, 4590][indexOfCountry];
+  else if (mass < 30000)
+    return [3090, 3390, 3390, 3590, 3790, 5590, 5590][indexOfCountry];
+  else 
+    return 999999999;
+}
+
 function checkEmail(email) {
   match =  email.match(
     /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
@@ -220,6 +249,7 @@ router.post('/create-payment-intent', async (req, res) => {
       clientSecret: paymentIntent.client_secret,
       deliveryPrice: deliveryPrice,
       total: total,
+      mass: mass,
       orderId: order.id
     });
   } catch (e) {
