@@ -54,7 +54,7 @@ export default class RawPreview extends React.Component {
 
     cancelOrder() {
         // Ask for confirmation
-        if (window.confirm("Voulez-vous vraiment annuler cette commande ?")) {
+        if (window.confirm("Voulez-vous vraiment annuler cette commande ? Un email sera envoyé à l'utilisateur pour l'en alterter et un remboursement sera effectué. Si vous souhaitez contacter cet utilisateur veuillez concerver ses coordonnées, elles seront supprimés après l'annulation de la commande.")) {
             // Remove from database
             axios.delete("/api/order/" + this.props.order.id).then((res) => {
                 if (res.status === 200) {
