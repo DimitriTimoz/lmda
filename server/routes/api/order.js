@@ -106,15 +106,20 @@ router.get("/bordereau/:id", async (req, res) => {
         body.Dest_Ad4 = noAccents(address.address2 || "");
         body.Dest_CP = noAccents(address.zipCode);
         body.Dest_Ville = noAccents(address.city);
-        //body.Dest_Tel1 = user.phone;
         body.LIV_Rel = delivery.parcelShopCode;
         let label = await myMondialRelay.creationEtiquette(body);
-        
-
+        let num = label.url.split('expedition=')[1].split('&')[0];
+        // Update the order to set the expedition number
+        await db.query('UPDATE orders SET exp_number = $1 WHERE id = $2', [num, id]);
         return res.json({ label });
     } catch (err) {
-        console.error(err);
-        return res.status(500).json({ error: 'Une erreur est survenue lors de la récupération de la commande ou la création de l\'étiquette. Veuillez contacter le support.' });
+        if (err[1] == 92) {
+            console.error(err[0]);
+            return res.status(400).json({ error: 'Il est possible que votre crédit prépayé soit insuffisant. Erreur de mondial relay: ' + err[0] });
+        } else {
+            console.error(err[0]);
+        }
+        return res.status(500).json({ error: 'Une erreur est survenue lors de la récupération de la commande ou la création de l\'étiquette. Veuillez contacter le support. Erreur de mondial relay: ' + err[0] });
     }
 });
 
@@ -131,7 +136,6 @@ router.put("/:id", async (req, res) => {
     if (shipped === undefined) {
         return res.status(400).json({ error: 'Paramètres invalides.' });
     }
-    // TODO check if we can buy a product already bought
 
     // Update the order
     try {
@@ -143,12 +147,17 @@ router.put("/:id", async (req, res) => {
         if (status === 1) {
             // Get tracking number
             let body = myMondialRelay.bodyTracking;
-            let email = await getEmail(id);
+            // Get order
+            let order = await db.query('SELECT * FROM orders WHERE id = $1', [id]);
+            if (order.rows.length === 0) {
+                return res.status(404).json({ error: 'Commande introuvable.'});
+            }
+
+            let email = await getEmail(order.rows[0].user_id);
             let rsult = await mondialRelay.getTracking(body);
-            console.log(rsult);
-            /*if (!await sendEmail(email, "Commande traitée")) {
+            if (!await sendEmail(email, "Commande traitée")) {
                 return res.status(500).json({ error: 'Une erreur est survenue lors de l\'envoi de l\'email.' });
-            }*/
+            }
         }
         await db.query('UPDATE orders SET status = $1 WHERE id = $2 AND paid = TRUE', [status, id]);
         return res.json({ success: 'Commande mise à jour avec succès.' });

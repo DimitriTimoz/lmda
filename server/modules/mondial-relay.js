@@ -39,7 +39,7 @@ async function creationExpedition(args) {
 
     // Check status code
     if (response.WSI2_CreationExpeditionResult.STAT  !== "0") {
-        throw statusCodes[response.WSI2_CreationExpeditionResult.STAT];
+        throw [statusCodes[response.WSI2_CreationExpeditionResult.STAT], response.WSI2_CreationExpeditionResult.STAT];
     }
     // Get Url and num
     return response.WSI2_CreationExpeditionResult;
@@ -77,7 +77,7 @@ async function creationEtiquette(args) {
 
     // Check status code
     if (response.WSI2_CreationEtiquetteResult.STAT  !== "0") {
-        throw statusCodes[response.WSI2_CreationEtiquetteResult.STAT];
+        throw [statusCodes[response.WSI2_CreationEtiquetteResult.STAT], response.WSI2_CreationEtiquetteResult.STAT];
     }
 
     // Get Url and num
@@ -87,57 +87,8 @@ async function creationEtiquette(args) {
     }
 }
 
-const BaseProd = {
-    Enseigne: "CC22UXT2",
-    ModeCol: "REL",
-    ModeLiv: "24R",
-    NDossier: "",
-    NClient: "",
-    Expe_Langage: "FR",
-    Expe_Ad1: "MME",
-    Expe_Ad2: "",
-    Expe_Ad3: "74 rue de l'ancienne poste ",
-    Expe_Ad4: "",
-    Expe_Ville: "Franqueville saint pierre",
-    Expe_CP: "76520",
-    Expe_Pays: "FR",
-    Expe_Tel1: "+33643281434",
-    Expe_Tel2: "",
-    Expe_Mail: "",
-    Dest_Langage: "FR",
-    Dest_Ad1: "MR",
-    Dest_Ad2: "",
-    Dest_Ad3: "",
-    Dest_Ad4: "",
-    Dest_Ville: "",
-    Dest_CP: "",
-    Dest_Pays: "FR",
-    Dest_Tel1: "+33187653015",
-    Dest_Tel2: "",
-    Dest_Mail: "",
-    Poids: "10",
-    Longueur: "",
-    Taille: "",
-    NbColis: "1",
-    CRT_Valeur: "0",
-    CRT_Devise: "",
-    Exp_Valeur: "",
-    Exp_Devise: "",
-    COL_Rel_Pays: "FR",
-    COL_Rel: "AUTO",
-    LIV_Rel_Pays: "FR",
-    LIV_Rel: "FR-013840",
-    TAvisage: "",
-    TReprise: "",
-    Montage: "",
-    TRDV: "",
-    Assurance: "",
-    Instructions: "",
-    Texte: ""
-}
-
-let fakeLabel = {
-  Enseigne: "CC22UXT2",
+let bodyLabel = {
+  Enseigne: "BDTEST13",
   ModeCol: "REL",
   ModeLiv: "24R",
   NDossier: "",
@@ -150,7 +101,7 @@ let fakeLabel = {
   Expe_Ville: "Franqueville saint pierre",
   Expe_CP: "76520",
   Expe_Pays: "FR",
-  Expe_Tel1: "+33187653015",
+  Expe_Tel1: "+33643281434",
   Expe_Tel2: "",
   Expe_Mail: "",
   Dest_Langage: "FR",
@@ -164,7 +115,7 @@ let fakeLabel = {
   Dest_Tel1: "",
   Dest_Tel2: "",
   Dest_Mail: "",
-  Poids: "100",
+  Poids: "10",
   Longueur: "",
   Taille: "",
   NbColis: "1",
@@ -184,21 +135,13 @@ let fakeLabel = {
   Instructions: "",
   Texte: ""
 }
-const bodyLabel = fakeLabel;
 
-let fakeTracking = {
-  Enseigne: 'BDTEST13',
-  Expedition: '31236944',
-  Langue: 'FR'
-}
 
-let prodTracking = {
+let bodyTracking = {
   Enseigne: 'CC22UXT2',
   Expedition: '31236944',
   Langue: 'FR'
 }
-
-const bodyTracking = prodTracking;
 
 module.exports = {
     creationExpedition,
