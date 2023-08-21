@@ -1,0 +1,16 @@
+
+Cher(e) {{name}},
+
+Nous sommes ravis de vous informer que votre colis est en chemin et qu'il est pris en charge par notre fournisseur de livraison, Mondial Relay. Pour vous permettre de suivre l'avancement de votre colis en temps réel, veuillez cliquer sur le lien de suivi ci-dessous :
+
+https://www.mondialrelay.fr/suivi-de-colis/?NumeroExpedition={{numexp}}&CodePostal={{zipCode}}
+
+Ce lien vous dirigera vers la page de suivi de Mondial Relay, où vous pourrez consulter les étapes clés du parcours de votre colis, depuis son expédition jusqu'à sa livraison prévue.
+
+Si vous avez la moindre question ou préoccupation concernant votre commande, n'hésitez pas à nous contacter. Notre équipe du service client se tient à votre disposition pour vous aider.
+
+Nous vous remercions encore pour votre confiance envers Le Monde d'Anna. Nous sommes impatients de vous servir à nouveau à l'avenir.
+
+Cordialement,
+
+L'équipe du Monde d'Anna
