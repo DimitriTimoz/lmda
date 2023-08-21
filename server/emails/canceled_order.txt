@@ -1,0 +1,19 @@
+Bonjour,
+
+Nous espérons que vous allez bien. Nous tenons à vous remercier pour avoir choisi Le Monde d'Anna pour vos achats.
+
+Nous vous écrivons malheureusement avec la nouvelle que votre commande numéro {{order_id}}, passée le {{date}}, a dû être annulée. Nous sommes désolés pour tout désagrément que cela pourrait causer.
+
+Rassurez-vous, nous avons déjà entamé les démarches pour procéder au remboursement complet de votre commande. Le montant de {{amount}} € sera remboursé via la même méthode de paiement que celle que vous avez utilisée lors de votre achat initial. Attendez-vous à voir le remboursement crédité sur votre compte dans les prochains jours, selon les délais propres à votre institution financière.
+
+Si vous avez la moindre question ou si vous avez besoin d'aide supplémentaire, n'hésitez pas à nous contacter via contact@le-monde-de-anna.com. Nous sommes là pour vous assister.
+
+Nous vous remercions pour votre compréhension et votre patience dans cette situation. Votre satisfaction reste au cœur de nos préoccupations et nous travaillons constamment à améliorer nos services.
+
+Cordialement,
+
+L'équipe du Monde d'Anna
+
+
+
+
