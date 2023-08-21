@@ -27,7 +27,9 @@ class Cart extends Component {
             checked: false,
             ordered: false,
             cart: [],
-            delivery: {}
+            delivery: {},
+            mass: 0,
+            productsPrice: 0,
         };
         
         this.handleProductUpdate = this.handleProductUpdate.bind(this);
@@ -93,6 +95,8 @@ class Cart extends Component {
         }
 
         let confirmed = [];
+        let mass = 0;
+        let productsPrice = 0;
         // Check if the product is available
         products.forEach((product) => {
             axios.get("/api/product/" + product)
@@ -103,9 +107,12 @@ class Cart extends Component {
                         confirmed.push(res.data);
                         // Save the products in the local storage
                         localStorage.setItem("cart", JSON.stringify(confirmed.map((product) => product.id)));
-
+                        mass += res.data.mass;
+                        productsPrice += res.data.prices[0];
                         this.setState({
                             products: confirmed,
+                            mass: mass,
+                            productsPrice: productsPrice,
                         });
                     } 
                 } else {
@@ -288,17 +295,43 @@ class Cart extends Component {
         }
     }
 
+    getDeliveryPrice = (mass, iso) => {
+        let isos = [['FR'], ['BE', 'LU'], ['NL'], ['ES', 'PT'], ['DE'], [], ['IT', 'AT']];
+        let indexOfCountry = isos.findIndex((element) => element.includes(iso));
+        if (mass < 500)
+          return [440, 460, 555, 680, 1150, 1290, 1450][indexOfCountry];
+        else if (mass < 1000)
+          return [490, 540, 605, 720, 1150, 1290, 1450][indexOfCountry];
+        else if (mass < 2000)
+          return [650, 680, 705, 810, 1290, 1350, 1550][indexOfCountry]; 
+        else if (mass < 3000)
+          return [705, 750, 830, 950, 1290, 1750, 1790][indexOfCountry];
+        else if (mass < 4000)
+          return [730, 830, 890, 1050, 1490, 1790, 1850][indexOfCountry];
+        else if (mass < 5000)
+          return [1150, 1190, 1190, 1140, 1490, 1820, 1990][indexOfCountry];
+        else if (mass < 7000)
+          return [1390, 1430, 1430, 1360, 1750, 2490, 2550][indexOfCountry];
+        else if (mass < 10000)
+          return [1490, 1540, 1540, 1640, 2290, 2550, 2590][indexOfCountry];
+        else if (mass < 15000)
+          return [2190, 2250, 2250, 2190, 2290, 3390, 3390][indexOfCountry];
+        else if (mass < 20000)
+          return [2490, 2750, 2750, 2890, 3090, 4590, 4590][indexOfCountry];
+        else if (mass < 30000)
+          return [3090, 3390, 3390, 3590, 3790, 5590, 5590][indexOfCountry];
+        else 
+          return 999999999;
+    }
     
     render() {
         // Calculate new totals
         let productsTotal = 0;
-        let massTotal = 0;
         this.state.products.forEach((product) => {
             productsTotal += product.prices[0];
         });
 
         const clientSecret = this.state.secret;
-        let total = productsTotal + massTotal * 0.01;
 
         if (this.state.opennedDelivery) {
             if (!document.getElementById("delivery-script")) {
@@ -314,7 +347,7 @@ class Cart extends Component {
                 document.getElementById("delivery-script").remove();
             }
         }
-
+        let deliveryPrice = this.getDeliveryPrice(this.state.mass, 'FR');
         return (
             <div className="cart">
                 <div className='cart-details'>
@@ -385,20 +418,20 @@ class Cart extends Component {
                         }
                     </div>
                 </div>
-                {total > 0 && <div className='cart-summary'>
+                {this.state.productsPrice > 0 && <div className='cart-summary'>
                     <h4>Résumé de votre commande</h4>
                     <table className='summary'>
                         <tr>
                             <td>Commande</td>
-                            <td>{parseFloat(productsTotal)/100} €</td>
+                            <td>{parseFloat(this.state.productsPrice)/100} €</td>
                         </tr>
                         <tr>
                             <td>Frais de port</td>
-                            <td>{massTotal} €</td>
+                            <td>{parseFloat(deliveryPrice)/100} €</td>
                         </tr>
                         <tr>
                             <td>Total</td>
-                            <td>{parseFloat(total)/100} €</td>
+                            <td>{parseFloat(this.state.productsPrice)/100} €</td>
                         </tr>
                     </table>
                     {clientSecret && this.props.stripePromise && (
@@ -416,6 +449,7 @@ class Cart extends Component {
                 <input type="hidden" id="cb_CP" name="cb_CP" value={this.state.delivery.zipCode} />
                 <input type="hidden" id="cb_Ville" name="cb_Ville" value={this.state.delivery.city} />
                 <input type="hidden" id="cb_Pays" name="cb_Pays" value={this.state.delivery.country} />
+                <input type="hidden" id="mass" name="mass" value={this.state.mass} />
                 {this.state.error.length > 0 && <ErrorPopup error={this.state.error} onClose={() => {window.location.reload(); this.setState({error: ""})}} />}
             </div>
         );

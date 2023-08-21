@@ -5,6 +5,7 @@
       Target: "#ParcelShopCode",
       Brand: "CC22UXT2", // PROD: change it
       Country: "FR" ,
+      Weight: $("#mass").val(),
       Responsive: true,  
       ColLivMod: "24R",
       OnParcelShopSelected: 
