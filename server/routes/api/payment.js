@@ -124,6 +124,7 @@ router.post('/create-payment-intent', async (req, res) => {
   let total = 0;
   let user = null;
   let order = null;
+  let mass = 0;
 
   try {
     // Créez un nouvel utilisateur ou trouvez un utilisateur existant
@@ -151,11 +152,17 @@ router.post('/create-payment-intent', async (req, res) => {
     for (let i = 0; i < productsDb.rows.length; i++) {
         const product = productsDb.rows[i];
         total += product.prices[0]
+        mass += product.mass;
     }
 
     // Check that total is an acceptable amount
     if (total < 50) {
         return res.status(400).json({ message: 'Le montant total de votre commande est trop faible.' });
+    }
+
+    // Check max mass
+    if (mass > process.env.MAX_MASS) {
+        return res.status(400).json({ message: 'Le poids total de votre commande est trop élevé pour être livré en point relais.' });
     }
 
     // Create the order
