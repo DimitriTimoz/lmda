@@ -54,7 +54,6 @@ async function checkExpiredOrders() {
         if (rows.length === 0) {
             return true;
         }
-
         for (let i = 0; i < rows.length; i++) {
             const order = rows[i];
             const products = order.products;
@@ -63,13 +62,19 @@ async function checkExpiredOrders() {
                 await db.query('UPDATE products SET ordered = FALSE WHERE id = $1', [products[j]]);
             }
 
-            const email = await getEmail(order.user_id);
-            if (!await sendEmail(email, "Commande expirée", 'expired', { name: user.rows[0].name })) {
+            // User
+            const user = await db.query('SELECT name, email FROM users WHERE id = $1', [order.user_id]);
+            if (user.rows.length === 0) {
+                console.error('Error getting user:', order.user_id);
+                continue;
+            }
+            const email = user.rows[0].email;
+            const name = user.rows[0].name;
+            if (!await sendEmail(email, "Commande expirée", 'expired', { name: name })) {
                 console.error('Error sending email to user:', email);
             }
 
         }
-
         await db.query(`DELETE FROM orders WHERE paid = FALSE AND created_at < NOW() - INTERVAL '${INTERVAL}'`);
         return true;
     } catch (error) {
