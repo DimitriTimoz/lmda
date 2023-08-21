@@ -1,13 +1,12 @@
 var router = require('express').Router();
 const env = require('dotenv').config({path: './.env'}).parsed;
 const { validPayment, paymentCanceled, removeOrder } = require('../../database/payment');
+const { getAdminEmails } = require('../../database/users');
 const db = require('../../db');
+const { sendEmail, sendEmailOnlyTxt } = require('../../modules/email');
 const stripe = require('stripe')(env.STRIPE_SECRET_KEY, {
     apiVersion: '2022-11-15',
 });
-
-const mondialRelay = require("mondial-relay")
-const myMondialRelay = require("../../modules/mondial-relay")
 
 function checkEmail(email) {
   match =  email.match(
@@ -187,7 +186,11 @@ router.post('/create-payment-intent', async (req, res) => {
       shipping: {
         name: user.name,
         address: {
-          line1: delivery.address1,
+          line1: address.address1,
+          line2: address.address2,
+          city: address.city,
+          postal_code: address.zipCode,
+          country: address.country,
         },
       },
       currency: 'eur',
@@ -263,6 +266,22 @@ router.post('/webhook', async (req, res) => {
         if (await paymentCanceled(data.object.id)) {
             console.log("❌ order canceled.");
         }
+    } else if (eventType === 'charge.refund.updated') {
+      // Send email to admins
+      for (let i = 0; i < data.object.refunds.data.length; i++) {
+        const refund = data.object.refunds.data[i];
+        if (refund.status === 'succeeded') {
+          console.log("✅ order refunded.");
+          break;
+        } else {
+          const adminEmails = getAdminEmails();
+          for (let i = 0; i < adminEmails.length; i++) {
+            const adminEmail = adminEmails[i];
+            await sendEmailOnlyTxt(adminEmail, "Erreur remboursement", "Une erreur est survenue lors du remboursement de la commande " + data.object.id + ". Vous pouvez effectuer le remboursement manuellement depuis le dashboard Stripe. Stripe object: " + data.object);
+          }
+          console.log("❌ order refund failed.");
+        }
+      }
     }
     res.sendStatus(200);
   });

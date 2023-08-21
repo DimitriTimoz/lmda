@@ -43,17 +43,27 @@ router.delete('/:id', async (req, res) => {
     const refund = await stripe.refunds.create({
         payment_intent: intentId,
     });
-    // Send an email to the user
-    const email = await getEmail(userId)[0];
-    if (!await sendEmail(email, 'Commande annulée', `canceled_order`), { order_id: id, amount: amount, date: date }) {
-        console.error('Error sending email to announce canceled order to ' + email);
+
+    if (refund.status !== 'succeeded') {
+        return res.status(500).json({ error: 'Une erreur est survenue lors du remboursement de la commande. Veuillez contacter le support.' });
     }
-    
+
+    // Send an email to the user
+    try {
+        let email = await getEmail(userId);
+        email = email[0].email;
+        if (!await sendEmail(email, 'Commande annulée', `canceled_order`, { order_id: id, amount: parseFloat(amount)/100, date: date })) {
+            console.error('Error sending email to announce canceled order to ' + email);
+        }
+    } catch (err) {
+        console.error(err);
+    }
+        
     // Cancel the order. Set ordered to false for each product in the order by getting the order with one product id
     try {
         // Set products in order to not ordered
-        await db.query('DELETE FROM orders WHERE id = $1', [id]);
         await db.query('UPDATE products SET ordered = false WHERE id IN (SELECT unnest(products) FROM orders WHERE id = $1);', [id]);
+        await db.query('DELETE FROM orders WHERE id = $1', [id]);
     } catch (err) {
         console.error(err);
         return res.status(500).json({ error: 'Une erreur est survenue lors de l\'annulation de la commande. Veuillez contacter le support.' });

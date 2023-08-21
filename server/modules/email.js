@@ -34,8 +34,42 @@ async function sendEmail(email, subject, template, params = {}) {
         const response = await axios.post('https://api.eu.mailgun.net/v3/le-monde-de-anna.com/messages', formData, {
             auth: auth,
         });
+        if (response.data.message.includes('Queued')) {
+            return true;
+        } else {
+            console.error('Error sending email:', response.data);
+            return false;
+        }
+    } catch (error) {
+        console.error('Error sending email:', error.message);
+        return false;
+    }
+}
 
-        return response.data.message == 'Queued. Thank you.';
+async function sendEmailOnlyTxt (email, subject, txt) {
+    // Replace the params
+    const auth = {
+        username: 'api',
+        password: process.env.MAILGUN_API_KEY
+    };
+
+    const formData = new FormData();
+    formData.append('from', 'Le Monde d\'Anna <no-reply@le-monde-de-anna.com>');
+    formData.append('to', email);
+    formData.append('subject', subject);
+    formData.append('text', txt);
+
+    try {
+        const response = await axios.post('https://api.eu.mailgun.net/v3/le-monde-de-anna.com/messages', formData, {
+            auth: auth,
+        });
+
+        if (response.data.message == 'Queued. Thank you.') {
+            return true;
+        } else {
+            console.error('Error sending email:', response.data);
+            return false;
+        }
     } catch (error) {
         console.error('Error sending email:', error.message);
         return false;
@@ -43,5 +77,6 @@ async function sendEmail(email, subject, template, params = {}) {
 }
 
 module.exports = {
-    sendEmail
+    sendEmail,
+    sendEmailOnlyTxt
 };
