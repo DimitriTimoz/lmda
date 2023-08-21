@@ -3,7 +3,7 @@ const router = express.Router();
 const myMondialRelay = require("../../modules/mondial-relay");
 const mondialRelay = require("mondial-relay");
 const db = require('../../db');
-const { getUser, getEmail } = require('../../database/users');
+const { getUser, getEmail, getName } = require('../../database/users');
 const { sendEmail } = require('../../modules/email');
 const env = require('dotenv').config({path: './.env'}).parsed;
 const stripe = require('stripe')(env.STRIPE_SECRET_KEY, {
@@ -50,16 +50,12 @@ router.delete('/:id', async (req, res) => {
     }
 
     // Send an email to the user
-    try {
-        let email = await getEmail(userId);
-        email = email[0].email;
+    let email = await getEmail(userId);
+    if(email) {
         if (!await sendEmail(email, 'Commande annulée', `canceled_order`, { order_id: id, amount: parseFloat(amount)/100, date: date })) {
             console.error('Error sending email to announce canceled order to ' + email);
         }
-    } catch (err) {
-        console.error(err);
     }
-        
     // Cancel the order. Set ordered to false for each product in the order by getting the order with one product id
     try {
         // Set products in order to not ordered
@@ -177,18 +173,31 @@ router.put("/:id", async (req, res) => {
         }
         
         if (status === 1) {
-            // Get tracking number
-            let body = myMondialRelay.bodyTracking;
             // Get order
             let order = await db.query('SELECT * FROM orders WHERE id = $1', [id]);
             if (order.rows.length === 0) {
                 return res.status(404).json({ error: 'Commande introuvable.'});
             }
+            order = order.rows[0];
+            if (order.exp_number === null) {
+                return res.status(400).json({ error: 'La commande n\'a pas encore d\'étiquette.' });
+            }
 
-            let email = await getEmail(order.rows[0].user_id);
-            let rsult = await mondialRelay.getTracking(body);
-            if (!await sendEmail(email, "Commande traitée")) {
-                return res.status(500).json({ error: 'Une erreur est survenue lors de l\'envoi de l\'email.' });
+            let email = await getEmail(order.user_id);
+            if (email) {
+                let zipCode = JSON.parse(order.address).zipCode;
+                let name = "";
+                try {
+                    name = await getName(order.user_id);
+                } catch (err) {
+                    console.error(err);
+                }
+    
+                if (!await sendEmail(email, "Commande traitée", "shipped", { numexp: order.exp_number, zipCode: zipCode, name: name,  })) {
+                    return res.status(500).json({ error: 'Une erreur est survenue lors de l\'envoi de l\'email.' });
+                }
+            } else {
+                console.error("No email for user " + order.user_id);
             }
         }
         await db.query('UPDATE orders SET status = $1 WHERE id = $2 AND paid = TRUE', [status, id]);
