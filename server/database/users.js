@@ -53,12 +53,29 @@ async function getEmail(uid) {
       WHERE id = $1;
     `;
     const { rows } = await pool.query(query, [uid]);
-    return rows;
+    if (rows.length === 0) {
+      return false;
+    }
+    return rows[0].email;
   } catch (error) {
     console.error('Error getting user email:', error.message);
+  }
+}
+
+async function getName(uid) {
+  try {
+    const query = `
+      SELECT name FROM users
+      WHERE id = $1;
+    `;
+    const { rows } = await pool.query(query, [uid]);
+    return rows;
+  } catch (error) {
+    console.error('Error getting user name:', error.message);
     throw error;
   }
 }
+
 
 async function changePassword(email, password, newPassword) {
   try {
@@ -101,6 +118,7 @@ module.exports = {
     getUser,
     getEmail, 
     changePassword,
-    getAdminEmails
+    getAdminEmails,
+    getName
 };
 
