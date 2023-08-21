@@ -14,8 +14,8 @@ async function sendEmail(email, subject, template, params = {}) {
     let html = templateFile;
     let text = textFile;
     for (const [key, value] of Object.entries(params)) {
-        html = html.replace(`{{${key}}}`, value);
-        text = text.replace(`{{${key}}}`, value);
+        html = html.replaceAll(`{{${key}}}`, value);
+        text = text.replaceAll(`{{${key}}}`, value);
     }
 
     const auth = {
