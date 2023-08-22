@@ -167,8 +167,10 @@ export default class Order extends Component {
                                 </div>
                             }
                             {this.state.products.length > 0 && <p>{"Masse totale: " + massTotal + " g"}</p>}
-                            <Button title="Marquer comme expédiée" onClick={() => this.shipOrder()} />
-                            <Button title="Forcer marquer comme expédiée" onClick={() => this.shipOrderForce()} />
+                            {order.status < 1 && <>
+                                <Button title="Marquer comme expédiée" onClick={() => this.shipOrder()} />
+                                <Button title="Forcer marquer comme expédiée" onClick={() => this.shipOrderForce()} />
+                            </>}
                         </div>
                     </>
                     :
