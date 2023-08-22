@@ -120,6 +120,10 @@ class Cart extends Component {
                     this.throwError("Une erreur est survenue lors de la récupération des produits");
                 }
             }).catch((err) => {
+                if(!err.response) {
+                    console.error(err);
+                    return;
+                }
                 this.throwError("Une erreur est survenue lors de la récupération des produits");
             });
         });
@@ -249,6 +253,10 @@ class Cart extends Component {
                     this.throwError(res.data.message);
                 }
             }).catch((err) => {
+                if(!err.response) {
+                    console.error(err);
+                    return;
+                }
                 err = err.response.data.message;
                 this.throwError(err);
             });
@@ -289,6 +297,10 @@ class Cart extends Component {
                     this.handleProductUpdate();
                 }
             }).catch((err) => {
+                if(!err.response) {
+                    console.error(err);
+                    return;
+                }
                 this.handleProductUpdate();
             });
         } else {
