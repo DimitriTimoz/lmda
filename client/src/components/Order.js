@@ -1,10 +1,11 @@
-import React from "react";
-import "./Order.css";
+import React, { Component } from "react";
 import axios from "axios";
+import "./Order.css";
 import RawPreview from "./products/RawPreview";
 import Button from "./Button";
 import ErrorPopup from "./ErrorPopup";
-export default class Order extends React.Component {
+
+export default class Order extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -17,163 +18,163 @@ export default class Order extends React.Component {
             this.fetchProducts();
             this.fetchUser();
         }
-
-        this.shipOrder = this.shipOrder.bind(this);
-        this.cancelOrder = this.cancelOrder.bind(this);
     }
 
-    cancelOrder = () => {
-        // Ask for confirmation
-        if (window.confirm("Voulez-vous vraiment annuler cette commande ?")) {
-            // Cancel order
-            axios.put("/api/order/" + this.state.product.id, { paid: false }).then((res) => {
-                if (res.data.success) {
-                    // Remove from the page
-                    this.setState({
-                        product: null,
-                    });
-                    this.props.onChange();
-                }
-            }).catch((err) => {
-                this.setState({
-                    errorMessages: [...this.state.errorMessages, err.response.data.error],
-                });
-            }
-            );
-        }
-    }
+    shipOrder = async (forced = false) => {
+        const { order, onChange } = this.props;
 
-    shipOrder = () => {
-        if (!this.props.order) {
+        if (!order) {
             console.log("No order");
             return;
         }
 
-        // Ask for confirmation
         if (window.confirm("Voulez-vous vraiment marquer cette commande comme expédiée ?")) {
-            axios.put("/api/order/" + this.props.order.id, { shipped: true }).then((res) => {
-                if (res.data.success) {
-                    this.props.onChange();
+            try {
+                const response = await axios.put(`/api/order/${order.id}`, { shipped: true, forced });
+
+                if (response.data.success && onChange) {
+                    onChange();
                 }
-            }).catch((err) => {
-                this.setState({
-                    errorMessages: [...this.state.errorMessages, err.response.data.error],
-                });
+            } catch (err) {
+                if (!err.response) {
+                    console.error(err);
+                    return;
+                }
+                this.setState((prevState) => ({
+                    errorMessages: [...prevState.errorMessages, err.response.data.error],
+                }));
             }
-            );
         }
     }
 
+    shipOrderForce = async () => {
+        await this.shipOrder(true);
+    }
+
     fetchProducts = () => {
-        // Fetch the products
-        for (let i = 0; i < this.props.order.products.length; i++) {
-            axios.get("/api/product/" + this.props.order.products[i]).then((res) => {
-                if (res.status === 200) {
-                    this.setState({
-                        products: [...this.state.products, res.data],
-                    });
-                }
-            }).catch((err) => {
-                this.setState({
-                    errorMessages: [...this.state.errorMessages, err.response.data.error],
+        for (const productId of this.props.order.products) {
+            axios.get(`/api/product/${productId}`)
+                .then((res) => {
+                    if (res.status === 200) {
+                        this.setState((prevState) => ({
+                            products: [...prevState.products, res.data],
+                        }));
+                    }
+                })
+                .catch((err) => {
+                    if (!err.response) {
+                        console.error(err);
+                        return;
+                    }
+                    this.setState((prevState) => ({
+                        errorMessages: [...prevState.errorMessages, err.response.data.error],
+                    }));
                 });
-            });
         }
     }
 
     fetchUser = () => {
-        // Fetch the user
-        axios.get("/api/user/" + this.props.order.user_id).then((res) => {
-            if (res.status === 200) {
-                this.setState({
-                    user: res.data,
-                });
-            }
-        }).catch((err) => {
-            this.setState({
-                errorMessages: [...this.state.errorMessages, err.response.data.error],
+        axios.get(`/api/user/${this.props.order.user_id}`)
+            .then((res) => {
+                if (res.status === 200) {
+                    this.setState({ user: res.data });
+                }
+            })
+            .catch((err) => {
+                if (!err.response) {
+                    console.error(err);
+                    return;
+                }
+                this.setState((prevState) => ({
+                    errorMessages: [...prevState.errorMessages, err.response.data.error],
+                }));
             });
-        });
     }
 
     getBordereau = () => {
-        axios.get("/api/order/bordereau/" + this.props.order.id ).then((res) => {
-            if (res.status === 200) {
-                console.log(res.data);
-                window.open("https://www.mondialrelay.fr/" + res.data.label.url, "_blank");
-            }
-        }).catch((err) => {
-            this.setState({
-                errorMessages: [...this.state.errorMessages, err.response.data.error],
+        axios.get(`/api/order/bordereau/${this.props.order.id}`)
+            .then((res) => {
+                if (res.status === 200) {
+                    this.props.onChange();
+                    window.open(`https://www.mondialrelay.fr/${res.data.label.url}`, "_blank");
+                }
+            })
+            .catch((err) => {
+                if (!err.response) {
+                    console.error(err);
+                    return;
+                }
+                this.setState((prevState) => ({
+                    errorMessages: [...prevState.errorMessages, err.response.data.error],
+                }));
             });
-        })
     }
 
     render() {
-        // A popup element to display the order details        
-        const user = this.state.user;
-        const order = this.props.order;
-        const massTotal = this.state.products.reduce((acc, product) => { return acc + product.mass; }, 0);
+        const { user } = this.state;
+        const { order } = this.props;
+        const massTotal = this.state.products.reduce((acc, product) => acc + product.mass, 0);
+
         return (
             <div id="order">
-                {this.state.errorMessages.length > 0 ?
+                {this.state.errorMessages.length > 0 &&
                     <ErrorPopup
                         error={this.state.errorMessages.join("\n")}
                         onClose={() => this.setState({ errorMessages: [] })}
                     />
-                : null
                 }
                 <span className="close-btn" onClick={this.props.onClose}>Fermer</span>
-            {this.props.order ?
-                <>
-                {this.state.user ? 
-                    <div className="column">
-                        <h2>{user.name}</h2>
-                        {order.address && <p>{order.address.address1}</p>}
-                        {order.address && <p>{order.address.address2}</p>}
-                        {order.address && <p>{order.address.zipCode + " " + order.address.city}</p>}
-                        {order.address && <p>{order.address.country}</p>}
-                        <p>{user.phone}</p>
-                        <p>{user.email}</p>
-                        <p>{"Point relai: " + order.delivery.parcelShopCode }</p>
-                        {order.exp_number && <p>{"Numéro d'expédition: " + order.exp_number }</p> }
-                        <p>{"Commandée le: " + (new Date(order.created_at)).toLocaleDateString('fr-fr')}</p>
-                        <Button title="Obtenir bordereau" onClick={this.getBordereau} />
-                    </div>
-                :
-                    <div className="column">
-                        <h2>Nom Prénom</h2>
-                        <p>Adresse</p>
-                        <p>Code postal</p>
-                        <p>Ville</p>
-                        <p>Pays</p>
-                        <p>Téléphone</p>
-                        <p>Email</p>
-                    </div>
-                }
-                <div className="column">
-                    <h2>Produits</h2>
-                    {this.state.products.length > 0 ?
-                        <div className="product-list">
-                            {this.state.products.map((product) => {
-                                return (<RawPreview
-                                    product={product}
-                                />);
-                            })}
+                {order ?
+                    <>
+                        {user ?
+                            <div className="column">
+                                <h2>{user.name}</h2>
+                                {order.address && <p>{order.address.address1}</p>}
+                                {order.address && <p>{order.address.address2}</p>}
+                                {order.address && <p>{order.address.zipCode + " " + order.address.city}</p>}
+                                {order.address && <p>{order.address.country}</p>}
+                                <p>{user.phone}</p>
+                                <p>{user.email}</p>
+                                <p>{"Point relai: " + order.delivery.parcelShopCode }</p>
+                                {order.exp_number && <p>{"Numéro d'expédition: " + order.exp_number }</p> }
+                                <p>{"Commandée le: " + (new Date(order.created_at)).toLocaleDateString('fr-fr')}</p>
+                                <Button title="Obtenir bordereau" onClick={this.getBordereau} />
+                            </div>
+                            :
+                            <div className="column">
+                                <h2>Nom Prénom</h2>
+                                <p>Adresse</p>
+                                <p>Code postal</p>
+                                <p>Ville</p>
+                                <p>Pays</p>
+                                <p>Téléphone</p>
+                                <p>Email</p>
+                            </div>  
+                        }
+                        <div className="column">
+                        <h2>Produits</h2>
+                            {this.state.products.length > 0 ?
+                                <div className="product-list">
+                                    {this.state.products.map((product) => {
+                                        return (<RawPreview
+                                            product={product}
+                                        />);
+                                    })}
+                                </div>
+                            :
+                                <div className="product-list">
+                                    <p>Chargement...</p>
+                                </div>
+                            }
+                            {this.state.products.length > 0 && <p>{"Masse totale: " + massTotal + " g"}</p>}
+                            <Button title="Marquer comme expédiée" onClick={() => this.shipOrder()} />
+                            <Button title="Forcer marquer comme expédiée" onClick={() => this.shipOrderForce()} />
                         </div>
+                    </>
                     :
-                        <div className="product-list">
-                            <p>Chargement...</p>
-                        </div>
-                    }
-                    {this.state.products.length > 0 && <p>{"Masse totale: " + massTotal + " g"}</p>}
-                    <Button title="Marquer comme expédiée" onClick={this.shipOrder.bind(this)} />
-                </div>
-            </>
-            :
-                <p>Chargement...</p>  
-            }
-        </div>);
+                    <p>Chargement...</p>
+                }
+            </div>
+        );
     }
 }
-// Can't order more than kg 
