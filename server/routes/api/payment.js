@@ -149,7 +149,8 @@ router.post('/create-payment-intent', async (req, res) => {
   let user = null;
   let order = null;
   let mass = 0;
-
+  let deliveryPrice = 0;
+  
   try {
     // Créez un nouvel utilisateur ou trouvez un utilisateur existant
     user = await db.query('SELECT * FROM users WHERE email = $1', [infos.email]);
@@ -188,9 +189,9 @@ router.post('/create-payment-intent', async (req, res) => {
     if (mass > process.env.MAX_MASS) {
         return res.status(400).json({ message: 'Le poids total de votre commande est trop élevé pour être livré en point relais.' });
     }
-    
+
     // Compute the total amount
-    let deliveryPrice = getDeliveryPrice(mass, delivery.parcelShopCode.split('-')[0]);
+    deliveryPrice = getDeliveryPrice(mass, delivery.parcelShopCode.split('-')[0]);
     total += deliveryPrice;
 
     // Create the order
