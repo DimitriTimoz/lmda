@@ -64,6 +64,13 @@ export default class RawPreview extends React.Component {
                     });
                     this.props.onChange();
                 }
+            }).catch((err) => {
+                if(!err.response) {
+                    console.error(err);
+                    return;
+                }
+                console.error(err);
+                alert(err.response.data.error);
             });
         }
     }
@@ -104,7 +111,7 @@ export default class RawPreview extends React.Component {
                         {this.state.cart && <TxtButton title="Supprimer" className="view-button" onClick={this.removeFormCart} /> }
                         {this.state.delete && <TxtButton title="Supprimer" className="view-button" onClick={this.removeProduct} /> }
                         {this.state.order ? <TxtButton title="Voir plus" className="view-button" onClick={this.seeMore} /> : null}
-                        {this.state.order && !this.state.cancel ? <TxtButton title="Annuler" className="view-button" onClick={this.cancelOrder} /> : null}
+                        {this.state.order && this.state.cancel ? <TxtButton title="Annuler" className="view-button" onClick={this.cancelOrder} /> : null}
                     </div>
                 </div>
                 {this.props.order ?
