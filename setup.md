@@ -8,3 +8,5 @@ set nginx
 set weight
 
 // Mass avec enveloppe ou carton
+// Setup email addess
+// Refund stripe fees not refunded by stripe
