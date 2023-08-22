@@ -41,18 +41,23 @@ router.delete('/:id', async (req, res) => {
     }
 
     // Refund the order
-    const refund = await stripe.refunds.create({
-        payment_intent: intentId,
-    });
+    let refund;
+    let email = await getEmail(userId);
+    try {
+        refund = await stripe.refunds.create({
+            payment_intent: intentId,
+        });
+    } catch (err) {
+        return res.status(500).json({ error: 'Une erreur est survenue lors du remboursement de la commande. Veuillez contacter le support. Il est possible que la commande soit déjà remboursée ou que la méthode de paiement ne prenne pas en charge le remboursement. Vérifiez ces informations sur stripe et contactez le client. Email du client: ' + email });
+    }
 
     if (refund.status !== 'succeeded') {
         return res.status(500).json({ error: 'Une erreur est survenue lors du remboursement de la commande. Veuillez contacter le support.' });
     }
 
     // Send an email to the user
-    let email = await getEmail(userId);
     if(email) {
-        if (!await sendEmail(email, 'Commande annulée', `canceled_order`, { order_id: id, amount: parseFloat(amount)/100, date: date })) {
+        if (!await sendEmail(email, 'Commande annulée', `canceled_order`, { order_id: id, amount: parseFloat(amount)/100, date: new Date(date).toLocaleDateString('fr-fr') })) {
             console.error('Error sending email to announce canceled order to ' + email);
         }
     }
@@ -141,12 +146,10 @@ router.get("/bordereau/:id", async (req, res) => {
         await db.query('UPDATE orders SET exp_number = $1 WHERE id = $2', [num, id]);
         return res.json({ label });
     } catch (err) {
+        console.error(err);
         if (err[1] == 92) {
-            console.error(err[0]);
             return res.status(400).json({ error: 'Il est possible que votre crédit prépayé soit insuffisant. Erreur de mondial relay: ' + err[0] });
-        } else {
-            console.error(err[0]);
-        }
+        } 
         return res.status(500).json({ error: 'Une erreur est survenue lors de la récupération de la commande ou la création de l\'étiquette. Veuillez contacter le support. Erreur de mondial relay: ' + err[0] });
     }
 });
@@ -160,8 +163,8 @@ router.put("/:id", async (req, res) => {
     const { id } = req.params;
 
     // Check the parameters
-    const { shipped } = req.body;
-    if (shipped === undefined) {
+    const { shipped, forced } = req.body;
+    if (!shipped && forced == undefined) {
         return res.status(400).json({ error: 'Paramètres invalides.' });
     }
 
@@ -179,7 +182,7 @@ router.put("/:id", async (req, res) => {
                 return res.status(404).json({ error: 'Commande introuvable.'});
             }
             order = order.rows[0];
-            if (order.exp_number === null) {
+            if (order.exp_number === null && !forced) {
                 return res.status(400).json({ error: 'La commande n\'a pas encore d\'étiquette.' });
             }
 
