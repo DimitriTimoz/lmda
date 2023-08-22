@@ -56,7 +56,7 @@ export default class RawPreview extends React.Component {
         // Ask for confirmation
         if (window.confirm("Voulez-vous vraiment annuler cette commande ? Un email sera envoyé à l'utilisateur pour l'en alterter et un remboursement sera effectué. Si vous souhaitez contacter cet utilisateur veuillez concerver ses coordonnées, elles seront supprimés après l'annulation de la commande.")) {
             // Remove from database
-            axios.delete("/api/order/" + this.props.order.id).then((res) => {
+            axios.post("/api/order/delete/" + this.props.order.id).then((res) => {
                 if (res.status === 200) {
                     // Remove from the page
                     this.setState({
@@ -71,6 +71,26 @@ export default class RawPreview extends React.Component {
                 }
                 console.error(err);
                 alert(err.response.data.error);
+                if (err.response.data.canForce) {
+                    if (window.confirm("Voulez-vous vraiment forcer l'annulation de cette commande ? Elle sera alors définitivement supprimée de la base de données même si le remboursement automatique n'a pas fonctionné.")) {
+                        axios.post("/api/order/delete/" + this.props.order.id, {force: true}).then((res) => {
+                            if (res.status === 200) {
+                                // Remove from the page
+                                this.setState({
+                                    product: null,
+                                });
+                                this.props.onChange();
+                            }
+                        }).catch((err) => {
+                            if(!err.response) {
+                                console.error(err);
+                                return;
+                            }
+                            console.error(err);
+                            alert(err.response.data.error);
+                        });
+                    }
+                }
             });
         }
     }
