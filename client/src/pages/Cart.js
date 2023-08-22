@@ -30,6 +30,7 @@ class Cart extends Component {
             delivery: {},
             mass: 0,
             productsPrice: 0,
+            deliveryPrice: null,
         };
         
         this.handleProductUpdate = this.handleProductUpdate.bind(this);
@@ -240,7 +241,7 @@ class Cart extends Component {
         axios.post("/api/payment/create-payment-intent", body)
             .then((res) => {
                 if (res.status === 200) {
-                    this.setState({secret: res.data.clientSecret})
+                    this.setState({secret: res.data.clientSecret, deliveryPrice: res.data.deliveryPrice, mass: res.data.mass})
                     // Save the stripe id
                     localStorage.setItem("stripeId", res.data.clientSecret);
                     localStorage.setItem("orderId", res.data.orderId);
@@ -347,7 +348,13 @@ class Cart extends Component {
                 document.getElementById("delivery-script").remove();
             }
         }
-        let deliveryPrice = this.getDeliveryPrice(this.state.mass, 'FR');
+        let deliveryPrice;
+        if (this.state.deliveryPrice) {
+            deliveryPrice = this.state.deliveryPrice;
+        } else if (this.state.delivery && this.state.delivery.parcelShopCode && this.state.delivery.parcelShopCode.includes("-")) {
+            deliveryPrice = this.getDeliveryPrice(this.state.mass, this.state.delivery.parcelShopCode.split("-")[0]);
+        }
+
         return (
             <div className="cart">
                 <div className='cart-details'>
@@ -431,7 +438,7 @@ class Cart extends Component {
                         </tr>
                         <tr>
                             <td>Total</td>
-                            <td>{parseFloat(this.state.productsPrice)/100} €</td>
+                            <td>{parseFloat(this.state.productsPrice + deliveryPrice)/100} €</td>
                         </tr>
                     </table>
                     {clientSecret && this.props.stripePromise && (
