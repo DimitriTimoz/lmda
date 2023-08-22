@@ -5,3 +5,6 @@ set webhook api
 set relay credentials
 set ssl
 set nginx
+set weight
+
+// Mass avec enveloppe ou carton
