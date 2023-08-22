@@ -188,6 +188,10 @@ router.post('/create-payment-intent', async (req, res) => {
     if (mass > process.env.MAX_MASS) {
         return res.status(400).json({ message: 'Le poids total de votre commande est trop élevé pour être livré en point relais.' });
     }
+    
+    // Compute the total amount
+    let deliveryPrice = getDeliveryPrice(mass, delivery.parcelShopCode.split('-')[0]);
+    total += deliveryPrice;
 
     // Create the order
     order = await db.query(
@@ -208,10 +212,7 @@ router.post('/create-payment-intent', async (req, res) => {
       console.error(error);
       return res.status(500).json({ message: 'Une erreur est survenue, veuillez nous contacter pour régler cette erreur.' });
   }
-  // Compute the total amount
-  let deliveryPrice = getDeliveryPrice(mass, delivery.parcelShopCode.split('-')[0]);
-  total += deliveryPrice;
-  console.log("total: " + total);
+
   try{
     const paymentIntent = await stripe.paymentIntents.create({
       shipping: {
@@ -307,3 +308,4 @@ router.post('/webhook', async (req, res) => {
 module.exports = router;
 // TODO: Dynamic settings
 // TODO: send email when pass order
+// TODO: valid payment page
