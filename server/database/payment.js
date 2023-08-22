@@ -34,14 +34,24 @@ async function paymentCanceled(stripe_id) {
 }
         
 async function removeOrder(order_id) {
+    // Recursively remove the order and its products
     try {
         const query = `DELETE FROM orders WHERE id = $1`;
-        await db.query(query, [order_id]);
+        const { rows } = await db.query(query, [order_id]);
+        if (rows.length !== 1) {
+            return false;
+        }
+        const order = rows[0];
+        const products = order.products;
+        for (let i = 0; i < products.length; i++) {
+            await db.query('UPDATE products SET ordered = FALSE WHERE id = $1', [products[i]]);
+        }
         return true;
     } catch (error) {
         console.error('Error removing order:', error.message);
         return false;
     }
+
 }
 
 async function checkExpiredOrders() {
