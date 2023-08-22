@@ -374,7 +374,7 @@ class Cart extends Component {
                         <h3>Commande</h3> 
                         <div className='in-cart'>
                             {this.state.products.map((product) => (
-                                <RawPreview cart={true} product={product} onChange={this.handleProductUpdate}/>
+                                <RawPreview cart={true} product={product} onChange={() => window.reload()}/>
                             ))}
                             {this.state.products.length === 0 &&
                                 <span>Votre panier est vide</span>
