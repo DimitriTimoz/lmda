@@ -299,23 +299,11 @@ router.post('/webhook', async (req, res) => {
         }
     } else if (eventType === 'charge.refund.updated') {
       // Send email to admins
-      for (let i = 0; i < data.object.refunds.data.length; i++) {
-        const refund = data.object.refunds.data[i];
-        if (refund.status === 'succeeded') {
-          console.log("✅ order refunded.");
-          break;
-        } else {
-          const adminEmails = getAdminEmails();
-          for (let i = 0; i < adminEmails.length; i++) {
-            const adminEmail = adminEmails[i];
-            await sendEmailOnlyTxt(adminEmail, "Erreur remboursement", "Une erreur est survenue lors du remboursement de la commande " + data.object.id + ". Vous pouvez effectuer le remboursement manuellement depuis le dashboard Stripe. Stripe object: " + data.object);
-          }
-          console.log("❌ order refund failed.");
-        }
-      }
+      console.log(data.object);
     }
     res.sendStatus(200);
   });
 
 module.exports = router;
 // TODO: Dynamic settings
+// TODO: send email when pass order

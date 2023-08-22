@@ -14,11 +14,16 @@ function noAccents(str) {
     return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 }
 
-router.delete('/:id', async (req, res) => {
+router.post('/delete/:id', async (req, res) => {
     const { id } = req.params;
+    const { force } = req.body;
     // Check is the user is logged in
     if (!req.session.uid) {
         return res.status(401).json({ error: 'Vous devez être connecté pour effectuer cette action.' });
+    }
+
+    if (isNaN(id)) {
+        return res.status(400).json({ error: 'Order ID invalide.' });
     }
 
     let intentId;
@@ -26,39 +31,40 @@ router.delete('/:id', async (req, res) => {
     let userId;
     let date;
     // Check if the order is shipped
-    try {
-        const result = await db.query('SELECT status, payment_intent_id, total, user_id, created_at FROM orders WHERE id = $1', [id]);
-        if (result.rows[0].status > 0) {
-            return res.status(400).json({ error: 'Vous ne pouvez pas annuler une commande marquée comme expédiée.' });
+    if(!force) {
+        try {
+            const result = await db.query('SELECT status, payment_intent_id, total, user_id, created_at FROM orders WHERE id = $1', [id]);
+            if (result.rows[0].status > 0) {
+                return res.status(400).json({ error: 'Vous ne pouvez pas annuler une commande marquée comme expédiée.' });
+            }
+            intentId = result.rows[0].payment_intent_id;
+            amount = result.rows[0].total;
+            userId = result.rows[0].user_id;
+            date = result.rows[0].created_at;
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({ error: 'Une erreur est survenue lors de la récupération de la commande. Veuillez contacter le support.' });
         }
-        intentId = result.rows[0].payment_intent_id;
-        amount = result.rows[0].total;
-        userId = result.rows[0].user_id;
-        date = result.rows[0].created_at;
-    } catch (err) {
-        console.error(err);
-        return res.status(500).json({ error: 'Une erreur est survenue lors de la récupération de la commande. Veuillez contacter le support.' });
-    }
 
-    // Refund the order
-    let refund;
-    let email = await getEmail(userId);
-    try {
-        refund = await stripe.refunds.create({
-            payment_intent: intentId,
-        });
-    } catch (err) {
-        return res.status(500).json({ error: 'Une erreur est survenue lors du remboursement de la commande. Veuillez contacter le support. Il est possible que la commande soit déjà remboursée ou que la méthode de paiement ne prenne pas en charge le remboursement. Vérifiez ces informations sur stripe et contactez le client. Email du client: ' + email });
-    }
+        // Refund the order
+        let refund;
+        let email = await getEmail(userId);
+        try {
+            refund = await stripe.refunds.create({
+                payment_intent: intentId,
+            });
+        } catch (err) {
+            return res.status(500).json({ error: 'Une erreur est survenue lors du remboursement de la commande. Veuillez contacter le support. Il est possible que la commande soit déjà remboursée ou que la méthode de paiement ne prenne pas en charge le remboursement. Vérifiez ces informations sur stripe et contactez le client. Email du client: ' + email, canForce: true });
+        }
+        if (refund.status !== 'succeeded' && refund.status !== 'pending') {
+            return res.status(500).json({ error: 'Une erreur est survenue lors du remboursement de la commande. Veuillez contacter le support.' });
+        }
 
-    if (refund.status !== 'succeeded') {
-        return res.status(500).json({ error: 'Une erreur est survenue lors du remboursement de la commande. Veuillez contacter le support.' });
-    }
-
-    // Send an email to the user
-    if(email) {
-        if (!await sendEmail(email, 'Commande annulée', `canceled_order`, { order_id: id, amount: parseFloat(amount)/100, date: new Date(date).toLocaleDateString('fr-fr') })) {
-            console.error('Error sending email to announce canceled order to ' + email);
+        // Send an email to the user
+        if(email) {
+            if (!await sendEmail(email, 'Commande annulée', `canceled_order`, { order_id: id, amount: parseFloat(amount)/100, date: new Date(date).toLocaleDateString('fr-fr') })) {
+                console.error('Error sending email to announce canceled order to ' + email);
+            }
         }
     }
     // Cancel the order. Set ordered to false for each product in the order by getting the order with one product id
