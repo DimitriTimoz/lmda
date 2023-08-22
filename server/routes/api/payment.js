@@ -9,6 +9,10 @@ const stripe = require('stripe')(env.STRIPE_SECRET_KEY, {
 });
 
 function getDeliveryPrice(mass, iso) {
+  if (!mass) {
+    return 0;
+  }
+
   let isos = [['FR'], ['BE', 'LU'], ['NL'], ['ES', 'PT'], ['DE'], [], ['IT', 'AT']];
   let indexOfCountry = isos.findIndex((element) => element.includes(iso));
   if (mass < 500)
@@ -57,19 +61,6 @@ function checkPhone(phone) {
   return true;
 };
 
-async function computeDeliveryPrice(products) {
-  // Compute the mass of the products
-  let mass = 0;
-  for (let i = 0; i < products.length; i++) {
-      const product = products[i];
-      mass += product.mass;
-  }
-
-  let price = 0;
-  // Compute the price according to the mass
-  return price
-}
-
 function checkAndFormatInput(body) {
   let infos = body.infos;
   let products = body.products;
@@ -82,6 +73,10 @@ function checkAndFormatInput(body) {
 
   if (!delivery.id || !delivery.name || !delivery.country || !delivery.address1 || !delivery.city || !delivery.zipCode || !delivery.parcelShopCode) {
     return { error: 'Infos de livraison manquantes, veuillez choisir un point relais valide.' };
+  }
+
+  if (!delivery.parcelShopCode.includes('-')) {
+    return { error: 'Code point relais invalide.' };
   }
 
   if (!infos.email || !infos.name || !infos.gender || !infos.tel) {
@@ -180,7 +175,7 @@ router.post('/create-payment-intent', async (req, res) => {
     // Compute the total price without delivery
     for (let i = 0; i < productsDb.rows.length; i++) {
         const product = productsDb.rows[i];
-        total += product.prices[0]
+        total += product.prices[0];
         mass += product.mass;
     }
 
@@ -214,9 +209,9 @@ router.post('/create-payment-intent', async (req, res) => {
       return res.status(500).json({ message: 'Une erreur est survenue, veuillez nous contacter pour régler cette erreur.' });
   }
   // Compute the total amount
-  let deliveryPrice = await computeDeliveryPrice(products);
+  let deliveryPrice = getDeliveryPrice(mass, delivery.parcelShopCode.split('-')[0]);
   total += deliveryPrice;
-
+  console.log("total: " + total);
   try{
     const paymentIntent = await stripe.paymentIntents.create({
       shipping: {
@@ -247,17 +242,16 @@ router.post('/create-payment-intent', async (req, res) => {
     // Send publishable key and PaymentIntent details to client
     res.send({
       clientSecret: paymentIntent.client_secret,
-      deliveryPrice: deliveryPrice,
       total: total,
+      deliveryPrice: deliveryPrice,
       mass: mass,
       orderId: order.id
     });
   } catch (e) {
-    console.log(e);
+    console.error(e);
     await removeOrder(order.id);
     return res.status(400).send({
         message: "Impossible de soumettre une demande de paiement. Une erreur est survenue, veuillez nous contacter pour régler cette erreur."
-      
     });
   }
 });
@@ -324,3 +318,4 @@ router.post('/webhook', async (req, res) => {
   });
 
 module.exports = router;
+// TODO: Dynamic settings
