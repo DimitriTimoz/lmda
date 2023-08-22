@@ -1,0 +1,29 @@
+Cher(e) client(e),
+
+Nous sommes ravis de vous informer que votre commande a bien été prise en compte sur notre site, Le Monde d'Anna. Nous tenons à vous remercier sincèrement pour votre confiance en nos produits et services.
+
+Voici un récapitulatif de votre commande :
+
+Numéro de commande : {{order_id}}
+
+Date de commande : {{date}}
+
+Produits commandés :
+
+{{products}}
+
+Montant total de la commande : {{amount}}
+
+Nous tenons à vous assurer que nous mettons tout en œuvre pour préparer et expédier votre commande dans les meilleurs délais.
+
+Si vous avez des questions concernant votre commande ou si vous avez besoin d'une assistance quelconque, n'hésitez pas à nous contacter. Notre équipe du service clientèle est là pour vous aider et répondre à toutes vos préoccupations.
+
+Nous apprécions votre choix de faire vos achats sur Le Monde d'Anna. Nous sommes convaincus que nos produits et services sauront vous satisfaire pleinement. Nous vous remercions encore une fois pour votre confiance et nous avons hâte de vous servir.
+
+Cordialement,
+
+L'équipe du Monde d'Anna
+
+
+
+

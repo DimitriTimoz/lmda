@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Annulation de commande - Le Monde D'Anna</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+        }
+        .message {
+            font-size: 16px;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+        .signature {
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <p class="message">
+            Cher(e) client(e), <br>
+            <br>
+            Nous sommes ravis de vous informer que votre commande a bien été prise en compte sur notre site, Le Monde d'Anna. Nous tenons à vous remercier sincèrement pour votre confiance en nos produits et services. <br>
+            <br>
+            Voici un récapitulatif de votre commande : <br>
+            <br>
+            Numéro de commande : {{order_id}} <br>
+            <br>
+            Date de commande : {{date}} <br>
+            <br>
+            Produits commandés : <br>
+            <br>
+            {{products}}
+            <br>
+            Montant total de la commande : {{amount}} € <br>
+            <br>
+            Nous tenons à vous assurer que nous mettons tout en œuvre pour préparer et expédier votre commande dans les meilleurs délais. <br>
+            <br>
+            Si vous avez des questions concernant votre commande ou si vous avez besoin d'une assistance quelconque, n'hésitez pas à nous contacter. Notre équipe du service clientèle est là pour vous aider et répondre à toutes vos préoccupations. <br>
+            <br>
+            Nous apprécions votre choix de faire vos achats sur Le Monde d'Anna. Nous sommes convaincus que nos produits et services sauront vous satisfaire pleinement. Nous vous remercions encore une fois pour votre confiance et nous avons hâte de vous servir. <br>
+            <br>
+            Cordialement, <br>
+            <br>
+            <span class="signature">Le Monde D'Anna</span>
+        </p>
+    </div>
+</body>
+</html>
