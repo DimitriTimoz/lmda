@@ -184,7 +184,7 @@ const Add = (props) => {
                 <Button className={"submit-btn"} type="submit" title={"Envoyer"}/>
             </form>
             {productState.message.length > 0  &&
-                <ErrorPopup message={productState.message} onClose={closePopup} />
+                <ErrorPopup error={productState.message} onClose={closePopup} />
             }
         </div>
     )
