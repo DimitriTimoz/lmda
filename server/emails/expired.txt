@@ -1,4 +1,4 @@
-Bonjour {{name}},
+Cher(e) {{name}},
 
 Nous tenons à vous informer que malheureusement, votre commande en cours n'a pas été payée dans les délais requis, ce qui nous a conduits à devoir l'annuler automatiquement.
 
