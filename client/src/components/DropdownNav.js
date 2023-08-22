@@ -79,7 +79,7 @@ class DropdownNav extends React.Component {
         let level = parseInt(e.target.getAttribute("level"));
         let filter = e.target.innerText.toLowerCase();
         this.filter_level = level + 1;
-        let filter_final = this.state.filter.split(":").slice(0, level - 1).join(":");
+        let filter_final = this.state.filter.split(":").slice(0, level).join(":");
 
         if (filter_final !== "") {
             filter_final += ":" + filter;
@@ -88,8 +88,8 @@ class DropdownNav extends React.Component {
         }
         this.setState({
             filter: filter_final,
-        });
-        this.returnFilters();
+        }, this.returnFilters);
+        
     }
 
     trigger = () => {
