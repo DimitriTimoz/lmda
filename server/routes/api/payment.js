@@ -307,6 +307,5 @@ router.post('/webhook', async (req, res) => {
   });
 
 module.exports = router;
-// TODO: Dynamic settings
-// TODO: send email when pass order
-// TODO: valid payment page
+// TODO: Dynamic settings for france
+// Show more btn
