@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import Preview from '../components/products/Preview';
 import axios from 'axios';
 import './Home.css';
 import TxtButton from '../components/TxtButton';

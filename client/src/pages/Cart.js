@@ -29,7 +29,6 @@ class Cart extends Component {
             checked: false,
             ordered: false,
             cart: [],
-            delivery: {},
             mass: 0,
             productsPrice: 0,
             deliveryPrice: null,
@@ -449,7 +448,7 @@ class Cart extends Component {
                     <table className='summary'>
                         <tr>
                             <td>Commande</td>
-                            <td>{parseFloat(this.state.productsPrice)/100} €</td>
+                            <td>{parseFloat(productsTotal)/100} €</td>
                         </tr>
                         <tr>
                             <td>Frais de port</td>
@@ -457,7 +456,7 @@ class Cart extends Component {
                         </tr>
                         <tr>
                             <td>Total</td>
-                            <td>{parseFloat(this.state.productsPrice + deliveryPrice)/100} €</td>
+                            <td>{parseFloat(productsTotal + deliveryPrice)/100} €</td>
                         </tr>
                     </table>
                     {clientSecret && this.props.stripePromise && (

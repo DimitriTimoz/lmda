@@ -41,7 +41,7 @@ export default class Contact extends React.Component {
             return;
         }
 
-        window.location.href = 'mailto:contact@le-monde-de-anna.com?subject=Contact - ' + name + ' (' + email + ')' + '&body=' + message;
+        window.location.href = `mailto:contact@le-monde-de-anna.com?subject=Contact - ${name} (${email}) &body=${message}`;
     }
 
     render() {
