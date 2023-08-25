@@ -285,26 +285,33 @@ router.post('/webhook', async (req, res) => {
       eventType = req.body.type;
     }
     console.log("🔔  event: ", eventType);
-    if (eventType === 'payment_intent.succeeded') {
-      // Funds have been captured
-      // Fulfill any orders, e-mail receipts, etc
-      // To cancel the payment after capture you will need to issue a Refund (https://stripe.com/docs/api/refunds)
-      if ((await validPayment(data.object.id))) {
-        console.log("✅ order paid. Stripe payment intent id: " + data.object.id);
+    try {
+      if (eventType === 'payment_intent.succeeded') {
+          // Check if the payment is valid
+          if (await validPayment(data.object.id)) {
+              console.log("✅ order paid. Stripe payment intent id: " + data.object.id);
+              res.sendStatus(200);
+          } else {
+              console.log("❌ order doesn't exist. Stripe payment intent id: " + data.object.id);
+              res.sendStatus(400);
+          }
+      } else if (eventType === 'payment_intent.payment_failed') {
+          if (await paymentCanceled(data.object.id)) {
+              console.log("❌ order canceled.");
+              res.sendStatus(200);
+          }
+      } else if (eventType === 'charge.refund.updated') {
+          // Send email to admins
+          console.log(data.object);
+          res.sendStatus(200);
       } else {
-        console.log("❌ order doesn't exists. Stripe payment intent id: " + data.object.id);
-        return res.sendStatus(400);
+          // For other event types, send a success response
+          res.sendStatus(200);
       }
-    } else if (eventType === 'payment_intent.payment_failed') {
-        if (await paymentCanceled(data.object.id)) {
-            console.log("❌ order canceled.");
-        }
-    } else if (eventType === 'charge.refund.updated') {
-      // Send email to admins
-      console.log(data.object);
-    }
-    return res.sendStatus(200);
-  });
+  } catch (error) {
+      console.error("Error processing webhook:", error);
+      res.status(500).send("Internal Server Error");
+  }
 
 module.exports = router;
 // TODO: Dynamic settings for france
