@@ -293,7 +293,7 @@ router.post('/webhook', async (req, res) => {
         console.log("✅ order paid. Stripe payment intent id: " + data.object.id);
       } else {
         console.log("❌ order doesn't exists. Stripe payment intent id: " + data.object.id);
-        res.sendStatus(400);
+        return res.sendStatus(400);
       }
     } else if (eventType === 'payment_intent.payment_failed') {
         if (await paymentCanceled(data.object.id)) {
@@ -303,7 +303,7 @@ router.post('/webhook', async (req, res) => {
       // Send email to admins
       console.log(data.object);
     }
-    res.sendStatus(200);
+    return res.sendStatus(200);
   });
 
 module.exports = router;
