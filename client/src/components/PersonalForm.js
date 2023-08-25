@@ -4,7 +4,6 @@ import "./PersonalForm.css";
 
 export default function PersonalForm(props) {
     const [infos, setInfos] = React.useState(props.infos || {});
-
     const updateField = (e) => {
         setInfos({
             ...props.infos,

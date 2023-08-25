@@ -23,7 +23,9 @@ class Cart extends Component {
             error: "",
             address: {},
             delivery: {},
-            infos: {},
+            infos: {
+                gender: "MME"
+            },
             checked: false,
             ordered: false,
             cart: [],
