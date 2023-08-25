@@ -115,13 +115,18 @@ class Cart extends Component {
                             mass: mass,
                             productsPrice: productsPrice,
                         });
-                    } 
+                    } else if (res.status === 404) {
+                        return;
+                    }
                 } else {
                     this.throwError("Une erreur est survenue lors de la récupération des produits");
                 }
             }).catch((err) => {
                 if(!err.response) {
                     console.error(err);
+                    return;
+                }
+                if (err.response.status === 404) {
                     return;
                 }
                 this.throwError("Une erreur est survenue lors de la récupération des produits");
