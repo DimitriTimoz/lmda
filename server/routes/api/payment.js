@@ -312,6 +312,7 @@ router.post('/webhook', async (req, res) => {
       console.error("Error processing webhook:", error);
       res.status(500).send("Internal Server Error");
   }
+});
 
 module.exports = router;
 // TODO: Dynamic settings for france
