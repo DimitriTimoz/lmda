@@ -2,29 +2,23 @@ var router = require('express').Router();
 const { getImagesFilenames } = require('../../database/images');
 const pool = require('../../db');
 
-const selectAll = async (admin, from = 0, more = 10) => {
-  try {
-    let query = "SELECT id, name, description, prices, size, kind, \"specifyCategory\", state, photos, date, mass FROM products WHERE ordered = false ";
-    if (admin) {
-      query = "SELECT * FROM products";
-    }
-    if (from) {
-      query += `ORDER BY date DESC OFFSET ${from} LIMIT ${more}`;
-    }
-    const result = await pool.query(query);
-    rows = result.rows;
-    for (let i = 0; i < rows.length; i++) {
-      if (rows[i].photos === null) {
-        rows[i].photos = [];
-      } else {
-        rows[i].photos = await getImagesFilenames(rows[i].photos);
-      }
-    }
-    return rows;
-  } catch (err) {
-    console.error("error", err);
-    return [];
+const selectAll = async (admin, kind, from = 0, more = 10) => {
+  // Get all products
+  let kindCondition = '';
+  let values = [];
+  if (kind !== 'all') {
+    kindCondition = `AND kind = '${kind}'`;
   }
+  let queryString = `SELECT * FROM products WHERE (ordered = false ` + kindCondition + `) ORDER BY date DESC OFFSET $1 LIMIT $2;`;
+  values = [from, more];
+  let result = await pool.query(queryString, values);
+  let products = result.rows;
+  for (let i = 0; i < products.length; i++) {
+    // Get the images filenames
+    products[i].photos = await getImagesFilenames(products[i].photos);
+  }
+
+  return products;
 };
   
 
@@ -54,18 +48,13 @@ function applyFilter(products, category, filter) {
 
 router.get('/:category/:filter', async (req, res, next) => {
   const {from, more} = req.query;
-  result = await selectAll(false, from, more);
   let category = req.params.category;
   // if end with 's' remove it
   if (category[category.length - 1] === 's') {
     category = category.slice(0, -1);
   }
-  result = applyFilter(result, category, req.params.filter);
-  if(req.params){
-      return res.json({products: result});
-  } else {
-      return res.json({products: result});
-  }
+  result = await selectAll(false, category, from, more);
+  return res.json({products: result});  
 });
 
 
