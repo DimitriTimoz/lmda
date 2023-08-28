@@ -1,20 +1,8 @@
-#products {
-    display: grid;
-    justify-items: center;
-    grid-template-columns: repeat(auto-fit, 7rem);
-    gap: 10px;
-}
-
 #products-base {
     margin: 0 1.5rem;
 }
 
 @media screen and (max-width: 700px) {
-    #products {
-        justify-items: center;
-        grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr));
-    }
-
     #products-base {
         margin: 1rem;
     }
