@@ -2,14 +2,14 @@ var router = require('express').Router();
 const { getImagesFilenames } = require('../../database/images');
 const pool = require('../../db');
 
-const selectAll = async (admin, k = null) => {
+const selectAll = async (admin, from = 0, more = 10) => {
   try {
-    let query = "SELECT id, name, description, prices, size, kind, \"specifyCategory\", state, photos, date, mass FROM products WHERE ordered = false";
+    let query = "SELECT id, name, description, prices, size, kind, \"specifyCategory\", state, photos, date, mass FROM products WHERE ordered = false ";
     if (admin) {
       query = "SELECT * FROM products";
     }
-    if (k) {
-      query += ` ORDER BY date ASC LIMIT ${k}`;
+    if (from) {
+      query += `ORDER BY date DESC OFFSET ${from} LIMIT ${more}`;
     }
     const result = await pool.query(query);
     rows = result.rows;
@@ -53,18 +53,19 @@ function applyFilter(products, category, filter) {
 
 
 router.get('/:category/:filter', async (req, res, next) => {
-    result = await selectAll(false, 100);
-    let category = req.params.category;
-    // if end with 's' remove it
-    if (category[category.length - 1] === 's') {
-      category = category.slice(0, -1);
-    }
-    result = applyFilter(result, category, req.params.filter);
-    if(req.params){
-        return res.json({products: result});
-    } else {
-        return res.json({products: result});
-    }
+  const {from, more} = req.query;
+  result = await selectAll(false, from, more);
+  let category = req.params.category;
+  // if end with 's' remove it
+  if (category[category.length - 1] === 's') {
+    category = category.slice(0, -1);
+  }
+  result = applyFilter(result, category, req.params.filter);
+  if(req.params){
+      return res.json({products: result});
+  } else {
+      return res.json({products: result});
+  }
 });
 
 
