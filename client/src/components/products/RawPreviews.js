@@ -1,5 +1,7 @@
 import React from "react";
 import Preview from "./Preview";
+import Button from "../Button";
+import axios from "axios";
 
 export default class RawPreviews extends React.Component {
     constructor(props) {
@@ -9,13 +11,19 @@ export default class RawPreviews extends React.Component {
             maxRowsMobile: 2 || props.maxRowsMobile,
             mobile: false,
             width: 0,
+            products: [],
+            all: false,
         };
         this.containerRef = React.createRef();
         this.updateDimensions = this.updateDimensions.bind(this);
+        this.showMore = this.showMore.bind(this);
+        this.fetchMissingProducts = this.fetchMissingProducts.bind(this);
     }
 
     updateDimensions = () => {
-        this.setState({ width: this.containerRef.current.offsetWidth, mobile: window.innerWidth < 700 });
+        this.setState({ width: this.containerRef.current.offsetWidth, mobile: window.innerWidth < 700 }, () => {
+            this.fetchMissingProducts();
+        });
     };
 
     componentDidMount() {
@@ -27,29 +35,69 @@ export default class RawPreviews extends React.Component {
         window.removeEventListener('resize', this.updateDimensions);
     }
 
-    Conversion(pixel)
-    {
+    conversion(pixel) {
         let rem = 0.0625 * pixel;
         return rem; 
     }
 
-    render() {
-        let products = this.props.products;
-       
-        if (this.state.maxRows > 0 || this.state.maxRowsMobile > 0) {
-            let n_elements_per_row = Math.floor(this.Conversion(this.state.width) / (7 + this.Conversion(10)));
-            if (this.state.mobile && this.state.maxRowsMobile > 0) {
-                products = products.slice(0, this.state.maxRowsMobile * n_elements_per_row);
-            } else if (this.state.maxRows > 0) {
-                products = products.slice(0, this.state.maxRows * n_elements_per_row);
-            }        
-        }
+    showMore = () => {
+        this.setState({ maxRows: this.state.maxRows + 2, maxRowsMobile: this.state.maxRowsMobile + 2});
+        this.fetchMissingProducts();
+    };
 
+    computeNElementsPerRow = () => {
+        return Math.floor(this.conversion(this.state.width) / (7 + this.conversion(10)))
+    }
+
+    fetchProducts = (from, more) => {
+        fetch(`/api/products/${this.props.category}/${this.props.filter}?from=${from}&more=${more}`)
+            .then(response => {
+                if (!response.ok) {
+                    return;
+                }
+                return response.json(); 
+            })
+            .then(data => {
+                if (data.products.length === 0) {
+                    this.setState({ all: true });
+                }
+                this.setState({ 
+                    products: this.state.products.concat(data.products),
+                });
+
+            })
+            .catch(error => {
+                // Handle any errors that occurred during the fetch
+                console.error('Fetch error:', error);
+            });
+        
+    }
+
+    fetchMissingProducts = () => {
+        let nElementsPerRow = this.computeNElementsPerRow();
+        let nRows = 0; 
+        if (this.state.mobile) {
+            nRows = this.state.maxRowsMobile;
+        } else {
+            nRows = this.state.maxRows;
+        }
+        let amountOfProducts = nRows * nElementsPerRow;
+        let missing = amountOfProducts - this.state.products.length;
+        if (missing > 0 && !this.state.all) {
+            this.fetchProducts(this.state.products.length, missing);
+        }
+    }
+
+    render() {
+        let products = this.state.products;
         return (
-            <div ref={this.containerRef} className="products-raw">
-                {products.map((product) => {
-                    return <Preview product={product} key={product.id} />;
-                })}
+            <div>
+                <div ref={this.containerRef} className="products-raw">
+                    {products.map((product) => {
+                        return <Preview product={product} key={product.id} />;
+                    })}
+                </div>
+                {this.props.canShowMore && !this.state.all && <Button title="Afficher plus" onClick={this.showMore} />}
             </div>
         );
     }

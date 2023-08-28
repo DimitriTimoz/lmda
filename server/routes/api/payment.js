@@ -303,6 +303,7 @@ router.post('/webhook', async (req, res) => {
       } else if (eventType === 'charge.refund.updated') {
           // Send email to admins
           console.log(data.object);
+          let admins = await getAdminEmails();
           res.sendStatus(200);
       } else {
           // For other event types, send a success response
@@ -317,3 +318,4 @@ router.post('/webhook', async (req, res) => {
 module.exports = router;
 // TODO: Dynamic settings for france
 // Show more btn
+// send email to admins when refund
