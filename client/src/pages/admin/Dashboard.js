@@ -87,7 +87,6 @@ export default class Dashboard extends React.Component {
                     </div>
                 </div>
                 {this.state.seeMore ? <Order onClose={this.closeSeeMore} order={this.state.order} onChange={this.updateProducts}  /> : null}
-                
             </div>
         )
     }
