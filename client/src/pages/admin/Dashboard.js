@@ -103,7 +103,7 @@ export default class Dashboard extends React.Component {
                             return <RawPreview order={order} edit={false} admin={false} delete={false} cancel={false} onSeeMore={this.seeMore}/>;
                         })}
                     </div>
-                    <div className="column">
+                    <div className="column seach-col">
                         <h3>Recherche</h3>
                         <select className="select-container select-dropdown" name="category" id="category" value={this.state.category} onChange={this.handleInputChange} >
                             <option value="homme">homme</option>
