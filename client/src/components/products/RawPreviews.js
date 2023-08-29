@@ -41,13 +41,23 @@ export default class RawPreviews extends React.Component {
     }
 
     showMore = () => {
-        this.setState({ maxRows: this.state.maxRows + 2, maxRowsMobile: this.state.maxRowsMobile + 2});
-        this.fetchMissingProducts();
+        this.setState({ maxRows: this.state.maxRows + 2, maxRowsMobile: this.state.maxRowsMobile + 2},
+            this.fetchMissingProducts());
     };
 
     computeNElementsPerRow = () => {
         return Math.floor(this.conversion(this.state.width) / (7 + this.conversion(10)))
     }
+
+    componentWillReceiveProps(nextProps) {
+        // You don't have to do this check first, but it can help prevent an unneeded render
+        if (nextProps.filter !== this.props.filter || nextProps.category !== this.props.category) {
+            this.setState({ products: [], all: false }, () => {
+                this.fetchMissingProducts();
+            });
+        }
+    }
+      
 
     fetchProducts = (from, more) => {
         fetch(`/api/products/${this.props.category}/${this.props.filter}?from=${from}&more=${more}`)
@@ -58,7 +68,7 @@ export default class RawPreviews extends React.Component {
                 return response.json(); 
             })
             .then(data => {
-                if (data.products.length === 0) {
+                if (data.products.length < more) {
                     this.setState({ all: true });
                 }
                 this.setState({ 
