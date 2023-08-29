@@ -6,8 +6,8 @@ export default function Footer() {
     return (
         <div>
             <footer className="footer">
-                <Link to="/">Conditions générales de vente</Link>
-                <Link to="/">Mentions légales</Link>
+                <Link to="/CGV.pdf">Conditions générales de vente</Link>
+                <Link to="/CGV.pdf">Mentions légales</Link>
                 <Link to="/contact">Nous contacter</Link>
             </footer>
             <div className="footer-bottom"></div>
