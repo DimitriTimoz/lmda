@@ -112,6 +112,7 @@ const Add = (props) => {
                 if (response.status === 200) {
                     // Redirect to admin page
                     alert("Produit mis à jour avec succès !");
+                    window.location.href = "/admin";
                 } else {
                     // Display error message
                     setProductState( prevState => ({...prevState, message: response.data.error }));
