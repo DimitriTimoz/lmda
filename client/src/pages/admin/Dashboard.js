@@ -3,6 +3,9 @@ import "./Dashboard.css";
 import axios from "axios";
 import RawPreview from "../../components/products/RawPreview";
 import Order from "../../components/Order";
+import DropdownNav from "../../components/DropdownNav";
+import { CAREGORIES_HOMMES, CAREGORIES_ENFANTS, CAREGORIES_FEMMES } from "../../data";
+import Button from "../../components/Button";
 export default class Dashboard extends React.Component {
     constructor(props) {
         super(props);
@@ -12,10 +15,13 @@ export default class Dashboard extends React.Component {
             ordersShipped: [],
             seeMore: false,
             order: null,
+            category: "homme",
+            specifyCategory: "all"
         };
         
         this.updateProducts = this.updateProducts.bind(this);
         this.closeSeeMore = this.closeSeeMore.bind(this);
+        this.handleInputChange = this.handleInputChange.bind(this);
     }   
 
     closeSeeMore = () => {
@@ -37,7 +43,7 @@ export default class Dashboard extends React.Component {
 
     updateProducts = () => {
         // Fetch all products
-        axios.get("/api/products/all/all").then((res) => {
+        axios.get("/api/products/"+ this.state.category + "/" + this.state.specifyCategory).then((res) => {
             let products = res.data.products;
             this.setState({ productsInsell: products });
         });
@@ -60,7 +66,22 @@ export default class Dashboard extends React.Component {
         });
     }
 
+    handleInputChange = (event) => {
+        const { name, value } = event.target;
+
+        this.setState(prevState => ({
+            ...prevState,
+            [name]: value
+        }));
+    }
+
     render() {
+        let categories = {
+            "homme" : CAREGORIES_HOMMES,
+            "femme" : CAREGORIES_FEMMES,
+            "enfant" : CAREGORIES_ENFANTS,
+        };
+    
         return (
             <div>
                 <div id="dashboard">
@@ -84,6 +105,13 @@ export default class Dashboard extends React.Component {
                     </div>
                     <div className="column">
                         <h3>Recherche</h3>
+                        <select className="select-container select-dropdown" name="category" id="category" value={this.state.category} onChange={this.handleInputChange} >
+                            <option value="homme">homme</option>
+                            <option value="femme">femme</option>
+                            <option value="enfant">enfant</option>
+                        </select>
+                        <DropdownNav placeholder={this.state.category} selector={true} name="specifyCategory" onChange={this.handleInputChange} elements={categories[this.state.category]} />
+                        <Button onClick={this.updateProducts} title="Rechercher" />
                     </div>
                 </div>
                 {this.state.seeMore ? <Order onClose={this.closeSeeMore} order={this.state.order} onChange={this.updateProducts}  /> : null}
