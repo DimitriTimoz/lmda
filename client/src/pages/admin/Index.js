@@ -6,6 +6,7 @@ import Header from '../../components/layouts/Header';
 import Add from './Add';
 import axios from 'axios';
 import ChangePassword from './ChangePassword';
+import Settings from './Settings';
 
 function Admin() {
     // Check if user is admin
@@ -38,6 +39,7 @@ function Admin() {
                 <Route path='/add' element={<Add/>}/>
                 <Route path='/edit/:id' element={<Add/>}/>
                 <Route path="/change-password" element={<ChangePassword />} />
+                <Route path="settings" element={<Settings />} />
             </Routes>
         </div>
     );
