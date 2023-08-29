@@ -6,6 +6,8 @@ import Order from "../../components/Order";
 import DropdownNav from "../../components/DropdownNav";
 import { CAREGORIES_HOMMES, CAREGORIES_ENFANTS, CAREGORIES_FEMMES } from "../../data";
 import Button from "../../components/Button";
+import Input from "../../components/Input";
+
 export default class Dashboard extends React.Component {
     constructor(props) {
         super(props);
@@ -16,7 +18,8 @@ export default class Dashboard extends React.Component {
             seeMore: false,
             order: null,
             category: "homme",
-            specifyCategory: "all"
+            specifyCategory: "all",
+            oid: ""
         };
         
         this.updateProducts = this.updateProducts.bind(this);
@@ -48,24 +51,39 @@ export default class Dashboard extends React.Component {
             this.setState({ productsInsell: products });
         });
 
-        // Fetch all orders
-        axios.get("/api/order/all").then((res) => {
-            let orders = res.data.orders;
-            // Get ordrered products
-            let ordersPaid = orders.filter((order) => {
-                return order.paid && order.status === 0;
+        console.log(this.state.oid);
+        if (this.state.oid.length > 0 && !isNaN(this.state.oid)) {
+            axios.get("/api/order/" + this.state.oid).then((res) => {
+                let order = res.data.order;
+                
+                if (order.paid && order.status === 0) {
+                    this.setState({ 
+                        ordersPaid: [order],
+                    });
+                } else if (order.status > 0) {
+                    this.setState({ ordersShipped: [order] });
+                }
             });
-            // Get shipped products
-            let ordersShipped = orders.filter((order) => {
-                return order.status > 0;
-            });
-            this.setState({ 
+        } else {
+            // Fetch all orders
+            axios.get("/api/order/all").then((res) => {
+                let orders = res.data.orders;
+                // Get ordrered products
+                let ordersPaid = orders.filter((order) => {
+                    return order.paid && order.status === 0;
+                });
+                // Get shipped products
+                let ordersShipped = orders.filter((order) => {
+                    return order.status > 0;
+                });
+                this.setState({ 
                     ordersPaid: ordersPaid,
                     ordersShipped: ordersShipped    
+                });
             });
-        });
+        }   
     }
-
+        
     handleInputChange = (event) => {
         const { name, value } = event.target;
 
@@ -110,6 +128,7 @@ export default class Dashboard extends React.Component {
                             <option value="femme">femme</option>
                             <option value="enfant">enfant</option>
                         </select>
+                        <Input type="text" name="oid" placeholder="Identifiant Commande" onChange={this.handleInputChange} value={this.state.oid} />
                         <DropdownNav custom={"no-overflow"} placeholder={this.state.category} selector={true} name="specifyCategory" onChange={this.handleInputChange} elements={categories[this.state.category]} />
                         <Button onClick={this.updateProducts} title="Rechercher" />
                     </div>
