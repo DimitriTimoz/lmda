@@ -5,7 +5,7 @@ import Input from "../../components/Input";
 import Button from "../../components/Button";
 import DropdownNav from "../../components/DropdownNav";
 import ImagePicker from "../../components/ImagePicker";
-import { CAREGORIES_HOMMES, CAREGORIES_ENFANTS, CAREGORIES_FEMMES }from "../../data";
+import { CAREGORIES_HOMMES, CAREGORIES_ENFANTS, CAREGORIES_FEMMES } from "../../data";
 import axios from 'axios';
 import ErrorPopup from "../../components/ErrorPopup";
 
@@ -47,7 +47,7 @@ const Add = (props) => {
                         mass: item.mass,
                         category: item.category,
                         specifyCategory: item.specifyCategory,
-                        photosIds: item.photo_ids,
+                        photosIds: item.photo_ids.filter((id) => id),
                         photosSrc: item.photos,
                         state: item.state,
                         size: item.size,
@@ -100,7 +100,7 @@ const Add = (props) => {
             description: productState.description,
             price: parseInt(productState.price*100),
             mass: productState.mass,
-            photosIds: productState.photosIds,
+            photosIds: productState.photosIds.filter((id) => !isNaN(id)),
             category: productState.category,
             specifyCategory: productState.specifyCategory,
             size: productState.size,
