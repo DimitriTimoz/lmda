@@ -100,8 +100,6 @@ class DropdownNav extends React.Component {
             active: !prevState.active,
             filter: prevState.active ? "" : prevState.filter,
         }));
-
-        
     }
 
     getList() {
