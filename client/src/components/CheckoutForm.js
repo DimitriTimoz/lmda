@@ -20,7 +20,7 @@ import {
   
       setIsLoading(true);
       // if (CGV are not accepted) { setMessage("Veuillez accepter les CGV"); return; } 
-  
+      if (!document.getElementById('accept-cgv').checked) { setMessage("Veuillez accepter les conditions générales de vente"); setIsLoading(false); return; }
       const { error } = await stripe.confirmPayment({
         elements,
         confirmParams: {
@@ -49,7 +49,10 @@ import {
           options={{defaultValues: {email: props.email}}}
           />
         <PaymentElement id="payment-element" />
-        <input type='checkbox' id='accept-cgv' name='accept-cgv' />
+        <div>
+          <label htmlFor='accept-cgv'>J'accepte les conditions générales de vente</label>
+          <input type='checkbox' id='accept-cgv' name='accept-cgv' />
+        </div>
         <button className='button' disabled={isLoading || !stripe || !elements} id="submit">
           <span id="button-text">
             {isLoading ? <div className="spinner" id="spinner"></div> : "Payer maintenant"}
