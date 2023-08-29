@@ -25,7 +25,10 @@ router.post('/', async function(req, res, next){
         return res.status(401).json({ error: 'Vous devez être connecté pour ajouter un produit.' });
     }
     let uid = req.session.uid;
-
+    if (!req.body.category || !req.body.specifyCategory) {
+        return res.status(400).json({ error: 'Veuillez spécifier une catégorie et une sous-catégorie.' });
+    }
+    
     // XSS protection
     let id = req.body.id;
     let pName = validator.escape(req.body.name);
@@ -33,8 +36,8 @@ router.post('/', async function(req, res, next){
     let pPrice = req.body.price;
     let pMass = req.body.mass;
     let pPhotosIds = req.body.photosIds;
-    let pCategory = validator.escape(req.body.category);
-    let pSpecifyCategory = validator.escape(req.body.specifyCategory);
+    let pCategory = validator.escape(req.body.category.toLowerCase().replace(" ", "-"));
+    let pSpecifyCategory = validator.escape(req.body.specifyCategory.toLowerCase().replace(" ", "-"));
     let pSize = validator.escape(req.body.size);
     let pState = req.body.state;
 
