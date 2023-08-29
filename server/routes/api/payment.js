@@ -1,6 +1,7 @@
 var router = require('express').Router();
 const env = require('dotenv').config({path: './.env'}).parsed;
 const { validPayment, paymentCanceled, removeOrder } = require('../../database/payment');
+const { getSetting } = require('../../database/settings');
 const { getAdminEmails } = require('../../database/users');
 const db = require('../../db');
 const { sendEmail, sendEmailOnlyTxt } = require('../../modules/email');
@@ -191,7 +192,13 @@ router.post('/create-payment-intent', async (req, res) => {
     }
 
     // Compute the total amount
-    deliveryPrice = getDeliveryPrice(mass, delivery.parcelShopCode.split('-')[0]);
+    let iso = delivery.parcelShopCode.split('-')[0];
+    deliveryPrice = getDeliveryPrice(mass, iso);
+    let limit = await getSetting("MontantLivraisonGratuiteFrance");
+    if (limit && total > limit && iso === 'FR') {
+      deliveryPrice = 0;
+    }
+    
     total += deliveryPrice;
 
     // Create the order
