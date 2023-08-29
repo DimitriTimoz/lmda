@@ -464,7 +464,7 @@ class Cart extends Component {
                             <CheckoutForm email={this.state.infos.email} />
                         </Elements>
                     )}
-                    <Button title="Payer" className={"valid-button"} onClick={this.submit} />
+                    {!clientSecret && <Button title="Payer" className={"valid-button"} onClick={this.submit} /> }
                 </div>}
                 <input type="hidden" id="ParcelShopCode" name="ParcelShopCode" value={this.state.delivery.parcelShopCode} />
                 <input type="hidden" id="cb_ID" name="cb_ID" value={this.state.delivery.ID} />

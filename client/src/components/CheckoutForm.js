@@ -19,6 +19,7 @@ import {
       }
   
       setIsLoading(true);
+      // if (CGV are not accepted) { setMessage("Veuillez accepter les CGV"); return; } 
   
       const { error } = await stripe.confirmPayment({
         elements,
@@ -36,7 +37,7 @@ import {
       if (error.type === "card_error" || error.type === "validation_error") {
         setMessage(error.message);
       } else {
-        setMessage("An unexpected error occured.");
+        setMessage("Une erreur inattendue est survenue.");
       }
   
       setIsLoading(false);
@@ -48,9 +49,10 @@ import {
           options={{defaultValues: {email: props.email}}}
           />
         <PaymentElement id="payment-element" />
-        <button disabled={isLoading || !stripe || !elements} id="submit">
+        <input type='checkbox' id='accept-cgv' name='accept-cgv' />
+        <button className='button' disabled={isLoading || !stripe || !elements} id="submit">
           <span id="button-text">
-            {isLoading ? <div className="spinner" id="spinner"></div> : "Pay now"}
+            {isLoading ? <div className="spinner" id="spinner"></div> : "Payer maintenant"}
           </span>
         </button>
         {/* Show any error or success messages */}
