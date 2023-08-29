@@ -54,6 +54,9 @@ export default class Header extends React.Component {
         {this.props.isAdmin ?
           <div className="personnal-nav">
               <Link to="/admin/add"><img alt="admin add item" src='/icons/add.svg'/></Link>
+              <Link to="/admin/change-password"><img alt="change password" src='/icons/user.png'/></Link>
+              <Link to="/admin/settings"><img alt="settings" src='/icons/setting.png'/></Link>
+              
           </div>
         :
           <div className="personnal-nav">
