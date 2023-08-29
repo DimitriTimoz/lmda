@@ -13,12 +13,18 @@ import Contact from './Contact';
 
 function Index() {
   const [ stripePromise, setStripePromise ] = useState(null);
-
+  
   useEffect(() => {
     fetch("/api/payment/config").then(async (r) => {
       const { publishableKey } = await r.json();
       setStripePromise(loadStripe(publishableKey));
     });
+
+    fetch('/api/settings').then(async (r) => {
+      const settings = await r.json();
+      localStorage.setItem('settings', JSON.stringify(settings));
+    });
+
   }, []);
 
   return (

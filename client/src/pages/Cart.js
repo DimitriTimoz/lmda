@@ -367,10 +367,19 @@ class Cart extends Component {
             }
         }
         let deliveryPrice;
-        if (this.state.deliveryPrice) {
+        if (this.state.deliveryPrice !== null) {
             deliveryPrice = this.state.deliveryPrice;
         } else if (this.state.delivery && this.state.delivery.parcelShopCode && this.state.delivery.parcelShopCode.includes("-")) {
-            deliveryPrice = this.getDeliveryPrice(this.state.mass, this.state.delivery.parcelShopCode.split("-")[0]);
+            let settings = JSON.parse(localStorage.getItem("settings"));
+            if (!settings && !settings.MontantLivraisonGratuiteFrance) {
+                deliveryPrice = this.getDeliveryPrice(this.state.mass, this.state.delivery.parcelShopCode.split("-")[0]);
+            } else {
+                if (settings.MontantLivraisonGratuiteFrance <= productsTotal) { 
+                    deliveryPrice = 0;
+                } else {
+                    deliveryPrice = this.getDeliveryPrice(this.state.mass, this.state.delivery.parcelShopCode.split("-")[0]);
+                }
+            }
         }
 
         return (
