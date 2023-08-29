@@ -201,10 +201,197 @@ const CAREGORIES_FEMMES = [
       "Gants",
     ]
   },
-  
 ];
 
-const CAREGORIES_ENFANTS = CAREGORIES_HOMMES;
+const CAREGORIES_ENFANTS = [
+  {
+    filter: "Bébé",
+    subs: [
+      {
+        filter: "Bodies",
+        subs: [
+          "Filles",
+          "Garçons",
+        ]
+      },
+      {
+        filter: "Pantalons",
+        subs: [
+          "Filles",
+          "Garçons",
+        ]
+      },
+      {
+        filter: "Pyjamas",
+        subs: [
+          "Filles",
+          "Garçons",
+        ]
+      },
+      {
+        filter: "Hauts",
+        subs: [
+          "Filles",
+          "Garçons",
+        ]
+      },
+      {
+        filter: "Manteaux",
+        subs: [
+          "Filles",
+          "Garçons",
+        ]
+      },
+    ]
+  },
+  {
+    filter: "Garçons",
+    subs: [
+      {
+        filter: "Chaussures",
+        subs: []
+      },
+      {
+        filter: "Manteaux",
+        subs: [
+          "Vestes",
+          "Vêtements shy"
+        ]
+      },
+      {
+        filter: "Pulls",
+        subs: [
+          "Gilets",
+          "Gilets à zip",
+          "Autres"
+        ]
+      },
+      {
+        filter: "Chemises et TeeShirts",
+        subs: [
+          "Polos",
+          "Chemises",
+          "T-shirts",
+          "Autres"
+        ]
+      },
+      {
+        filter: "Pantalons",
+        subs: [
+          "Leggings",
+          "Jeans",
+          "Salopettes",
+          "Pantacourts",
+          "Autres"
+        ]
+      },
+      {
+        filter: "Shorts",
+        subs: []
+      },
+      {
+        filter: "Maillots de bain",
+        subs: [
+          "Accessoires",
+          "Maillots de bain"
+        ]
+      },
+      {
+        filter: "Sous-vêtements",
+        subs: []
+      },
+      {
+        filter: "Pyjamas",
+        subs: [
+          "Une pièce",
+          "Deux pièces",
+        ]
+      },
+      {
+        filter: "Déguisements",
+        subs: []
+      },
+    ]
+  },
+  {
+    filter: "Filles",
+    subs: [
+      {
+        filter: "Chaussures",
+        subs: []
+      },
+      {
+        filter: "Manteaux",
+        subs: [
+          "Manteaux",
+          "Vestes",
+          "Vêtements shy"
+        ]
+      },
+      {
+        filter: "Pulls",
+        subs: []
+      },
+      {
+        filter: "Chemises et TeeShirts",
+        subs: [
+          "Chemises",
+          "T-shirts",
+          "Tuniques",
+          "Polos",
+        ]
+      },
+      {
+        filter: "Robes",
+        subs: [
+          "Courtes",
+          "Longues",
+        ]
+      },
+      {
+        filter: "Jupes",
+        subs: []
+      },
+      {
+        filter: "Pantalons",
+        subs: [
+          "Leggings",
+          "Jeans",
+          "Salopettes",
+        ]
+      },
+      {
+        filter: "Shorts",
+        subs: []
+      },
+      {
+        filter: "Maillots de bain",
+        subs: [
+          "Accessoires",
+          "Maillots"
+        ]
+      },
+      {
+        filter: "Pyjamas",
+        subs: []
+      },
+      {
+        filter: "Déguisements",
+        subs: []
+      },
+      {
+        filter: "Sous-vêtements",
+        subs: [
+          "Culottes",
+          "Collants",
+          "Brassières",
+          "Chaussettes",
+        ]
+      }
+    ]
+  }
+];
+
 const ALL = [
   {
     filter: "Femmes",
