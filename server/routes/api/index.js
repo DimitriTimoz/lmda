@@ -8,5 +8,6 @@ router.use("/upload-image", require("./upload"));
 router.use("/order", require("./order"));
 router.use("/payment", require("./payment"));
 router.use("/user", require("./user"));
+router.use("/settings", require("./settings"));
 
 module.exports = router;
