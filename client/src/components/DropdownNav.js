@@ -59,7 +59,11 @@ class DropdownNav extends React.Component {
 
     handleClickOutside = (event) => {
         if (this.dropdownRef && !this.dropdownRef.current.contains(event.target)) {
-            this.setState({ active: false });
+            this.setState({ 
+                active: false ,
+                filter: ""
+            });
+            this.filter_level = 1;
         }
     }
 
@@ -79,7 +83,7 @@ class DropdownNav extends React.Component {
         let level = parseInt(e.target.getAttribute("level"));
         let filter = e.target.innerText.toLowerCase();
         this.filter_level = level + 1;
-        let filter_final = this.state.filter.split(":").slice(0, level).join(":");
+        let filter_final = this.state.filter.split(":").slice(0, level-1).join(":");
 
         if (filter_final !== "") {
             filter_final += ":" + filter;
@@ -150,13 +154,22 @@ class DropdownNav extends React.Component {
             return [i + 1, items, prefilter_final, i === (maxLevel-1)];
         });
 
+        let classes = "dp-category";
+        if (!active) {
+            classes += " hide";
+        }
+
+        if (this.props.custom) {
+            classes += " " + this.props.custom;
+        }
+
         return (
             <div ref={this.dropdownRef} className="dropdown-menu">
                 <div className='dropdown-selector' onClick={this.trigger}>
                     <span className={active ? 'selected-item-dp active' : 'selected-item-dp'}>{this.props.placeholder}</span>
                     <img alt="arrow" className={active ? 'arrow rotate' : 'arrow'} src='/icons/arrow.svg' />
                 </div>
-                <div className={active ? 'dp-category' : 'dp-category hide'}>
+                <div className={classes}>
                     {filters.map(([level, items, prefilter, last_level]) => (items.length > 0 &&
                         <ul className="dp-elements" key={level}>
                             {!this.props.selector && <li>

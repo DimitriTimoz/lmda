@@ -110,7 +110,7 @@ export default class Dashboard extends React.Component {
                             <option value="femme">femme</option>
                             <option value="enfant">enfant</option>
                         </select>
-                        <DropdownNav placeholder={this.state.category} selector={true} name="specifyCategory" onChange={this.handleInputChange} elements={categories[this.state.category]} />
+                        <DropdownNav custom={"no-overflow"} placeholder={this.state.category} selector={true} name="specifyCategory" onChange={this.handleInputChange} elements={categories[this.state.category]} />
                         <Button onClick={this.updateProducts} title="Rechercher" />
                     </div>
                 </div>
