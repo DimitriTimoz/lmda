@@ -1,0 +1,8 @@
+input[type="checkbox"] {
+    cursor: pointer;
+    margin-right: 1rem;
+}
+
+.cgv-container {
+    margin: 1rem 0px;
+}
