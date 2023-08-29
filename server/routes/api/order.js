@@ -202,7 +202,7 @@ router.put("/:id", async (req, res) => {
                     console.error(err);
                 }
     
-                if (!await sendEmail(email, "Commande traitée", "shipped", { numexp: order.exp_number, zipCode: zipCode, name: name,  })) {
+                if (!await sendEmail(email, "Commande traitée", "shipped", { numexp: order.exp_number, zipCode: zipCode, name: name, order_id: order.id })) {
                     return res.status(500).json({ error: 'Une erreur est survenue lors de l\'envoi de l\'email.' });
                 }
             } else {
