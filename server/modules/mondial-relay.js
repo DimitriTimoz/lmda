@@ -88,7 +88,7 @@ async function creationEtiquette(args) {
 }
 
 let bodyLabel = {
-  Enseigne: "BDTEST13",
+  Enseigne: "CC22UXT2",
   ModeCol: "REL",
   ModeLiv: "24R",
   NDossier: "",
