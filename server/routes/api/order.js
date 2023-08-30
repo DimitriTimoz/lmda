@@ -166,7 +166,7 @@ router.get("/bordereau/:id", async (req, res) => {
         body.Dest_Ad4 = noAccents(address.address2 || "");
         body.Dest_CP = noAccents(address.zipCode);
         body.Dest_Ville = noAccents(address.city);
-        body.LIV_Rel = delivery.parcelShopCode;
+        body.LIV_Rel = delivery.parcelShopCode.split('-')[1];
         let label = await myMondialRelay.creationEtiquette(body);
         let num = label.url.split('expedition=')[1].split('&')[0];
         // Update the order to set the expedition number

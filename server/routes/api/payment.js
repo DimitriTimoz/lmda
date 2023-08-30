@@ -323,6 +323,4 @@ router.post('/webhook', async (req, res) => {
 });
 
 module.exports = router;
-// TODO: Dynamic settings for france
-// Show more btn
 // send email to admins when refund
