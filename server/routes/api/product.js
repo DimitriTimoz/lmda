@@ -24,6 +24,7 @@ router.post('/', async function(req, res, next){
     if (!req.session.loggedin) {
         return res.status(401).json({ error: 'Vous devez être connecté pour ajouter un produit.' });
     }
+    console.log(req.body);
     let uid = req.session.uid;
     if (!req.body.category || !req.body.specifyCategory) {
         return res.status(400).json({ error: 'Veuillez spécifier une catégorie et une sous-catégorie.' });
@@ -73,14 +74,24 @@ router.post('/', async function(req, res, next){
 
     // Check that the other images are valid
     // Check that the images exist and the author is the user
+    let valids = 0;
     for (let i = 0; i < pPhotosIds.length; i++) {
         if (isNaN(pPhotosIds[i]) || pPhotosIds[i] === "") {
+            console.log("image non valide: ", pPhotosIds[i]);
             continue
         }
         image = await getImage(pPhotosIds[i], uid);
         if (image === null) {
+            console.log("image non sauvegardée: ", image);
             return res.status(400).json({ error: "L'image envoyée ne semble pas valide. Veuillez vous assurer d'avoir envoyé une image. Sinon veuillez contacter le support." });
+        } else {
+            console.log("image sauvegardée: ", image);
         }
+        valids++;
+    }
+
+    if (valids === 0) {
+        return res.status(400).json({ error: "Veuillez spécifier au moins une image." });
     }
 
     // Check that the state is valid
@@ -112,6 +123,7 @@ router.post('/', async function(req, res, next){
     let imagesToCheck = await getImages(uid);
     for (let i = 0; i < imagesToCheck.length; i++) {
         if (!imagesToCheck[i].linked) {
+            console.log("image non utilisée: ", imagesToCheck[i].id);
             try {
                 if (!await deleteImage(imagesToCheck[i].id, uid)) {
                     console.error("Error while deleting image", imagesToCheck[i].id);

@@ -1,6 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import "./ImagePicker.css";
+import ErrorPopup from './ErrorPopup';
 export default class ImagePicker extends React.Component {
   constructor(props) {
     super(props);
@@ -10,6 +11,7 @@ export default class ImagePicker extends React.Component {
       message: '',
       src: '',
       value: '',
+      message: '',
     };
     this.props.src = '';
   }
@@ -34,6 +36,11 @@ export default class ImagePicker extends React.Component {
           'Content-Type': 'multipart/form-data',
         },
       });
+
+      if (res.status !== 200) {
+        this.setState({ message: res.data.error});
+        return;
+      }
 
       this.setState({ 
         message: res.data.message,
@@ -64,6 +71,7 @@ export default class ImagePicker extends React.Component {
           accept="image/*"
           onChange={this.onFileChange}
         />
+        {this.state.message && <ErrorPopup error={this.state.message} />}
       </div>
     );
   }

@@ -10,7 +10,7 @@ router.post('/', async function(req, res, next){
         return res.json({success: 'Vous êtes déjà connecté.'});
     }
     // Check if pid is valid
-    var email = req.body.email;
+    var email = req.body.email.trim().toLowerCase();
     var password = req.body.password;
     if (email && password) {
         // Check if the user exists
