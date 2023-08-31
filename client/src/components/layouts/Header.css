@@ -38,6 +38,16 @@ header h1 {
     display: none;
 }
 
+.app-name-container h1 {
+    font-size: 4.0rem;
+}
+
+.app-name-container h2 {
+    margin-left: 7rem;
+    font-size: 1.3rem;
+    margin-bottom: 0.5rem;
+}
+
 @media screen and (max-width: 700px) {
     header h1 {
         font-size: 2.5rem;
@@ -51,6 +61,17 @@ header h1 {
         display: flex;
         justify-content: center;
         align-items: center;
+        flex-direction: column;
+    }
+
+    .app-name-container h1 {
+        margin-left: 3rem;
+        font-size: 2.2rem;
+    }
+    
+    .app-name-container h2 {
+        font-size: 0.7rem;
+        margin-bottom: 1.3rem;
     }
 
     .burger-menu-trigger {
