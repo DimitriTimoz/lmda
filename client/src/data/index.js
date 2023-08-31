@@ -83,7 +83,7 @@ const CAREGORIES_HOMMES = [
         "Baskets",
         "Sport",
         "Chaussons",
-        "Macassins",
+        "Mocassins",
         "Bottes",
         "Habillées",
       ]
@@ -272,7 +272,7 @@ const CAREGORIES_ENFANTS = [
           "Bottes",
           "Chaussures habillées",
           "Baskets",
-          "Macassins",
+          "Mocassins",
           "Chaussons",
           "Sandales",
         ]
@@ -348,7 +348,7 @@ const CAREGORIES_ENFANTS = [
           "Bottes",
           "Chaussures habillées",
           "Baskets",
-          "Macassins",
+          "Mocassins",
           "Chaussons",
           "Sandales",
         ]

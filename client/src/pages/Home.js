@@ -41,7 +41,7 @@ class Home extends Component {
       <div id="product-list">
         <div className='product-category'>
           <div className="header-row">
-            <h3>Nouveautées</h3>
+            <h3>Nouveautés</h3>
             <TxtButton title="Voir plus" link="/products/all/all" />
           </div>
           <RawPreviews category="all" filter="all" />
