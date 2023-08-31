@@ -3,6 +3,7 @@ import Input from "../../components/Input";
 import "./Login.css";
 import Button from "../../components/Button";
 import axios from 'axios';
+import ErrorPopup from "../../components/ErrorPopup";
 
 export default class Login extends React.Component {
     constructor(props) {
@@ -47,7 +48,7 @@ export default class Login extends React.Component {
             })
             .catch(error => {
                 // Code à exécuter en cas d'erreur
-                console.error(error.message);
+                this.setState({message: error.response.data.error});
             });
     }
 
@@ -62,6 +63,7 @@ export default class Login extends React.Component {
                     <Input type="password" placeholder={"Mot de passe"} value={this.state.password} onChange={this.updatePassword.bind(this)}/>
                     <p className="error-message">{this.state.message}</p>
                     <Button title={"Se connecter"} onClick={this.submit.bind(this)}/>
+                    <ErrorPopup message={this.state.message} closePopup={() => this.setState({message: ""})}/>
                 </form>
             </div>
         )
