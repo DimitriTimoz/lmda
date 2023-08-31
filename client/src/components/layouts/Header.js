@@ -50,7 +50,10 @@ export default class Header extends React.Component {
           <img alt="burger-menu" src={burgerMenuSrc} onClick={this.triggerMenu}/>
         </div> 
         <Link to="/"><img id="app-logo" alt="logo" src="/logo.png"/></Link>
-        <Link to={this.props.isAdmin ? "/admin" : "/"} className='app-name-container'><h1>Le monde d'Anna</h1></Link>
+        <Link to={this.props.isAdmin ? "/admin" : "/"} className='app-name-container'>
+          <h1>Le monde d'Anna</h1>
+          <h2>Vêtements de seconde main...</h2>
+        </Link>
         {this.props.isAdmin ?
           <div className="personnal-nav">
               <Link to="/admin/add"><img alt="admin add item" src='/icons/add.svg'/></Link>
