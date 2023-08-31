@@ -52,7 +52,7 @@ export default class LikeBtn extends React.Component {
             return;
         }
 
-        this.setState({active: !this.state.active});
+        this.setState({active: !this.state.active}, () => {window.location.reload()});
     }
 
     render() {
