@@ -89,6 +89,14 @@ const CAREGORIES_HOMMES = [
       ]
     },
     {
+      filter: "Sous-vêtements",
+      subs: [
+        "Boxers",
+        "Slips",
+        "Chaussettes",
+      ]
+    },
+    {
       filter: "Accessoires",
       subs: [
         "Montres",
@@ -109,17 +117,19 @@ const CAREGORIES_FEMMES = [
       {
         filter: "Manteaux",
         subs: [
-          "Ponchon",
-          "Veste",
+          "Ponchons",
+          "Vestes",
+          "Manteaux",
         ]
       },
       {
         filter: "Sweats",
         subs: [
           "Gilets",
-          "Polères",
+          "Polaires",
           "Vestes",
-          "Pull en laine"
+          "Pull en laine",
+          "Pulls"
         ]
       },
       {
@@ -192,6 +202,15 @@ const CAREGORIES_FEMMES = [
     ]
   },
   {
+    filter: "Sous-vêtements",
+    subs: [
+      "Soutiens-gorge",
+      "Culottes",
+      "Collants",
+      "Chaussettes",
+    ]
+  },
+  {
     filter: "Accessoires",
     subs: [
       "Bijoux",
@@ -249,13 +268,20 @@ const CAREGORIES_ENFANTS = [
     subs: [
       {
         filter: "Chaussures",
-        subs: []
+        subs: [
+          "Bottes",
+          "Chaussures habillées",
+          "Baskets",
+          "Macassins",
+          "Chaussons",
+          "Sandales",
+        ]
       },
       {
         filter: "Manteaux",
         subs: [
           "Vestes",
-          "Vêtements shy"
+          "Vêtements sky"
         ]
       },
       {
@@ -287,7 +313,7 @@ const CAREGORIES_ENFANTS = [
       },
       {
         filter: "Shorts",
-        subs: []
+        subs: ["Shorts"]
       },
       {
         filter: "Maillots de bain",
@@ -298,7 +324,7 @@ const CAREGORIES_ENFANTS = [
       },
       {
         filter: "Sous-vêtements",
-        subs: []
+        subs: ["Sous-vêtements"]
       },
       {
         filter: "Pyjamas",
@@ -309,7 +335,7 @@ const CAREGORIES_ENFANTS = [
       },
       {
         filter: "Déguisements",
-        subs: []
+        subs: ["Déguisements"]
       },
     ]
   },
@@ -318,19 +344,26 @@ const CAREGORIES_ENFANTS = [
     subs: [
       {
         filter: "Chaussures",
-        subs: []
+        subs: [
+          "Bottes",
+          "Chaussures habillées",
+          "Baskets",
+          "Macassins",
+          "Chaussons",
+          "Sandales",
+        ]
       },
       {
         filter: "Manteaux",
         subs: [
           "Manteaux",
           "Vestes",
-          "Vêtements shy"
+          "Vêtements sky"
         ]
       },
       {
         filter: "Pulls",
-        subs: []
+        subs: ["Pulls"]
       },
       {
         filter: "Chemises et TeeShirts",
@@ -350,7 +383,7 @@ const CAREGORIES_ENFANTS = [
       },
       {
         filter: "Jupes",
-        subs: []
+        subs: ["Jupes"]
       },
       {
         filter: "Pantalons",
@@ -362,7 +395,7 @@ const CAREGORIES_ENFANTS = [
       },
       {
         filter: "Shorts",
-        subs: []
+        subs: ["Shorts"]
       },
       {
         filter: "Maillots de bain",
@@ -373,11 +406,11 @@ const CAREGORIES_ENFANTS = [
       },
       {
         filter: "Pyjamas",
-        subs: []
+        subs: ["Pyjamas"]
       },
       {
         filter: "Déguisements",
-        subs: []
+        subs: ["Déguisements"]
       },
       {
         filter: "Sous-vêtements",
