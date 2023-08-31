@@ -117,7 +117,7 @@ const CAREGORIES_FEMMES = [
       {
         filter: "Manteaux",
         subs: [
-          "Ponchons",
+          "Ponchos",
           "Vestes",
           "Manteaux",
         ]
