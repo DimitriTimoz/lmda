@@ -196,7 +196,7 @@ const CAREGORIES_FEMMES = [
       "Baskets",
       "Chaussures plates",
       "Sandales",
-      "Chaussures à talons",
+      "Chaussures à talon",
       "Chaussons",
       "Mules",
     ]
