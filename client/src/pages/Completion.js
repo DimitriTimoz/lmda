@@ -12,8 +12,9 @@ function Completion(props) {
     stripePromise.then(async (stripe) => {
       const url = new URL(window.location);
       const clientSecret = url.searchParams.get('payment_intent_client_secret');
-      const {error, status} = await stripe.retrievePaymentIntent(clientSecret);
-      if (status === 'succeeded') {
+      let body = await stripe.retrievePaymentIntent(clientSecret);
+      const {error, paymentIntent} = body;
+      if (paymentIntent.status === 'succeeded') {
         setMessageBody(error ? ` ${error.message}` : ` Paiement réussi !`);
         setSubMessage('Vous allez recevoir un email de confirmation.');
       } else {
