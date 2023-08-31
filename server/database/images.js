@@ -58,7 +58,7 @@ async function getImagesFilenames(ids) {
 async function addImage(admin_id, filename) {
     const query = 'INSERT INTO images (author, filename) VALUES ($1, $2) RETURNING id';
     const values = [admin_id, filename];
-  
+    console.log("adding: ", admin_id, filename);
     try {
       let result = await pool.query(query, values);
       return result.rows[0].id;
@@ -104,6 +104,7 @@ async function deleteImage(id, author) {
 async function linkImage(id, author) {
     // Check id and author are numbers
     if (isNaN(id)) {
+        console.error('Error linking image: id is not a number');
         return false;
     }
 
