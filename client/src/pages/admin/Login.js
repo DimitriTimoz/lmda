@@ -63,7 +63,7 @@ export default class Login extends React.Component {
                     <Input type="password" placeholder={"Mot de passe"} value={this.state.password} onChange={this.updatePassword.bind(this)}/>
                     <p className="error-message">{this.state.message}</p>
                     <Button title={"Se connecter"} onClick={this.submit.bind(this)}/>
-                    <ErrorPopup message={this.state.message} closePopup={() => this.setState({message: ""})}/>
+                    {this.state.message && <ErrorPopup error={this.state.message} closePopup={() => this.setState({message: ""})}/> }
                 </form>
             </div>
         )
