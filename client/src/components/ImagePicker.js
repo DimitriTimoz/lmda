@@ -43,7 +43,6 @@ export default class ImagePicker extends React.Component {
       }
 
       this.setState({ 
-        message: res.data.message,
         src: "/uploads/" +  res.data.compressedImageFile,
         value: res.data.id
       }, () => {
