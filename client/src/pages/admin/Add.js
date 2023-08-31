@@ -37,6 +37,11 @@ const Add = (props) => {
                 .then(response => {
                     // Use the existing item data to set our state
                     const item = response.data;
+                    let ids = item.photo_ids.filter((id) => id);
+                    for (let i = 0; i < 4 - ids.length; i++) {
+                        ids.push("");
+                    }
+
                     setProductState(prevState => {
                         return {
                         ...prevState,
@@ -47,7 +52,7 @@ const Add = (props) => {
                         mass: item.mass,
                         category: item.category,
                         specifyCategory: item.specifyCategory,
-                        photosIds: item.photo_ids.filter((id) => id),
+                        photosIds: ids,
                         photosSrc: item.photos,
                         state: item.state,
                         size: item.size,
