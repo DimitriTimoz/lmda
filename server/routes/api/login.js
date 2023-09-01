@@ -12,7 +12,9 @@ router.post('/', async function(req, res, next){
     // Check if pid is valid
     var email = req.body.email.trim().toLowerCase();
     var password = req.body.password;
+    console.log("email: " + email);
     if (email && password) {
+        console.log("identfiants présents");
         // Check if the user exists
         pool.query('SELECT * FROM admins WHERE email = $1', [email], function(error, results, fields) {
             if (error) {
@@ -36,6 +38,7 @@ router.post('/', async function(req, res, next){
             }
 
             // Compare the password
+            console.log("Comparing passwords");
             bcrypt.compare(password, user.password, function(err, match) {
                 if (err) {
                     return res.status(500).json({ error: 'Erreur interne du serveur.' });
@@ -47,6 +50,7 @@ router.post('/', async function(req, res, next){
                     req.session.uid = user.id;
                     return res.json({success: 'Vous êtes maintenant connecté.'});
                 } else {
+                    console.log("Wrong passwords");
                     return res.status(400).json(INVALID_IDs);
                 }
             });
