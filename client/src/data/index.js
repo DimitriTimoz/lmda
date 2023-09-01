@@ -41,7 +41,7 @@ const CAREGORIES_HOMMES = [
           ]
         },
         {
-          filter: "Pantalon",
+          filter: "Pantalons",
           subs: [
             "Chino",
             "Costume",

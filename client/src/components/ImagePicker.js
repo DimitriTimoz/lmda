@@ -56,7 +56,7 @@ export default class ImagePicker extends React.Component {
       });
 
     } catch (err) {
-      this.setState({ message: 'An error occurred while uploading the image.' });
+      this.setState({ message: 'An error occurred while uploading the image.' + err.data.error });
     }
   };
 
