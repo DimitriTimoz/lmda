@@ -204,7 +204,7 @@ const CAREGORIES_FEMMES = [
   {
     filter: "Sous-vêtements",
     subs: [
-      "Soutiens-gorge",
+      "Soutiens-gorges",
       "Culottes",
       "Collants",
       "Chaussettes",

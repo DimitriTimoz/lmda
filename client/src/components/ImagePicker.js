@@ -70,7 +70,7 @@ export default class ImagePicker extends React.Component {
           accept="image/*"
           onChange={this.onFileChange}
         />
-        {this.state.message && <ErrorPopup error={this.state.message} />}
+        {this.state.message.length > 0 && <ErrorPopup error={this.state.message} onClose={() => {this.setState({message: ""})}}/>}
       </div>
     );
   }
