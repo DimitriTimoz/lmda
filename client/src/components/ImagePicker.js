@@ -12,6 +12,7 @@ export default class ImagePicker extends React.Component {
       src: '',
       value: '',
       message: '',
+      loading: false,
     };
     this.props.src = '';
   }
@@ -19,6 +20,7 @@ export default class ImagePicker extends React.Component {
   onFileChange = (e) => {
     this.setState({ 
       file: e.target.files[0],
+      loading: true,
       src: URL.createObjectURL(e.target.files[0]),
     }, () => {
       this.upload(e);  
@@ -36,7 +38,8 @@ export default class ImagePicker extends React.Component {
           'Content-Type': 'multipart/form-data',
         },
       });
-
+      
+      this.setState({ loading: false });
       if (res.status !== 200) {
         this.setState({ message: res.data.error});
         return;
@@ -64,13 +67,18 @@ export default class ImagePicker extends React.Component {
     let src = this.state.src || this.props.src || '/icons/image.svg';
     return (
       <div className="image-picker">
-        <img src={src} alt="Prévisualisation envoyée" />
-        <input
-          type="file"
-          accept="image/*"
-          onChange={this.onFileChange}
-        />
-        {this.state.message.length > 0 && <ErrorPopup error={this.state.message} onClose={() => {this.setState({message: ""})}}/>}
+        {this.state.loading ? <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+        :
+        <>
+          <img src={src} alt="Prévisualisation envoyée" />
+          <input
+            type="file"
+            accept="image/*"
+            onChange={this.onFileChange}
+          />
+          {this.state.message.length > 0 && <ErrorPopup error={this.state.message} onClose={() => {this.setState({message: ""})}}/>}
+        </>
+        }
       </div>
     );
   }
