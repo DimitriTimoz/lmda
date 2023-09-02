@@ -22,7 +22,7 @@ export default class Header extends React.Component {
 
   updateDimensions = () => {
     this.setState({phone: window.innerWidth < 700});
-    if (window.innerWidth < 700) {
+    if (window.innerWidth < 700 && this.state.isBurgerMenuOpen) {
       window.scrollTo(0, 0);
     }
   };
