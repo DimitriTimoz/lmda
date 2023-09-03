@@ -24,7 +24,8 @@
 .images-pickers {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: start;
+    flex-wrap: wrap;
 }
 
 .add .submit-btn {
