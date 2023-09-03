@@ -14,15 +14,17 @@ function countOccurrences(mainString, subString) {
 
 function toState(state) {
     switch (state) {
-        case 1:
-            return 'très bon';
+        case 1: 
+            return 'neuf';
         case 2:
-            return 'bon';
+            return 'très bon';
         case 3:
-            return 'correct';
+            return 'bon';
         case 4:
-            return 'mauvais';
+            return 'correct';
         case 5:
+            return 'mauvais';
+        case 6:
             return 'très mauvais';
         default:
             return 'inconnu';
