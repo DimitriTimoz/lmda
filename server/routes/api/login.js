@@ -36,7 +36,6 @@ router.post('/', async function(req, res, next){
             }
 
             // Compare the password
-            console.log("comparing: " + password + " with: " + user.password);
             bcrypt.compare(password, user.password, function(err, match) {
                 if (err) {
                     return res.status(500).json({ error: 'Erreur interne du serveur.' });
