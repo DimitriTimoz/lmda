@@ -14,11 +14,12 @@ function ProductsBase({categName, category, filter }) {
             <h2>{categName}</h2>
             <select className="select-container select-dropdown" name="state" id="state" value={productState.state} onChange={(e) => setProductState({ state: e.target.value })}>
                 <option value="0">Tous les états</option>
-                <option value="1">Très bon</option>
-                <option value="2">Bon</option>
-                <option value="3">Correct</option>
-                <option value="4">Moyen</option>
-                <option value="5">Mauvais</option>
+                <option value="1">Neuf</option>
+                <option value="2">Très bon</option>
+                <option value="3">Bon</option>
+                <option value="4">Correct</option>
+                <option value="5">Moyen</option>
+                <option value="6">Mauvais</option>
             </select>
             <RawPreviews category={category} filter={filter} state={productState.state} canShowMore={true} />
         </div>

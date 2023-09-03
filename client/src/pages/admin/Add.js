@@ -22,7 +22,7 @@ const Add = (props) => {
         mass: 0,
         category: "femme",
         specifyCategory: "",
-        photosIds: ["", "", "", ""],
+        photosIds: ["", ""],
         photosSrc: [],
         size: "",
         state: "1",
@@ -82,7 +82,9 @@ const Add = (props) => {
     const handleImageChange = (index, value) => {
         let newPhotoIds = [...productState.photosIds]; // copy the array
         newPhotoIds[index] = value.target.value; // replace the value at index
-    
+        if (newPhotoIds.length >= productState.photosSrc.length) {
+            newPhotoIds.push("");
+        }
         setProductState(({
             ...productState,
             photosIds: newPhotoIds
@@ -146,11 +148,12 @@ const Add = (props) => {
                 <Input type="number" placeholder="Masse" name="mass" value={productState.mass} onChange={handleInputChange} />
                 <Input placeholder="Taille" name="size" value={productState.size} onChange={handleInputChange} />
                 <select className="select-container select-dropdown" name="state" id="state" value={productState.state} onChange={handleInputChange} >
-                    <option value="1">Très bon</option>
-                    <option value="2">Bon</option>
-                    <option value="3">Correct</option>
-                    <option value="4">Moyen</option>
-                    <option value="5">Mauvais</option>
+                    <option value="1">Neuf</option>
+                    <option value="2">Très bon</option>
+                    <option value="3">Bon</option>
+                    <option value="4">Correct</option>
+                    <option value="5">Moyen</option>
+                    <option value="6">Mauvais</option>
                 </select>
                 <div className="selectors">
                     <select className="select-container select-dropdown" name="category" id="category" value={productState.category} onChange={handleInputChange} >
