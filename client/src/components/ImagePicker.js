@@ -17,6 +17,12 @@ export default class ImagePicker extends React.Component {
     this.props.src = '';
   }
 
+  componentDidUpdate(prevProps) {
+    if(!(this.props.src === prevProps.src)) {
+      this.setState({src: this.props.src});
+    }
+  } 
+
   onFileChange = (e) => {
     this.setState({ 
       file: e.target.files[0],
