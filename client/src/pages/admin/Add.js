@@ -38,25 +38,25 @@ const Add = (props) => {
                     // Use the existing item data to set our state
                     const item = response.data;
                     let ids = item.photo_ids.filter((id) => id);
-                    for (let i = 0; i < 4 - ids.length; i++) {
+                    for (let i = 0; i < 2 - ids.length; i++) {
                         ids.push("");
                     }
 
                     setProductState(prevState => {
                         return {
-                        ...prevState,
-                        id: item.id,
-                        name: item.name,
-                        description: item.description,
-                        price: parseFloat(item.prices[0])/100,
-                        mass: item.mass,
-                        category: item.category,
-                        specifyCategory: item.specifyCategory,
-                        photosIds: ids,
-                        photosSrc: item.photos,
-                        state: item.state,
-                        size: item.size,
-                        message: "",
+                            ...prevState,
+                            id: item.id,
+                            name: item.name,
+                            description: item.description,
+                            price: parseFloat(item.prices[0])/100,
+                            mass: item.mass,
+                            category: item.category,
+                            specifyCategory: item.specifyCategory,
+                            photosIds: ids,
+                            photosSrc: item.photos,
+                            state: item.state,
+                            size: item.size,
+                            message: "",
                     }});
                 })
                 .catch(error => {
@@ -179,14 +179,14 @@ const Add = (props) => {
                         )
                     }
                     return (
-                    <ImagePicker 
-                        key={index}
-                        src={src}
-                        utility="view" 
-                        name={`viewImage${index}`} 
-                        onChange={(value) => handleImageChange(index, value)}
-                        value={image[0]}
-                    />
+                        <ImagePicker 
+                            key={index}
+                            src={src}
+                            utility="view" 
+                            name={`viewImage${index}`} 
+                            onChange={(value) => handleImageChange(index, value)}
+                            value={image[0]}
+                        />
                     )})}
                 </div>
 
