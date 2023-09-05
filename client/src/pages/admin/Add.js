@@ -80,8 +80,8 @@ const Add = (props) => {
     }
     
     const handleImageChange = (index, value) => {
-        let newPhotoIds = [...productState.photosIds]; // copy the array
-        newPhotoIds[index] = value.target.value; // replace the value at index
+        let newPhotoIds = [...productState.photosIds]; 
+        newPhotoIds[index] = value.target.value; 
         if (newPhotoIds.length >= productState.photosSrc.length) {
             newPhotoIds.push("");
         }

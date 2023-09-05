@@ -2,6 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import "./ImagePicker.css";
 import ErrorPopup from './ErrorPopup';
+
 export default class ImagePicker extends React.Component {
   constructor(props) {
     super(props);
@@ -9,12 +10,11 @@ export default class ImagePicker extends React.Component {
       active: false,
       file: null,
       message: '',
-      src: '',
+      src: this.props.src || '',
       value: '',
       message: '',
       loading: false,
     };
-    this.props.src = '';
   }
 
   componentDidUpdate(prevProps) {
@@ -70,7 +70,7 @@ export default class ImagePicker extends React.Component {
   };
 
   render() {
-    let src = this.state.src || this.props.src || '/icons/image.svg';
+    let src = this.props.src || this.state.src || '/icons/image.svg';
     return (
       <div className="image-picker">
         {this.state.loading ? <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
