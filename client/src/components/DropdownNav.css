@@ -23,6 +23,8 @@
     border-bottom-right-radius: 1rem;
     background-color: var(--light-gray);
     z-index: 9999;
+    max-height: 70vh;
+    overflow: auto;
 }
 
 .no-overflow {
