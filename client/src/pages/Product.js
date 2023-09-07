@@ -134,7 +134,7 @@ export default class Product extends React.Component {
                         </div>
                         <div>
                             {this.state.inCart ? 
-                                <Button title="Voir mon pannier" className="" onClick={this.viewCart} />
+                                <Button title="Voir mon panier" className="" onClick={this.viewCart} />
                                 : 
                                 <Button title="Acheter" className="" onClick={this.addToCart} />}
                             
