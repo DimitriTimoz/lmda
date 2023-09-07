@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const myMondialRelay = require("../../modules/mondial-relay");
-const mondialRelay = require("mondial-relay");
 const db = require('../../db');
 const { getUser, getEmail, getName } = require('../../database/users');
 const { sendEmail } = require('../../modules/email');
@@ -155,6 +154,8 @@ router.get("/bordereau/:id", async (req, res) => {
         if (user.length == 0) {
             return res.status(404).json({ error: 'Utilisateur introuvable.'});
         }
+
+        const products = await getPro
         user = user[0];
 
         // Parse addresses
@@ -166,6 +167,7 @@ router.get("/bordereau/:id", async (req, res) => {
         body.Dest_Ad4 = noAccents(address.address2 || "");
         body.Dest_CP = noAccents(address.zipCode);
         body.Dest_Ville = noAccents(address.city);
+        body.Poids = order.rows[0].mass;
         body.LIV_Rel = delivery.parcelShopCode.split('-')[1];
         console.log(body);
         let label = await myMondialRelay.creationEtiquette(body);
