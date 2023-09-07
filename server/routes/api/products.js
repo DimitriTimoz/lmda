@@ -28,30 +28,6 @@ const selectAll = async (kind, filter, from = 0, more = 10) => {
 };
   
 
-function applyFilter(products, category, filter) {
-  filter = filter.toLocaleLowerCase().replace(" ", "-");
-  category = category.toLocaleLowerCase().replace(" ", "-");
-  if (category !== 'all') {
-    products = products.filter((product) => {
-        return product.kind.toLowerCase().replace(" ", "-").includes(category);
-    });
-  }
-
-  if (filter === 'all') {
-      return products;
-  } else {
-    return products.filter((product) => {
-      if (product.specifyCategory === null) {
-        return false;
-      }
-   
-      return product.specifyCategory.toLowerCase().replace(" ", "-").includes(filter);
-    });
-  }
-}
-  
-
-
 router.get('/:category/:filter', async (req, res, next) => {
   const {from, more} = req.query;
   let category = req.params.category;
