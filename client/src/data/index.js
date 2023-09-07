@@ -26,8 +26,10 @@ const CAREGORIES_HOMMES = [
           filter: "Hauts",
           subs: [
             "Chemises",
-            "T-shirts",
-            "T-shirts manches longues",
+            "Tee-shirts",
+            "Tee-shirts manches longues",
+            "Tuniques",
+            "Blouses",
             "Debardeur",
             "Polo",
           ]
@@ -185,6 +187,33 @@ const CAREGORIES_FEMMES = [
           "Hauts",
           "Pulls",
           "Survêtements",
+        ]
+      },
+      {
+        filter: "Pantalons",
+        subs: [
+          "Jeans",
+          "Joggings",
+          "Pantalons droits",
+          "Leggings",
+        ]
+      },
+      {
+        filter: "Hauts",
+        subs: [
+          "Tee-Shirts",
+          "Tuniques",
+          "Chemises",
+          "Débardeurs",
+        ]
+      },
+      {
+        filter: "Sous-Vêtemens",
+        subs: [
+          "Culottes",
+          "Soutiens Gorges",
+          "Chaussettes",
+          "Pyjamas"
         ]
       }
     ]

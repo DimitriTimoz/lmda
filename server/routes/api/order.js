@@ -155,7 +155,19 @@ router.get("/bordereau/:id", async (req, res) => {
             return res.status(404).json({ error: 'Utilisateur introuvable.'});
         }
 
-        const products = await getPro
+        let products = await db.query('SELECT * FROM products WHERE id = ANY($1)', [order.rows[0].products]);
+        if (products.rows.length === 0) {
+            return res.status(404).json({ error: "Porduits introuvables"});
+        }
+
+        products = products.rows;
+        let mass = 0;
+        for (let i = 0; i < products.length; i++) {
+            const product = products[i];
+            console.log(product);
+            mass += product.mass;
+        }
+
         user = user[0];
 
         // Parse addresses
@@ -167,7 +179,7 @@ router.get("/bordereau/:id", async (req, res) => {
         body.Dest_Ad4 = noAccents(address.address2 || "");
         body.Dest_CP = noAccents(address.zipCode);
         body.Dest_Ville = noAccents(address.city);
-        body.Poids = order.rows[0].mass;
+        body.Poids = mass;
         body.LIV_Rel = delivery.parcelShopCode.split('-')[1];
         console.log(body);
         let label = await myMondialRelay.creationEtiquette(body);
